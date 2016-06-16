@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TimePlannerDataServiceDesign.cs" company="">
-//   
+// <copyright file="TimePlannerDataServiceDesign.cs" company="Christophe PETITJEAN">
+//   Christophe PETITJEAN - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -8,7 +8,6 @@ namespace TimePlannerNinject.Design
 {
    using System;
    using System.Collections.Generic;
-   using System.Collections.ObjectModel;
    using System.Windows.Media;
 
    using TimePlannerNinject.Interfaces;
@@ -51,6 +50,7 @@ namespace TimePlannerNinject.Design
                            {
                               new InputDay
                                  {
+                                    ID = 1,
                                     ExtraHours = 1, 
                                     IdWorkPlace = 1, 
                                     IsWorked = true, 

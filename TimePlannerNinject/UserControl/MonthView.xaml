@@ -22,20 +22,26 @@
          <RowDefinition Height="Auto"/>
          <RowDefinition Height="*"/>
       </Grid.RowDefinitions>
-      <StackPanel Orientation="Horizontal" Background="AliceBlue">
-         <Path Width="15" Height="15" Stroke="Black" StrokeThickness="3.5" Stretch="Uniform" UseLayoutRounding="False" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Data="F1 M 328.101,80.0001L 80,328.101L 328.101,576.203" MouseLeftButtonUp="MonthGoPrevMouseLeftButtonUp" />
-         <Label x:Name="MonthYearLabel" Content="March 2009" FontSize="14" FontFamily="Arial" VerticalAlignment="Center"/>
-         <Path Width="15" Height="15" Stroke="Black" StrokeThickness="3.5" Stretch="Uniform" UseLayoutRounding="False" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Data="F1 M 328.101,80.0001L 80,328.101L 328.101,576.203" MouseLeftButtonUp="MonthGoNextMouseLeftButtonUp" RenderTransformOrigin="0.5,0.5" >
-            <Path.RenderTransform>
-               <TransformGroup>
-                  <ScaleTransform ScaleY="1" ScaleX="-1"/>
-                  <SkewTransform AngleY="0" AngleX="0"/>
-                  <RotateTransform Angle="0"/>
-                  <TranslateTransform/>
-               </TransformGroup>
-            </Path.RenderTransform>
-         </Path>
-      </StackPanel>
+      <Grid Background="AliceBlue">
+         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Click="MonthGoPrevMouseLeftButtonUp" Background="AliceBlue">
+               <Path Width="15" Height="15" Stroke="Black" StrokeThickness="3.5" Stretch="Uniform" UseLayoutRounding="False" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Data="F1 M 328.101,80.0001L 80,328.101L 328.101,576.203" />
+            </Button>
+            <Label x:Name="MonthYearLabel" Content="March 2009" FontSize="14" FontFamily="Arial" VerticalAlignment="Center"/>
+            <Button Click="MonthGoNextMouseLeftButtonUp" Background="AliceBlue">
+               <Path Width="15" Height="15" Stroke="Black" StrokeThickness="3.5" Stretch="Uniform" UseLayoutRounding="False" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Data="F1 M 328.101,80.0001L 80,328.101L 328.101,576.203" RenderTransformOrigin="0.5,0.5" >
+                  <Path.RenderTransform>
+                     <TransformGroup>
+                        <ScaleTransform ScaleY="1" ScaleX="-1"/>
+                        <SkewTransform AngleY="0" AngleX="0"/>
+                        <RotateTransform Angle="0"/>
+                        <TranslateTransform/>
+                     </TransformGroup>
+                  </Path.RenderTransform>
+               </Path>
+            </Button>
+         </StackPanel>
+      </Grid>
       <Grid Grid.Row="1" Background="AliceBlue">
          <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>

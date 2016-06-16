@@ -14,19 +14,16 @@
         DataContext="{Binding Calendrier, Source={StaticResource Locator}}">
 
    <Grid>
-      <userControl:MonthView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DisplayStartDate="{Binding DateEnCours, Mode=TwoWay}" Appointments="{Binding Days}" >
+      <userControl:MonthView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DisplayStartDate="{Binding DateEnCours, Mode=TwoWay}" Appointments="{Binding Days, Mode=TwoWay}" >
          <i:Interaction.Triggers>
-            <i:EventTrigger EventName="DisplayMonthChanged">
-               <command:EventToCommand Command="{Binding DisplayMonthChangedCommand}" />
-            </i:EventTrigger>
             <i:EventTrigger EventName="DayBoxDoubleClicked">
-               <command:EventToCommand Command="{Binding DayBoxDoubleClickedCommand}"></command:EventToCommand>
+               <command:EventToCommand Command="{Binding DayBoxDoubleClickedCommand}" PassEventArgsToCommand="True" />
             </i:EventTrigger>
             <i:EventTrigger EventName="AppointmentMoved">
-               <command:EventToCommand Command="{Binding InputDayChangedCommand}"></command:EventToCommand>
+               <command:EventToCommand Command="{Binding InputDayChangedCommand}" PassEventArgsToCommand="True" />
             </i:EventTrigger>
             <i:EventTrigger EventName="AppointmentDblClicked">
-               <command:EventToCommand Command="{Binding InputDayDoubleClickedCommand}"></command:EventToCommand>
+               <command:EventToCommand Command="{Binding InputDayDoubleClickedCommand}" PassEventArgsToCommand="True" />
             </i:EventTrigger>
          </i:Interaction.Triggers>
       </userControl:MonthView>

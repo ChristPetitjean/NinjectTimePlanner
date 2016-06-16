@@ -16,7 +16,7 @@ namespace TimePlannerNinject
    /// <summary>
    ///    Interaction logic for App.xaml
    /// </summary>
-   public partial class App : Application
+   public partial class App
    {
       #region Constructors and Destructors
 
@@ -30,6 +30,10 @@ namespace TimePlannerNinject
 
       #endregion
 
+      /// <summary>
+      /// Déclenche l'événement <see cref="E:System.Windows.Application.Startup" />.
+      /// </summary>
+      /// <param name="e"><see cref="T:System.Windows.StartupEventArgs" /> qui contient les données d'événement.</param>
       protected override void OnStartup(StartupEventArgs e)
       {
          if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject()))

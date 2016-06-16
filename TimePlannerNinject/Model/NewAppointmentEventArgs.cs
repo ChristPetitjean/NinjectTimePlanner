@@ -1,19 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="NewAppointmentEventArgs.cs" company="Christophe PETITJEAN">
+//   Christophe PETITJEAN - 2016
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace TimePlannerNinject.Model
 {
-   public struct NewAppointmentEventArgs
+   using System;
+
+   /// <summary>
+   /// Arguments de nouvel événement.
+   /// </summary>
+   public class NewAppointmentEventArgs : EventArgs
    {
-      public DateTime? StratDate;
+      #region Fields
 
-      public DateTime? EndDate;
+      /// <summary>
+      /// Obtient ou définit l'indentifiant du candidat.
+      /// </summary>
+      public int? CandidateId { get; set; }
 
-      public int? CandidateId;
+      /// <summary>
+      /// Obtient ou définit la date de fn.
+      /// </summary>
+      public DateTime? EndDate { get; set; }
 
-      public int? RequirementId;
+      /// <summary>
+      /// Obtient ou définit la date de début.
+      /// </summary>
+      public DateTime? StartDate { get; set; }
+
+      #endregion
    }
 }

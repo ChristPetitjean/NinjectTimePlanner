@@ -6,9 +6,7 @@
 namespace TimePlannerNinject.UserControl
 {
    using System;
-   using System.Collections;
    using System.Collections.Generic;
-   using System.Collections.ObjectModel;
    using System.Diagnostics;
    using System.Globalization;
    using System.Linq;
@@ -20,6 +18,8 @@ namespace TimePlannerNinject.UserControl
 
    using TimePlannerNinject.Extensions;
    using TimePlannerNinject.Model;
+
+   using Xceed.Wpf.AvalonDock.Controls;
 
    using Calendar = System.Globalization.Calendar;
 
@@ -45,6 +45,16 @@ namespace TimePlannerNinject.UserControl
       #region Fields
 
       /// <summary>
+      ///    The _ display month.
+      /// </summary>
+      private int displayMonth;
+
+      /// <summary>
+      ///    The _ display year.
+      /// </summary>
+      private int displayYear;
+
+      /// <summary>
       ///    The _day back brush.
       /// </summary>
       private readonly Brush dayBackBrush;
@@ -63,16 +73,6 @@ namespace TimePlannerNinject.UserControl
       ///    The _today back brush.
       /// </summary>
       private readonly Brush todayBackBrush;
-
-      /// <summary>
-      ///    The _ display month.
-      /// </summary>
-      private int displayMonth;
-
-      /// <summary>
-      ///    The _ display year.
-      /// </summary>
-      private int displayYear;
 
       #endregion
 
@@ -141,7 +141,7 @@ namespace TimePlannerNinject.UserControl
             this.SetValue(AppointmentsProperty, value);
             if (this.IsLoaded)
             {
-               this.BuildCalendarUI(); 
+               this.BuildCalendarUI();
             }
          }
       }
@@ -170,9 +170,9 @@ namespace TimePlannerNinject.UserControl
       ///    Identifies the <see cref="Appointments" /> dependency property.
       /// </summary>
       public static readonly DependencyProperty AppointmentsProperty = DependencyProperty.Register(
-         AppointmentsPropertyName,
+         AppointmentsPropertyName, 
          typeof(IEnumerable<InputDay>), 
-         typeof(MonthView),
+         typeof(MonthView), 
          new UIPropertyMetadata(null));
 
       /// <summary>
@@ -181,7 +181,7 @@ namespace TimePlannerNinject.UserControl
       public static readonly DependencyProperty DisplayStartDateProperty = DependencyProperty.Register(
          DisplayStartDatePropertyName, 
          typeof(DateTime), 
-         typeof(MonthView),
+         typeof(MonthView), 
          new UIPropertyMetadata(DateTime.Now.AddDays(-1 * (DateTime.Now.Day - 1))));
 
       #region Methods
@@ -226,14 +226,14 @@ namespace TimePlannerNinject.UserControl
             {
                if (this.AppointmentDblClicked != null)
                {
-                  this.AppointmentDblClicked(
-                     sender,
-                     new AppointmentDblClickedEvenArgs { AppointementId = (int)((DayBoxAppointmentControl)e.Source).Tag });
+                  var idApt = (int)((DayBoxAppointmentControl)e.Source).Tag;
+                  var arg = new AppointmentDblClickedEvenArgs { AppointementId = idApt };
+                  this.AppointmentDblClicked(e.Source, arg);
                }
             }
-
-            e.Handled = true;
          }
+
+         e.Handled = true;
       }
 
       /// <summary>
@@ -317,13 +317,13 @@ namespace TimePlannerNinject.UserControl
       /// </param>
       private void DayBoxOnMouseDoubleClick(object sender, MouseButtonEventArgs e)
       {
-         if (e.Source is DayBoxControl && ((Visual)e.OriginalSource).FindVisualAncestor(typeof(DayBoxAppointmentControl)) != null)
+         if (e.Source is DayBoxControl && ((Visual)e.OriginalSource).FindVisualAncestor<DayBoxAppointmentControl>() == null)
          {
             var ev = new NewAppointmentEventArgs();
             if (((DayBoxControl)e.Source).Tag != null)
             {
-               ev.StratDate = new DateTime(this.displayYear, this.displayMonth, (int)((DayBoxControl)e.Source).Tag, 10, 0, 0);
-               ev.EndDate = ((DateTime)ev.StratDate).AddHours(2);
+               ev.StartDate = new DateTime(this.displayYear, this.displayMonth, (int)((DayBoxControl)e.Source).Tag, 10, 0, 0);
+               ev.EndDate = ((DateTime)ev.StartDate).AddHours(2);
             }
 
             if (this.DayBoxDoubleClicked != null)
@@ -400,10 +400,10 @@ namespace TimePlannerNinject.UserControl
       /// <param name="sender">
       /// The sender.
       /// </param>
-      /// <param name="e">
-      /// The e.
+      /// <param name="routedEventArgs">
+      /// The routed Event Args.
       /// </param>
-      private void MonthGoNextMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+      private void MonthGoNextMouseLeftButtonUp(object sender, RoutedEventArgs routedEventArgs)
       {
          this.UpdateMonth(1);
       }
@@ -414,10 +414,10 @@ namespace TimePlannerNinject.UserControl
       /// <param name="sender">
       /// The sender.
       /// </param>
-      /// <param name="e">
-      /// The e.
+      /// <param name="routedEventArgs">
+      /// The routed Event Args.
       /// </param>
-      private void MonthGoPrevMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+      private void MonthGoPrevMouseLeftButtonUp(object sender, RoutedEventArgs routedEventArgs)
       {
          this.UpdateMonth(-1);
       }
@@ -440,7 +440,7 @@ namespace TimePlannerNinject.UserControl
             var dayBoxOld = (DayBoxControl)this.MonthViewGrid.FindName("DayBox" + apt.WorkStartTime.Value.Day);
             if (dayBoxOld != null)
             {
-               var dayBoxNew = (DayBoxControl)((Visual)e.OriginalSource).FindVisualAncestor(typeof(DayBoxControl));
+               var dayBoxNew = ((Visual)e.OriginalSource).FindVisualAncestor<DayBoxControl>();
                if (dayBoxNew != null)
                {
                   var aptBox = (DayBoxAppointmentControl)dayBoxOld.FindName("Apt" + apt.ID);
@@ -511,6 +511,8 @@ namespace TimePlannerNinject.UserControl
          {
             this.DisplayMonthChanged(this, ev);
          }
+
+         this.BuildCalendarUI();
       }
 
       #endregion

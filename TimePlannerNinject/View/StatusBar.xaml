@@ -16,5 +16,6 @@
             <GradientStop Color="White" Offset="1"/>
          </LinearGradientBrush>
       </Grid.Background>
+       <TextBlock Text="{Binding MessageToDisplay, Mode=TwoWay}" HorizontalAlignment="Right" />
    </Grid>
 </UserControl>

@@ -6,10 +6,20 @@ using System.Threading.Tasks;
 
 namespace TimePlannerNinject.Model
 {
-   public struct MonthChangedEventArgs
+   /// <summary>
+   /// Evénement de changement de mois
+   /// </summary>
+   /// <seealso cref="System.EventArgs" />
+   public class MonthChangedEventArgs : EventArgs
    {
-      public DateTime OldDisplayStartDate;
+      /// <summary>
+      /// Obtient ou définit l'ancienne date
+      /// </summary>
+      public DateTime OldDisplayStartDate {get; set; }
 
-      public DateTime NewDisplayStartDate;
+      /// <summary>
+      /// Obtient ou définit la nouvelle date
+      /// </summary>
+      public DateTime NewDisplayStartDate { get; set; }
    }
 }

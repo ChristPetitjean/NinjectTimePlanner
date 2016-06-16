@@ -6,9 +6,11 @@
              xmlns:userControl="clr-namespace:TimePlannerNinject.UserControl"
              mc:Ignorable="d"
              Tag="{Binding Path=ID}">
-   <Border x:Name="BorderElement" CornerRadius="5" BorderBrush="DarkOliveGreen" Background="LightGreen" BorderThickness="1" Margin="2,2,2,1">
+   <Border x:Name="BorderElement" CornerRadius="5" BorderBrush="DarkOliveGreen" BorderThickness="1" Margin="2,2,2,1">
+      <Border.Background>
+         <SolidColorBrush Color="{Binding Path=IdWorkPlace, Converter={StaticResource WorkplaceLookupConverter}, ConverterParameter='Color', FallbackValue='LightGreen'}"></SolidColorBrush>
+      </Border.Background>
       <StackPanel>
-         <!--<userControl:LookupLabel x:Name="DisplayText" SelectedValue="{Binding Path=IdWorkPlace}" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding Source={StaticResource Locator}, Path=Main.AllWorkplaces}" FontSize="10" FontWeight="Bold" Padding="2"/>-->
          <TextBlock x:Name="WorkPlace" Text="{Binding Path=IdWorkPlace, Converter={StaticResource WorkplaceLookupConverter}, ConverterParameter='Name', FallbackValue='Lieu de travail'}" />
          <TextBlock x:Name="StartDate" Text="{Binding Path=WorkStartTime, FallbackValue='08:00', Converter={StaticResource DateTimeToTimeConverter}}" FontSize="10" Padding="2" TextWrapping="Wrap"/>
          <TextBlock x:Name="EndDate" Text="{Binding Path=WorkEndTime, FallbackValue='18:00', Converter={StaticResource DateTimeToTimeConverter}}" FontSize="10" Padding="2" TextWrapping="Wrap"/>

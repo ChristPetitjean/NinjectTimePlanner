@@ -18,7 +18,7 @@ namespace TimePlannerNinject.Model
       /// <summary>
       /// Obtient ou définit l'identifiant de l'événement.
       /// </summary>
-      public int AppointementId { get; set; }
+      public int? AppointementId { get; set; }
 
       #endregion
    }

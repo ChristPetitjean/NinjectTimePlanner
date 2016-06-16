@@ -79,31 +79,11 @@ namespace TimePlannerNinject.ViewModel
          set
          {
             Set(DateEnCoursPropertyName, ref dateEnCours, value);
+            Days =
+               new ObservableCollection<InputDay>(
+                  this.service.AllDays.FindAll(
+                     i => i.WorkStartTime != null && i.WorkStartTime.Value.Month == value.Month && i.WorkStartTime.Value.Year == value.Year));
          }
-      }
-
-      private RelayCommand<MonthChangedEventArgs> displayMonthChangedCommand;
-
-      /// <summary>
-      /// Gets the DisplayMonthChangedCommand.
-      /// </summary>
-      public RelayCommand<MonthChangedEventArgs> DisplayMonthChangedCommand
-      {
-         get
-         {
-            return displayMonthChangedCommand
-                ?? (displayMonthChangedCommand = new RelayCommand<MonthChangedEventArgs>(ExecuteDisplayMonthChangedCommand));
-         }
-      }
-
-      private void ExecuteDisplayMonthChangedCommand(MonthChangedEventArgs e)
-      {
-         Days =
-            new ObservableCollection<InputDay>(
-               this.service.AllDays.FindAll(
-                  i =>
-                  i.WorkStartTime != null && i.WorkStartTime.Value.Month == this.DateEnCours.Month
-                  && i.WorkStartTime.Value.Year == this.DateEnCours.Year));
       }
 
       private RelayCommand<AppointmentDblClickedEvenArgs> inputDayDoubleClickedCommand;
@@ -122,7 +102,14 @@ namespace TimePlannerNinject.ViewModel
 
       private void ExecuteInputDayDoubleClickedCommand(AppointmentDblClickedEvenArgs e)
       {
-         StatutMessage.SendStatutMessage(string.Format("Double click sur l'évènement d'ID:{0}", e.AppointementId));
+         if (e != null)
+         {
+            StatutMessage.SendStatutMessage(string.Format("Double click sur l'évènement d'ID:{0}", e.AppointementId));
+         }
+         else
+         {
+            StatutMessage.SendStatutMessage("Le double click sur l'événement à echoué");
+         }
       }
 
       private RelayCommand<NewAppointmentEventArgs> dayBoxDoubleClickedCommand;
@@ -141,7 +128,10 @@ namespace TimePlannerNinject.ViewModel
 
       private void ExecuteDayBoxDoubleClickedCommand(NewAppointmentEventArgs e)
       {
-         StatutMessage.SendStatutMessage(string.Format("double click sur le jour:{0}", e.StratDate.Value.ToShortDateString()));
+         if (e != null)
+         {
+            StatutMessage.SendStatutMessage(string.Format("double click sur le jour:{0}", e.StartDate.Value.ToShortDateString()));
+         }
       }
 
       private RelayCommand<AppointmentMovedEvenArgs> inputDayChangedCommand;
@@ -160,7 +150,10 @@ namespace TimePlannerNinject.ViewModel
 
       private void ExecuteInputDayChangedCommand(AppointmentMovedEvenArgs e)
       {
-         StatutMessage.SendStatutMessage(string.Format("deplacement d'événement:{0}, depuis {1} vers {2}", e.AppointmentId, e.OldDay, e.NewDay));
+         if (e != null)
+         {
+            StatutMessage.SendStatutMessage(string.Format("deplacement d'événement:{0}, depuis {1} vers {2}", e.AppointmentId, e.OldDay, e.NewDay));
+         }
       }
    }
 }

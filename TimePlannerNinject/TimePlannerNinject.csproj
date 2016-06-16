@@ -114,7 +114,6 @@
     <Compile Include="Extensions\DatePickerCalendar.cs" />
     <Compile Include="Extensions\DatePickerDateFormat.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
-    <Compile Include="Extensions\FrameWorkElement.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Kernel\KernelTimePlanner.cs" />
     <Compile Include="Model\AppFile.cs" />
