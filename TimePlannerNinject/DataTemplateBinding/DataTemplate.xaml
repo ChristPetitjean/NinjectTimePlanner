@@ -1,0 +1,22 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:TimePlannerNinject.ViewModel"
+                    xmlns:view="clr-namespace:TimePlannerNinject.View">
+   
+   <DataTemplate DataType="{x:Type vm:MenuPrincipalViewModel}">
+      <view:MenuPrincipal />
+   </DataTemplate>
+
+   <DataTemplate DataType="{x:Type vm:StatusBarViewModel}">
+      <view:StatusBar />
+   </DataTemplate>
+
+   <DataTemplate DataType="{x:Type vm:DataGridInputDayViewModel}">
+      <view:DataGridInputDay />
+   </DataTemplate>
+
+   <DataTemplate DataType="{x:Type vm:CalendrierViewModel}">
+      <view:Calendrier />
+   </DataTemplate>
+
+</ResourceDictionary>

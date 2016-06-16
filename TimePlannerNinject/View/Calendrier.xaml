@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="TimePlannerNinject.View.Calendrier"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ignore="http://www.galasoft.ch/ignore"
+        xmlns:model="clr-namespace:TimePlannerNinject.Model"
+        xmlns:userControl="clr-namespace:TimePlannerNinject.UserControl"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:command="http://www.galasoft.ch/mvvmlight"
+        mc:Ignorable="d ignore"
+             d:DesignHeight="710.448"
+             d:DesignWidth="1098.507"
+        DataContext="{Binding Calendrier, Source={StaticResource Locator}}">
+
+   <Grid>
+      <userControl:MonthView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DisplayStartDate="{Binding DateEnCours, Mode=TwoWay}" Appointments="{Binding Days}" >
+         <i:Interaction.Triggers>
+            <i:EventTrigger EventName="DisplayMonthChanged">
+               <command:EventToCommand Command="{Binding DisplayMonthChangedCommand}" />
+            </i:EventTrigger>
+         </i:Interaction.Triggers>
+      </userControl:MonthView>
+   </Grid>
+</UserControl>
