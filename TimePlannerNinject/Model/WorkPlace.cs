@@ -66,7 +66,7 @@ namespace TimePlannerNinject.Model
       /// <param name="context">
       /// le context de sérialisation.
       /// </param>
-      public WorkPlace(SerializationInfo info, StreamingContext context)
+      protected WorkPlace(SerializationInfo info, StreamingContext context)
       {
          var colorString = info.GetString("Color");
          var fromHtml = ColorTranslator.FromHtml(colorString);
@@ -207,7 +207,7 @@ namespace TimePlannerNinject.Model
       ///    sérialisation.
       /// </param>
       [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-      public void GetObjectData(SerializationInfo info, StreamingContext context)
+      public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
       {
          info.AddValue("Color", ColorTranslator.ToHtml(System.Drawing.Color.FromArgb(this.Color.A, this.Color.R, this.Color.G, this.Color.B)));
          info.AddValue("DefaultEndTime", this.DefaultEndTime);

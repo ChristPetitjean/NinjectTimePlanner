@@ -10,13 +10,12 @@
 
    <Application.Resources>
       <ResourceDictionary>
+         <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
          <ResourceDictionary.MergedDictionaries>
             <ResourceDictionary Source="/DataTemplateBinding/DataTemplate.xaml" />
             <ResourceDictionary Source="/Skins/MainSkin.xaml" />
+            <ResourceDictionary Source="/Converters/Converters.xaml" />
          </ResourceDictionary.MergedDictionaries>
-         <!--Global View Model Locator-->
-         <vm:ViewModelLocator x:Key="Locator"
-                             d:IsDataSource="True" />
       </ResourceDictionary>
    </Application.Resources>
 

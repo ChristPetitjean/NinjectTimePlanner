@@ -12,35 +12,21 @@ namespace TimePlannerNinject.Kernel
    /// <summary>
    ///    Kernel du time planner.
    /// </summary>
-   public class KernelTimePlanner : StandardKernel
+   public static class KernelTimePlanner
    {
-      #region Constructors and Destructors
+      private static StandardKernel _kernel;
 
-      /// <summary>
-      /// Initialise une nouvelle instance de la classe <see cref="KernelTimePlanner"/>.
-      /// </summary>
-      /// <param name="modules">
-      /// Les modules.
-      /// </param>
-      public KernelTimePlanner(params INinjectModule[] modules)
-         : base(modules)
+      public static T Get<T>()
       {
+         return _kernel.Get<T>();
       }
 
-      /// <summary>
-      /// Initialise une nouvelle instance de la classe <see cref="KernelTimePlanner"/>.
-      /// </summary>
-      /// <param name="settings">
-      /// Les paramètres.
-      /// </param>
-      /// <param name="modules">
-      /// Les modules.
-      /// </param>
-      public KernelTimePlanner(INinjectSettings settings, params INinjectModule[] modules)
-         : base(settings, modules)
+      public static void Initialize(params INinjectModule[] modules)
       {
+         if (_kernel == null)
+         {
+            _kernel = new StandardKernel(modules);
+         }
       }
-
-      #endregion
    }
 }

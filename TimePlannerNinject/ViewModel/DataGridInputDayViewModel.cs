@@ -161,7 +161,7 @@ namespace TimePlannerNinject.ViewModel
             return false;
          }
 
-         return inputDay.Date.Month == this.SelectedDisplayMonth.Month && inputDay.Date.Year == this.SelectedDisplayMonth.Year;
+         return inputDay.WorkStartTime.HasValue && inputDay.WorkStartTime.Value.Month == this.SelectedDisplayMonth.Month && inputDay.WorkStartTime.Value.Year == this.SelectedDisplayMonth.Year;
       }
 
       #endregion

@@ -108,6 +108,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\DateTimeToTimeConverter.cs" />
+    <Compile Include="Converters\WorkplaceLookupConverter.cs" />
     <Compile Include="Design\TimePlannerDataServiceDesign.cs" />
     <Compile Include="Extensions\DatePickerCalendar.cs" />
     <Compile Include="Extensions\DatePickerDateFormat.cs" />
@@ -116,15 +118,18 @@
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Kernel\KernelTimePlanner.cs" />
     <Compile Include="Model\AppFile.cs" />
+    <Compile Include="Model\AppointmentDblClickedEvenArgs.cs" />
+    <Compile Include="Model\AppointmentMovedEvenArgs.cs" />
     <Compile Include="Model\InputDay.cs" />
     <Compile Include="Model\MonthChangedEventArgs.cs" />
     <Compile Include="Model\NewAppointmentEventArgs.cs" />
     <Compile Include="Model\StatutMessage.cs" />
     <Compile Include="Model\TimePlannerDataService.cs" />
     <Compile Include="Model\WorkPlace.cs" />
+    <Compile Include="Interfaces\ATimePlannerDataService.cs" />
     <Compile Include="Modules\DesignTimeModule.cs" />
     <Compile Include="Modules\RuntimeModule.cs" />
-    <Compile Include="Interfaces\ATimePlannerDataService.cs" />
+    <Compile Include="Modules\ViewModelModule.cs" />
     <Compile Include="UserControl\DayBoxAppointmentControl.xaml.cs">
       <DependentUpon>DayBoxAppointmentControl.xaml</DependentUpon>
     </Compile>
@@ -155,6 +160,10 @@
     <Compile Include="View\StatusBar.xaml.cs">
       <DependentUpon>StatusBar.xaml</DependentUpon>
     </Compile>
+    <Page Include="Converters\Converters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DataTemplateBinding\DataTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -237,9 +246,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Converters\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

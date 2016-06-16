@@ -19,6 +19,15 @@
             <i:EventTrigger EventName="DisplayMonthChanged">
                <command:EventToCommand Command="{Binding DisplayMonthChangedCommand}" />
             </i:EventTrigger>
+            <i:EventTrigger EventName="DayBoxDoubleClicked">
+               <command:EventToCommand Command="{Binding DayBoxDoubleClickedCommand}"></command:EventToCommand>
+            </i:EventTrigger>
+            <i:EventTrigger EventName="AppointmentMoved">
+               <command:EventToCommand Command="{Binding InputDayChangedCommand}"></command:EventToCommand>
+            </i:EventTrigger>
+            <i:EventTrigger EventName="AppointmentDblClicked">
+               <command:EventToCommand Command="{Binding InputDayDoubleClickedCommand}"></command:EventToCommand>
+            </i:EventTrigger>
          </i:Interaction.Triggers>
       </userControl:MonthView>
    </Grid>

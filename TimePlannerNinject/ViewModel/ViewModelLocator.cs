@@ -1,49 +1,20 @@
-﻿namespace TimePlannerNinject.ViewModel
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ViewModelLocator.cs" company="Christophe PETITJEAN">
+//   Christophe PETITJEAN - 2016
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace TimePlannerNinject.ViewModel
 {
-   using System.Diagnostics.CodeAnalysis;
-
-   using GalaSoft.MvvmLight;
-
-   using Ninject;
+   using System.Windows;
 
    using TimePlannerNinject.Kernel;
-   using TimePlannerNinject.Modules;
 
    /// <summary>
    ///    The view model locator.
    /// </summary>
    public class ViewModelLocator
    {
-      #region Static Fields
-
-      /// <summary>
-      ///    The kernel.
-      /// </summary>
-      private static KernelTimePlanner kernel;
-
-      #endregion
-
-      #region Constructors and Destructors
-
-      /// <summary>
-      ///    Initialise une nouvelle instance de la classe <see cref="ViewModelLocator" />.
-      /// </summary>
-      public ViewModelLocator()
-      {
-         // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-         if (ViewModelBase.IsInDesignModeStatic)
-         {
-            kernel = new KernelTimePlanner(new DesignTimeModule());
-         }
-         else
-         {
-            //kernel = new KernelTimePlanner(new RunTimeModule());
-            kernel = new KernelTimePlanner(new DesignTimeModule());
-         }
-      }
-
-      #endregion
-
       #region Public Properties
 
       /// <summary>
@@ -53,7 +24,7 @@
       {
          get
          {
-            return kernel.Get<MainViewModel>();
+            return KernelTimePlanner.Get<MainViewModel>();
          }
       }
 
@@ -64,7 +35,7 @@
       {
          get
          {
-            return kernel.Get<MenuPrincipalViewModel>();
+            return KernelTimePlanner.Get<MenuPrincipalViewModel>();
          }
       }
 
@@ -75,7 +46,7 @@
       {
          get
          {
-            return kernel.Get<StatusBarViewModel>();
+            return KernelTimePlanner.Get<StatusBarViewModel>();
          }
       }
 
@@ -86,7 +57,7 @@
       {
          get
          {
-            return kernel.Get<DataGridInputDayViewModel>();
+            return KernelTimePlanner.Get<DataGridInputDayViewModel>();
          }
       }
 
@@ -97,7 +68,7 @@
       {
          get
          {
-            return kernel.Get<CalendrierViewModel>();
+            return KernelTimePlanner.Get<CalendrierViewModel>();
          }
       }
 

@@ -25,14 +25,9 @@ namespace TimePlannerNinject.Model
       #region Fields
 
       /// <summary>
-      ///    Identifiant.
+      ///    Identifiant de l'événement.
       /// </summary>
       private int id;
-
-      /// <summary>
-      ///    jour de la semaine.
-      /// </summary>
-      private DateTime date;
 
       /// <summary>
       ///    Heures supplémentaires.
@@ -64,17 +59,6 @@ namespace TimePlannerNinject.Model
       #region Constructors and Destructors
 
       /// <summary>
-      /// Initialise une nouvelle instance de la classe <see cref="InputDay"/>.
-      /// </summary>
-      /// <param name="date">
-      /// Date pour laquelle créer l'entrée.
-      /// </param>
-      public InputDay(DateTime date)
-      {
-         this.Date = date;
-      }
-
-      /// <summary>
       ///    Initialise une nouvelle instance de la classe <see cref="InputDay" />.
       /// </summary>
       public InputDay()
@@ -90,9 +74,8 @@ namespace TimePlannerNinject.Model
       /// <param name="context">
       /// le context de sérialisation.
       /// </param>
-      public InputDay(SerializationInfo info, StreamingContext context)
+      protected InputDay(SerializationInfo info, StreamingContext context)
       {
-         this.Date = info.GetDateTime("Date");
          this.ExtraHours = (int?)info.GetValue("ExtraHours", typeof(int?));
          this.IsWorked = (bool?)info.GetValue("IsWorked", typeof(bool?));
          this.WorkEndTime = (DateTime?)info.GetValue("WorkEndTime", typeof(DateTime?));
@@ -103,22 +86,6 @@ namespace TimePlannerNinject.Model
       #endregion
 
       #region Public Properties
-
-      /// <summary>
-      ///    Obtient ou définit je jour de la semaine.
-      /// </summary>
-      public DateTime Date
-      {
-         get
-         {
-            return this.date;
-         }
-
-         set
-         {
-            this.Set("Date", ref this.date, value);
-         }
-      }
 
       /// <summary>
       ///    Obtient ou définit les heures supplémentaires.
@@ -229,64 +196,6 @@ namespace TimePlannerNinject.Model
       #region Public Methods and Operators
 
       /// <summary>
-      /// Initialise l'ensemble des entrée pour le mois donnée.
-      /// </summary>
-      /// <param name="year">
-      /// Année de génération.
-      /// </param>
-      /// <param name="month">
-      /// Mois de génération.
-      /// </param>
-      /// <param name="days">
-      /// Les jours existant.
-      /// </param>
-      /// <returns>
-      /// Un <see cref="IEnumerable{InputDay}"/> contenant l'ensemble des jours du mois.
-      /// </returns>
-      public static IEnumerable<InputDay> InitializeMonthInputDays(int year, int month, params InputDay[] days)
-      {
-         var date = new DateTime(year, month, 1);
-         var firstDay = date.FirstDayOfWeek();
-         var lastDay = date.AddDays(DateTime.DaysInMonth(date.Year, date.Month));
-         while (firstDay < lastDay)
-         {
-            var monday = days.Any(d => d.Date == firstDay) ? days.First(d => d.Date == firstDay) : new InputDay(firstDay);
-            yield return monday;
-            firstDay = firstDay.AddDays(1);
-            var tuesday = days.Any(d => d.Date == firstDay) ? days.First(d => d.Date == firstDay) : new InputDay(firstDay);
-            yield return tuesday;
-            firstDay = firstDay.AddDays(1);
-            var wednesday = days.Any(d => d.Date == firstDay) ? days.First(d => d.Date == firstDay) : new InputDay(firstDay);
-            yield return wednesday;
-            firstDay = firstDay.AddDays(1);
-            var thursday = days.Any(d => d.Date == firstDay) ? days.First(d => d.Date == firstDay) : new InputDay(firstDay);
-            yield return thursday;
-            firstDay = firstDay.AddDays(1);
-            var friday = days.Any(d => d.Date == firstDay) ? days.First(d => d.Date == firstDay) : new InputDay(firstDay);
-            yield return friday;
-            firstDay = firstDay.AddDays(1);
-            var saturday = days.Any(d => d.Date == firstDay) ? days.First(d => d.Date == firstDay) : new InputDay(firstDay);
-            yield return saturday;
-            firstDay = firstDay.AddDays(1);
-            var sunday = days.Any(d => d.Date == firstDay) ? days.First(d => d.Date == firstDay) : new InputDay(firstDay);
-            yield return sunday;
-            firstDay = firstDay.AddDays(1);
-         }
-      }
-
-      /// <summary>
-      /// Calcul l'ensemble des jours disponible pour le mois donné.
-      /// </summary>
-      /// <param name="year">L'année concernée.</param>
-      /// <param name="month">Le mois dont on souhaite récupérer les jours.</param>
-      /// <returns>Une collection de jour correspondant au mois</returns>
-      public static IEnumerable<InputDay> GetDatesInMonth(int year, int month)
-      {
-         return from j in Enumerable.Range(1, DateTime.DaysInMonth(year, month))
-                select new InputDay(new DateTime(year, month, j));
-      } 
-
-      /// <summary>
       /// Remplit <see cref="T:System.Runtime.Serialization.SerializationInfo"/> avec les données nécessaires pour sérialiser
       ///    l'objet cible.
       /// </summary>
@@ -298,9 +207,8 @@ namespace TimePlannerNinject.Model
       ///    sérialisation.
       /// </param>
       [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-      public void GetObjectData(SerializationInfo info, StreamingContext context)
+      public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
       {
-         info.AddValue("Date", this.Date);
          info.AddValue("ExtraHours", this.ExtraHours);
          info.AddValue("IsWorked", this.IsWorked);
          info.AddValue("WorkEndTime", this.WorkEndTime);
