@@ -13,6 +13,7 @@ namespace TimePlannerNinject.Model
    using System.Linq;
    using System.Xml.Serialization;
 
+   using TimePlannerNinject.Extensions;
    using TimePlannerNinject.Interfaces;
 
    /// <summary>
@@ -33,14 +34,14 @@ namespace TimePlannerNinject.Model
                XmlSerializer serializer = new XmlSerializer(typeof(AppFile));
                AppFile appFile = (AppFile)serializer.Deserialize(fileStream);
 
-               this.AllDays = new List<InputDay>(appFile.Inputdays ?? new InputDay[0]);
-               this.AllPlaces = new List<WorkPlace>(appFile.Worplaces ?? new WorkPlace[0]);
+               this.AllDays = new ObservableCollection<InputDay>(appFile.Inputdays ?? new InputDay[0]);
+               this.AllPlaces = new ObservableCollection<WorkPlace>(appFile.Worplaces ?? new WorkPlace[0]);
             }
          }
          catch
          {
-            this.AllDays = new List<InputDay>();
-            this.AllPlaces = new List<WorkPlace>();
+            this.AllDays = new ObservableCollection<InputDay>();
+            this.AllPlaces = new ObservableCollection<WorkPlace>();
          }
       }
 

@@ -7,15 +7,7 @@
         mc:Ignorable="d ignore"
         DataContext="{Binding StatusBar, Source={StaticResource Locator}}">
 
-    <Grid Height="20px" d:DesignWidth="100px" d:DesignHeight="20px">
-      <Grid.Background>
-         <LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
-            <GradientStop Color="#FFF6F6F6" Offset="0.25"/>
-            <GradientStop Color="#FFEAE8E8" Offset="0.25"/>
-            <GradientStop Color="#FFDCD9D9" Offset="0.8"/>
-            <GradientStop Color="White" Offset="1"/>
-         </LinearGradientBrush>
-      </Grid.Background>
-       <TextBlock Text="{Binding MessageToDisplay, Mode=TwoWay}" HorizontalAlignment="Right" />
+    <Grid Height="20px" Background="AliceBlue">
+        <TextBlock Text="{Binding MessageToDisplay, Mode=TwoWay}" HorizontalAlignment="Right" />
    </Grid>
 </UserControl>

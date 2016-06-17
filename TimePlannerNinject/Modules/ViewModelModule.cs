@@ -8,17 +8,23 @@ namespace TimePlannerNinject.Modules
 {
    using Ninject.Modules;
 
+   using TimePlannerNinject.Interfaces;
+   using TimePlannerNinject.Model;
+   using TimePlannerNinject.View;
    using TimePlannerNinject.ViewModel;
 
    public class ViewModelModule: NinjectModule
    {
-      public override void Load()
-      {
-         this.Bind<MainViewModel>().ToSelf().InTransientScope();
-         this.Bind<CalendrierViewModel>().ToSelf().InTransientScope();
-         this.Bind<DataGridInputDayViewModel>().ToSelf().InTransientScope();
-         this.Bind<MenuPrincipalViewModel>().ToSelf().InTransientScope();
-         this.Bind<StatusBarViewModel>().ToSelf().InTransientScope();
-      }
+       public override void Load()
+       {
+           this.Bind<MainViewModel>().ToSelf().InTransientScope();
+           this.Bind<CalendrierViewModel>().ToSelf().InTransientScope();
+           this.Bind<MenuPrincipalViewModel>().ToSelf().InTransientScope();
+           this.Bind<StatusBarViewModel>().ToSelf().InTransientScope();
+           this.Bind<EditWorkPlacesViewModel>().ToSelf().InTransientScope();
+           this.Bind<PopupInputDayViewModel>().ToSelf().InTransientScope();
+
+           this.Bind<IModalWindow>().To<PopupInputDay>().InSingletonScope().Named(Constants.PopupInputDay);
+       }
    }
 }

@@ -30,22 +30,14 @@ namespace TimePlannerNinject
 
       #endregion
 
-      /// <summary>
-      /// Déclenche l'événement <see cref="E:System.Windows.Application.Startup" />.
-      /// </summary>
-      /// <param name="e"><see cref="T:System.Windows.StartupEventArgs" /> qui contient les données d'événement.</param>
-      protected override void OnStartup(StartupEventArgs e)
-      {
-         if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-         {
-            KernelTimePlanner.Initialize(new DesignTimeModule());
-         }
-         else
-         {
-             KernelTimePlanner.Initialize(new RunTimeModule());
-         }
-
-         base.OnStartup(e);
-      }
+       /// <summary>
+       /// Déclenche l'événement <see cref="E:System.Windows.Application.Startup" />.
+       /// </summary>
+       /// <param name="e"><see cref="T:System.Windows.StartupEventArgs" /> qui contient les données d'événement.</param>
+       protected override void OnStartup(StartupEventArgs e)
+       {
+           KernelTimePlanner.Initialize(new ServiceModule());
+           base.OnStartup(e);
+       }
    }
 }

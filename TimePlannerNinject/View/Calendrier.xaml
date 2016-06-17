@@ -13,7 +13,7 @@
              d:DesignWidth="1098.507"
         DataContext="{Binding Calendrier, Source={StaticResource Locator}}">
 
-   <Grid>
+   <Grid x:Name="LayoutRoot">
       <userControl:MonthView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DisplayStartDate="{Binding DateEnCours, Mode=TwoWay}" Appointments="{Binding Days, Mode=TwoWay}" >
          <i:Interaction.Triggers>
             <i:EventTrigger EventName="DayBoxDoubleClicked">

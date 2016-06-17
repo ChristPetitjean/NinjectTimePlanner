@@ -44,14 +44,19 @@ namespace TimePlannerNinject.Model
       private string name;
 
       /// <summary>
-      ///    Kilomètres jusqu'au lieu de travail.
+      ///    Kilomètres jusqu'au lieu de travail (aller).
       /// </summary>
-      private decimal kilometers;
+      private decimal oneWayKilometers;
 
-      /// <summary>
-      /// Identifiant du lieux de travail
-      /// </summary>
-      private int id;
+        /// <summary>
+        ///    Kilomètres jusqu'au lieu de travail (retour).
+        /// </summary>
+        private decimal returnKilometers;
+
+        /// <summary>
+        /// Identifiant du lieux de travail
+        /// </summary>
+        private int id;
 
       #endregion
 
@@ -74,8 +79,9 @@ namespace TimePlannerNinject.Model
          this.DefaultEndTime = info.GetDateTime("DefaultEndTime");
          this.DefaultStartTime = info.GetDateTime("DefaultStartTime");
          this.Name = info.GetString("Name");
-         this.Kilometers = info.GetDecimal("Km");
-         this.Kilometers = info.GetInt32("Id");
+         this.OneWayKilometers = info.GetDecimal("Km1");
+            this.ReturnKilometers = info.GetDecimal("Km2");
+            this.Id = info.GetInt32("Id");
       }
 
       /// <summary>
@@ -88,7 +94,7 @@ namespace TimePlannerNinject.Model
          this.DefaultStartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 8, 0, 0);
          this.DefaultEndTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 17, 0, 0);
          this.Color = Colors.Black;
-         this.Kilometers = 0;
+         this.OneWayKilometers = 0;
       }
 
       #endregion
@@ -162,23 +168,39 @@ namespace TimePlannerNinject.Model
       /// <summary>
       ///    Obtient ou définit le nombre de kilometres jusqu'au lieu de travail.
       /// </summary>
-      public decimal Kilometers
+      public decimal OneWayKilometers
       {
          get
          {
-            return this.kilometers;
+            return this.oneWayKilometers;
          }
 
          set
          {
-            this.Set("Kilometers", ref this.kilometers, value);
+            this.Set("OneWayKilometers", ref this.oneWayKilometers, value);
          }
       }
 
-      /// <summary>
-      ///    Obtient ou définit l'identifiant du lieu de travail.
-      /// </summary>
-      public int Id
+        /// <summary>
+        ///    Obtient ou définit le nombre de kilometres jusqu'au lieu de travail.
+        /// </summary>
+        public decimal ReturnKilometers
+        {
+            get
+            {
+                return this.returnKilometers;
+            }
+
+            set
+            {
+                this.Set("ReturnKilometers", ref this.returnKilometers, value);
+            }
+        }
+
+        /// <summary>
+        ///    Obtient ou définit l'identifiant du lieu de travail.
+        /// </summary>
+        public int Id
       {
          get
          {
@@ -213,8 +235,9 @@ namespace TimePlannerNinject.Model
          info.AddValue("DefaultEndTime", this.DefaultEndTime);
          info.AddValue("DefaultStartTime", this.DefaultStartTime);
          info.AddValue("Name", this.Name);
-         info.AddValue("Km", this.Kilometers);
-         info.AddValue("Id", this.Id);
+         info.AddValue("Km1", this.OneWayKilometers);
+            info.AddValue("Km2", this.ReturnKilometers);
+            info.AddValue("Id", this.Id);
       }
 
       #endregion

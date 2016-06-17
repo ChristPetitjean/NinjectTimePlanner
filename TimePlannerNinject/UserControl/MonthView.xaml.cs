@@ -7,6 +7,9 @@ namespace TimePlannerNinject.UserControl
 {
    using System;
    using System.Collections.Generic;
+   using System.Collections.ObjectModel;
+   using System.Collections.Specialized;
+   using System.ComponentModel;
    using System.Diagnostics;
    using System.Globalization;
    using System.Linq;
@@ -74,24 +77,31 @@ namespace TimePlannerNinject.UserControl
       /// </summary>
       private readonly Brush todayBackBrush;
 
-      #endregion
+        /// <summary>
+        ///    The _today back brush.
+        /// </summary>
+        private readonly Brush todayStackBrush;
 
-      #region Constructors and Destructors
+        #endregion
 
-      /// <summary>
-      ///    Initialise une nouvelle instance de la classe <see cref="MonthView" />.
-      /// </summary>
-      public MonthView()
+        #region Constructors and Destructors
+
+        /// <summary>
+        ///    Initialise une nouvelle instance de la classe <see cref="MonthView" />.
+        /// </summary>
+        public MonthView()
       {
-         this.todayBackBrush = (Brush)this.TryFindResource("OrangeGradientBrush");
-         this.dayBackBrush = Brushes.White;
-         this.targetBackBrush = Brushes.LightSlateGray;
+         this.todayBackBrush = (Brush)this.TryFindResource("TodayBackBrush");
+         this.dayBackBrush = (Brush)this.TryFindResource("DayBackBrush");
+         this.targetBackBrush = (Brush)this.TryFindResource("TargetBackBrush");
+            this.todayStackBrush = (Brush)this.TryFindResource("TodayStackBackBrush");
 
-         this.displayMonth = this.DisplayStartDate.Month;
+            this.displayMonth = this.DisplayStartDate.Month;
          this.displayYear = this.DisplayStartDate.Year;
          var cultureInfo = new CultureInfo(CultureInfo.CurrentCulture.LCID);
          this.sysCal = cultureInfo.Calendar;
-         this.Appointments = new List<InputDay>();
+         this.Appointments = new ObservableCollection<InputDay>();
+            this.DisplayStartDate = DateTime.Now.AddDays(-1 * (DateTime.Now.Day - 1));
 
          this.Loaded += this.MonthViewLoaded;
 
@@ -129,20 +139,16 @@ namespace TimePlannerNinject.UserControl
       /// <summary>
       ///    Obtient ou définit la liste des <see cref="Appointments" />
       /// </summary>
-      public IEnumerable<InputDay> Appointments
+      public ObservableCollection<InputDay> Appointments
       {
          get
          {
-            return (IEnumerable<InputDay>)this.GetValue(AppointmentsProperty);
+            return (ObservableCollection<InputDay>)this.GetValue(AppointmentsProperty);
          }
 
          set
          {
             this.SetValue(AppointmentsProperty, value);
-            if (this.IsLoaded)
-            {
-               this.BuildCalendarUI();
-            }
          }
       }
 
@@ -159,21 +165,45 @@ namespace TimePlannerNinject.UserControl
          set
          {
             this.SetValue(DisplayStartDateProperty, value);
-            this.displayMonth = value.Month;
-            this.displayYear = value.Year;
          }
       }
 
       #endregion
 
-      /// <summary>
-      ///    Identifies the <see cref="Appointments" /> dependency property.
-      /// </summary>
-      public static readonly DependencyProperty AppointmentsProperty = DependencyProperty.Register(
-         AppointmentsPropertyName, 
-         typeof(IEnumerable<InputDay>), 
-         typeof(MonthView), 
-         new UIPropertyMetadata(null));
+       /// <summary>
+       ///    Identifies the <see cref="Appointments" /> dependency property.
+       /// </summary>
+       public static readonly DependencyProperty AppointmentsProperty =
+           DependencyProperty.Register(
+               AppointmentsPropertyName,
+               typeof(ObservableCollection<InputDay>),
+               typeof(MonthView),
+               new PropertyMetadata(OnAppointmentsChanged));
+
+       private static void OnAppointmentsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+       {
+            var action = new NotifyCollectionChangedEventHandler(
+            (o, args) =>
+            {
+                MonthView me = d as MonthView;
+                if (me != null && me.IsLoaded)
+                {
+                    me.BuildCalendarUI();
+                }
+            });
+
+            if (e.OldValue != null)
+            {
+                var coll = (INotifyCollectionChanged)e.OldValue;
+                coll.CollectionChanged -= action;
+            }
+
+            if (e.NewValue != null)
+            {
+                var coll = (INotifyCollectionChanged)e.NewValue;
+                coll.CollectionChanged += action;
+            }
+        }
 
       /// <summary>
       ///    Identifies the <see cref="DisplayStartDate" /> dependency property.
@@ -182,9 +212,16 @@ namespace TimePlannerNinject.UserControl
          DisplayStartDatePropertyName, 
          typeof(DateTime), 
          typeof(MonthView), 
-         new UIPropertyMetadata(DateTime.Now.AddDays(-1 * (DateTime.Now.Day - 1))));
+         new PropertyMetadata(OnDisplayStartDAteChanged));
 
-      #region Methods
+       private static void OnDisplayStartDAteChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+       {
+            MonthView me = d as MonthView;
+            me.displayMonth = ((DateTime)e.NewValue).Month;
+            me.displayYear = ((DateTime)e.NewValue).Year;
+        }
+
+       #region Methods
 
       /// <summary>
       /// The add rows to month grid.
@@ -200,7 +237,12 @@ namespace TimePlannerNinject.UserControl
          this.MonthViewGrid.RowDefinitions.Clear();
 
          var rowHeigth = new GridLength(60, GridUnitType.Star);
-         var endOffsetDays = 7 - (int)Enum.ToObject(typeof(DayOfWeek), this.DisplayStartDate.AddDays(dayInMounth - 1).DayOfWeek) + 1;
+          var endOffsetDays = 7
+                              - (int)
+                                Enum.ToObject(
+                                    typeof(DayOfWeek),
+                                    new DateTime(this.displayYear, this.displayMonth, 1).AddDays(dayInMounth - 1)
+                                    .DayOfWeek) + 1;
 
          for (var i = 0; i < (dayInMounth + offsetDays + endOffsetDays) / 7; i++)
          {
@@ -227,7 +269,7 @@ namespace TimePlannerNinject.UserControl
                if (this.AppointmentDblClicked != null)
                {
                   var idApt = (int)((DayBoxAppointmentControl)e.Source).Tag;
-                  var arg = new AppointmentDblClickedEvenArgs { AppointementId = idApt };
+                  var arg = new AppointmentDblClickedEvenArgs { Id = idApt };
                   this.AppointmentDblClicked(e.Source, arg);
                }
             }
@@ -243,7 +285,12 @@ namespace TimePlannerNinject.UserControl
       private void BuildCalendarUI()
       {
          var daysInMonth = this.sysCal.GetDaysInMonth(this.displayYear, this.displayMonth);
-         var offsetDays = (int)Enum.ToObject(typeof(DayOfWeek), this.DisplayStartDate.DayOfWeek);
+         var offsetDays = (int)Enum.ToObject(typeof(DayOfWeek), new DateTime(this.displayYear, this.displayMonth, 1).DayOfWeek) - 1;
+          if (offsetDays == -1)
+          {
+              offsetDays = 6;
+          }
+
          var weekCount = 0;
          var weekRowCtrl = new WeekOfDaysControls();
 
@@ -279,7 +326,7 @@ namespace TimePlannerNinject.UserControl
             if (new DateTime(this.displayYear, this.displayMonth, i) == DateTime.Today)
             {
                dayBox.DayLabelRowBorder.Background = this.todayBackBrush;
-               dayBox.DayAppointmentsStack.Background = Brushes.Wheat;
+               dayBox.DayAppointmentsStack.Background = this.todayStackBrush;
             }
 
             if (this.Appointments != null)

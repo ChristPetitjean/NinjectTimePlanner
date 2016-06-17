@@ -8,6 +8,7 @@ namespace TimePlannerNinject.Interfaces
    using System.Collections.Generic;
    using System.Collections.ObjectModel;
 
+   using TimePlannerNinject.Extensions;
    using TimePlannerNinject.Model;
 
    /// <summary>
@@ -22,8 +23,8 @@ namespace TimePlannerNinject.Interfaces
       /// </summary>
       protected ATimePlannerDataService()
       {
-         this.AllDays = new List<InputDay>();
-         this.AllPlaces = new List<WorkPlace>();
+         this.AllDays = new ObservableCollection<InputDay>();
+         this.AllPlaces = new ObservableCollection<WorkPlace>();
       }
 
       #endregion
@@ -33,12 +34,12 @@ namespace TimePlannerNinject.Interfaces
       /// <summary>
       ///    Obtient ou définit les jours saisis.
       /// </summary>
-      public List<InputDay> AllDays { get; set; }
+      public ObservableCollection<InputDay> AllDays { get; set; }
 
       /// <summary>
       ///    Obtient ou définit les lieux de travail.
       /// </summary>
-      public List<WorkPlace> AllPlaces { get; set; }
+      public ObservableCollection<WorkPlace> AllPlaces { get; set; }
 
       #endregion
 

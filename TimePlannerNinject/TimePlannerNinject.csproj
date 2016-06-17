@@ -63,6 +63,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
@@ -110,15 +111,19 @@
     </ApplicationDefinition>
     <Compile Include="Converters\DateTimeToTimeConverter.cs" />
     <Compile Include="Converters\WorkplaceLookupConverter.cs" />
-    <Compile Include="Design\TimePlannerDataServiceDesign.cs" />
     <Compile Include="Extensions\DatePickerCalendar.cs" />
     <Compile Include="Extensions\DatePickerDateFormat.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\DialogCloser.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Interfaces\IModalDialogService.cs" />
+    <Compile Include="Interfaces\IModalWindow.cs" />
     <Compile Include="Kernel\KernelTimePlanner.cs" />
     <Compile Include="Model\AppFile.cs" />
     <Compile Include="Model\AppointmentDblClickedEvenArgs.cs" />
     <Compile Include="Model\AppointmentMovedEvenArgs.cs" />
+    <Compile Include="Model\Constants.cs" />
+    <Compile Include="Model\ModalDialogService.cs" />
     <Compile Include="Model\InputDay.cs" />
     <Compile Include="Model\MonthChangedEventArgs.cs" />
     <Compile Include="Model\NewAppointmentEventArgs.cs" />
@@ -126,8 +131,7 @@
     <Compile Include="Model\TimePlannerDataService.cs" />
     <Compile Include="Model\WorkPlace.cs" />
     <Compile Include="Interfaces\ATimePlannerDataService.cs" />
-    <Compile Include="Modules\DesignTimeModule.cs" />
-    <Compile Include="Modules\RuntimeModule.cs" />
+    <Compile Include="Modules\ServiceModule.cs" />
     <Compile Include="Modules\ViewModelModule.cs" />
     <Compile Include="UserControl\DayBoxAppointmentControl.xaml.cs">
       <DependentUpon>DayBoxAppointmentControl.xaml</DependentUpon>
@@ -142,19 +146,23 @@
       <DependentUpon>WeekOfDaysControls.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\CalendrierViewModel.cs" />
-    <Compile Include="ViewModel\DataGridInputDayViewModel.cs" />
+    <Compile Include="ViewModel\EditWorkPlacesViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\MenuPrincipalViewModel.cs" />
+    <Compile Include="ViewModel\PopupInputDayViewModel.cs" />
     <Compile Include="ViewModel\StatusBarViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="View\EditWorkPlaces.xaml.cs">
+      <DependentUpon>EditWorkPlaces.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Calendrier.xaml.cs">
       <DependentUpon>Calendrier.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\DataGridInputDay.xaml.cs">
-      <DependentUpon>DataGridInputDay.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\MenuPrincipal.xaml.cs">
       <DependentUpon>MenuPrincipal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PopupInputDay.xaml.cs">
+      <DependentUpon>PopupInputDay.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\StatusBar.xaml.cs">
       <DependentUpon>StatusBar.xaml</DependentUpon>
@@ -183,11 +191,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Calendrier.xaml">
-      <SubType>Form</SubType>
+    <Page Include="View\EditWorkPlaces.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\DataGridInputDay.xaml">
+    <Page Include="View\Calendrier.xaml">
       <SubType>Form</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -208,6 +216,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\MenuPrincipal.xaml">
+      <SubType>Form</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PopupInputDay.xaml">
       <SubType>Form</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

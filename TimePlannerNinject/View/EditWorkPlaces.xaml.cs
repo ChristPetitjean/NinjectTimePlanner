@@ -3,14 +3,14 @@
 namespace TimePlannerNinject.View
 {
    /// <summary>
-   /// Description for DataGridInputDay.
+   /// Description for Calendrier.
    /// </summary>
-   public partial class DataGridInputDay
+   public partial class EditWorkPlaces
    {
       /// <summary>
-      /// Initializes a new instance of the DataGridInputDay class.
+      /// Initializes a new instance of the Calendrier class.
       /// </summary>
-      public DataGridInputDay()
+      public EditWorkPlaces()
       {
          InitializeComponent();
       }

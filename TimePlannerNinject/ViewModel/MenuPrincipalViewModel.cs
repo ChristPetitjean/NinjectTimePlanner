@@ -4,39 +4,43 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+using GalaSoft.MvvmLight.CommandWpf;
+using TimePlannerNinject.Kernel;
+
 namespace TimePlannerNinject.ViewModel
 {
-   using GalaSoft.MvvmLight;
+    using GalaSoft.MvvmLight;
 
-   using TimePlannerNinject.Interfaces;
+    using TimePlannerNinject.Interfaces;
 
-   /// <summary>
-   /// The menu view model.
-   /// </summary>
-   public class MenuPrincipalViewModel : ViewModelBase
-   {
-      #region Fields
+    /// <summary>
+    /// The menu view model.
+    /// </summary>
+    public class MenuPrincipalViewModel : ViewModelBase
+    {
+        #region Fields
 
-      /// <summary>
-      /// Service de données.
-      /// </summary>
-      private readonly ATimePlannerDataService service;
+        /// <summary>
+        /// Service de données.
+        /// </summary>
+        private readonly ATimePlannerDataService service;
 
-      #endregion
+        #endregion
 
-      #region Constructors and Destructors
+        #region Constructors and Destructors
 
-      /// <summary>
-      /// Initialise une nouvelle instance de la classe <see cref="MenuPrincipalViewModel"/>.
-      /// </summary>
-      /// <param name="service">
-      /// Service de données.
-      /// </param>
-      public MenuPrincipalViewModel(ATimePlannerDataService service)
-      {
-         this.service = service; 
-      }
+        /// <summary>
+        /// Initialise une nouvelle instance de la classe <see cref="MenuPrincipalViewModel"/>.
+        /// </summary>
+        /// <param name="service">
+        /// Service de données.
+        /// </param>
+        public MenuPrincipalViewModel(ATimePlannerDataService service)
+        {
+            this.service = service;
+        }
 
-      #endregion
-   }
+        #endregion
+    }
 }

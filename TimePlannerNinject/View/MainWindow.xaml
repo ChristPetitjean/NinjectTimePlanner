@@ -10,11 +10,18 @@
         d:DesignHeight="600"
         Title="Gestion du temps"
         DataContext="{Binding Main, Source={StaticResource Locator}}">
-   <Grid x:Name="LayoutRoot">
-      <DockPanel>
-         <ContentPresenter Content="{Binding MenuPrincipal, Source={StaticResource Locator}}" DockPanel.Dock="Top" />
-         <ContentPresenter Content="{Binding StatusBar, Source={StaticResource Locator}}" DockPanel.Dock="Bottom" />
-         <ContentPresenter Content="{Binding Calendrier, Source={StaticResource Locator}}"></ContentPresenter>
-      </DockPanel>
-   </Grid>
+    <Grid x:Name="LayoutRoot" Style="{StaticResource LayoutGridStyle}">
+        <DockPanel>
+            <ContentPresenter Content="{Binding MenuPrincipal, Source={StaticResource Locator}}" DockPanel.Dock="Top" />
+            <ContentPresenter Content="{Binding StatusBar, Source={StaticResource Locator}}" DockPanel.Dock="Bottom" />
+            <TabControl HorizontalAlignment="Stretch">
+                <TabItem Header="Calendrier" >
+                    <ContentPresenter Content="{Binding Calendrier, Source={StaticResource Locator}}"></ContentPresenter>
+                </TabItem>
+                <TabItem Header="Lieux de travail">
+                    <ContentPresenter Content="{Binding EditWorkPlaces, Source={StaticResource Locator}}"></ContentPresenter>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+    </Grid>
 </Window>

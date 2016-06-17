@@ -11,8 +11,8 @@
       <view:StatusBar />
    </DataTemplate>
 
-   <DataTemplate DataType="{x:Type vm:DataGridInputDayViewModel}">
-      <view:DataGridInputDay />
+   <DataTemplate DataType="{x:Type vm:EditWorkPlacesViewModel}">
+      <view:EditWorkPlaces />
    </DataTemplate>
 
    <DataTemplate DataType="{x:Type vm:CalendrierViewModel}">

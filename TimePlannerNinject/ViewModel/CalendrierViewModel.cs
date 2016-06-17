@@ -2,158 +2,167 @@
 
 namespace TimePlannerNinject.ViewModel
 {
-   using System;
-   using System.Collections.ObjectModel;
-   using System.Linq;
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
 
-   using GalaSoft.MvvmLight.CommandWpf;
+    using GalaSoft.MvvmLight.CommandWpf;
 
-   using TimePlannerNinject.Interfaces;
-   using TimePlannerNinject.Model;
-   using TimePlannerNinject.UserControl;
+    using TimePlannerNinject.Extensions;
+    using TimePlannerNinject.Interfaces;
+    using TimePlannerNinject.Kernel;
+    using TimePlannerNinject.Model;
+    using TimePlannerNinject.UserControl;
 
-   using Xceed.Wpf.Toolkit;
+    using Xceed.Wpf.Toolkit;
 
-   /// <summary>
-   /// This class contains properties that a View can data bind to.
-   /// <para>
-   /// See http://www.galasoft.ch/mvvm
-   /// </para>
-   /// </summary>
-   public class CalendrierViewModel : ViewModelBase
-   {
-      private readonly ATimePlannerDataService service;
+    /// <summary>
+    /// This class contains properties that a View can data bind to.
+    /// <para>
+    /// See http://www.galasoft.ch/mvvm
+    /// </para>
+    /// </summary>
+    public class CalendrierViewModel : ViewModelBase
+    {
+        private readonly ATimePlannerDataService service;
 
-      /// <summary>
-      /// Initializes a new instance of the CalendrierViewModel class.
-      /// </summary>
-      public CalendrierViewModel(ATimePlannerDataService service)
-      {
-         this.service = service;
-         this.dateEnCours = DateTime.Today;
-         this.days =
-            new ObservableCollection<InputDay>(
-               this.service.AllDays.FindAll(i => i.WorkStartTime.HasValue && i.WorkStartTime.Value.Month == this.DateEnCours.Month && i.WorkStartTime.Value.Year == this.DateEnCours.Year));
-      }
+        private readonly IModalDialogService modalDialogService;
 
-      /// <summary>
-      /// The <see cref="Days" /> property's name.
-      /// </summary>
-      public const string DaysPropertyName = "Days";
+        /// <summary>
+        /// Initializes a new instance of the CalendrierViewModel class.
+        /// </summary>
+        public CalendrierViewModel(ATimePlannerDataService service, IModalDialogService modalDialogService)
+        {
+            this.service = service;
+            this.modalDialogService = modalDialogService;
+            this.dateEnCours = DateTime.Today;
+        }
 
-      private ObservableCollection<InputDay> days;
+        /// <summary>
+        /// The <see cref="Days" /> property's name.
+        /// </summary>
+        public const string DaysPropertyName = "Days";
 
-      /// <summary>
-      /// Sets and gets the Days property.
-      /// Changes to that property's value raise the PropertyChanged event. 
-      /// </summary>
-      public ObservableCollection<InputDay> Days
-      {
-         get
-         {
-            return days;
-         }
-         set
-         {
-            Set(DaysPropertyName, ref days, value);
-         }
-      }
+        /// <summary>
+        /// Sets and gets the Days property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public ObservableCollection<InputDay> Days
+        {
+            get
+            {
+                return this.service.AllDays;
+            }
+            set
+            {
+                this.service.AllDays = value;
+                this.RaisePropertyChanged();
+            }
+        }
 
-      /// <summary>
-      /// The <see cref="DateEnCours" /> property's name.
-      /// </summary>
-      public const string DateEnCoursPropertyName = "DateEnCours";
+        /// <summary>
+        /// The <see cref="DateEnCours" /> property's name.
+        /// </summary>
+        public const string DateEnCoursPropertyName = "DateEnCours";
 
-      private DateTime dateEnCours;
+        private DateTime dateEnCours;
 
-      /// <summary>
-      /// Sets and gets the DateEnCours property.
-      /// Changes to that property's value raise the PropertyChanged event. 
-      /// </summary>
-      public DateTime DateEnCours
-      {
-         get
-         {
-            return dateEnCours;
-         }
-         set
-         {
-            Set(DateEnCoursPropertyName, ref dateEnCours, value);
-            Days =
-               new ObservableCollection<InputDay>(
-                  this.service.AllDays.FindAll(
-                     i => i.WorkStartTime != null && i.WorkStartTime.Value.Month == value.Month && i.WorkStartTime.Value.Year == value.Year));
-         }
-      }
+        /// <summary>
+        /// Sets and gets the DateEnCours property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public DateTime DateEnCours
+        {
+            get
+            {
+                return dateEnCours;
+            }
+            set
+            {
+                Set(DateEnCoursPropertyName, ref dateEnCours, value);
+            }
+        }
 
-      private RelayCommand<AppointmentDblClickedEvenArgs> inputDayDoubleClickedCommand;
+        private RelayCommand<AppointmentDblClickedEvenArgs> inputDayDoubleClickedCommand;
 
-      /// <summary>
-      /// Gets the InputDayDoubleClickedCommand.
-      /// </summary>
-      public RelayCommand<AppointmentDblClickedEvenArgs> InputDayDoubleClickedCommand
-      {
-         get
-         {
-            return inputDayDoubleClickedCommand
-                ?? (inputDayDoubleClickedCommand = new RelayCommand<AppointmentDblClickedEvenArgs>(ExecuteInputDayDoubleClickedCommand));
-         }
-      }
+        /// <summary>
+        /// Gets the InputDayDoubleClickedCommand.
+        /// </summary>
+        public RelayCommand<AppointmentDblClickedEvenArgs> InputDayDoubleClickedCommand
+        {
+            get
+            {
+                return inputDayDoubleClickedCommand
+                    ?? (inputDayDoubleClickedCommand = new RelayCommand<AppointmentDblClickedEvenArgs>(ExecuteInputDayDoubleClickedCommand));
+            }
+        }
 
-      private void ExecuteInputDayDoubleClickedCommand(AppointmentDblClickedEvenArgs e)
-      {
-         if (e != null)
-         {
-            StatutMessage.SendStatutMessage(string.Format("Double click sur l'évènement d'ID:{0}", e.AppointementId));
-         }
-         else
-         {
-            StatutMessage.SendStatutMessage("Le double click sur l'événement à echoué");
-         }
-      }
+        private void ExecuteInputDayDoubleClickedCommand(AppointmentDblClickedEvenArgs e)
+        {
+            if (e != null)
+            {
+                IModalWindow dialog = KernelTimePlanner.Get<IModalWindow>(Constants.PopupInputDay);
+                this.modalDialogService.ShowDialog(
+                    dialog,
+                    new PopupInputDayViewModel(this.service) { Input = this.Days.First(d => e.Id != null && d.ID == e.Id.Value) },
+                    model => this.Days.Add(model.Input));
+            }
+            else
+            {
+                StatutMessage.SendStatutMessage("Le double click sur l'événement à echoué");
+            }
+        }
 
-      private RelayCommand<NewAppointmentEventArgs> dayBoxDoubleClickedCommand;
+        private RelayCommand<NewAppointmentEventArgs> dayBoxDoubleClickedCommand;
 
-      /// <summary>
-      /// Gets the DayBoxDoubleClickedCommand.
-      /// </summary>
-      public RelayCommand<NewAppointmentEventArgs> DayBoxDoubleClickedCommand
-      {
-         get
-         {
-            return dayBoxDoubleClickedCommand
-                ?? (dayBoxDoubleClickedCommand = new RelayCommand<NewAppointmentEventArgs>(ExecuteDayBoxDoubleClickedCommand));
-         }
-      }
+        /// <summary>
+        /// Gets the DayBoxDoubleClickedCommand.
+        /// </summary>
+        public RelayCommand<NewAppointmentEventArgs> DayBoxDoubleClickedCommand
+        {
+            get
+            {
+                return dayBoxDoubleClickedCommand
+                    ?? (dayBoxDoubleClickedCommand = new RelayCommand<NewAppointmentEventArgs>(ExecuteDayBoxDoubleClickedCommand));
+            }
+        }
 
-      private void ExecuteDayBoxDoubleClickedCommand(NewAppointmentEventArgs e)
-      {
-         if (e != null)
-         {
-            StatutMessage.SendStatutMessage(string.Format("double click sur le jour:{0}", e.StartDate.Value.ToShortDateString()));
-         }
-      }
+        private void ExecuteDayBoxDoubleClickedCommand(NewAppointmentEventArgs e)
+        {
+            if (e != null)
+            {
+                int id = this.Days.Any() ? this.Days.Max(d => d.ID) + 1 : 1;
+                var newInput = new InputDay { ID = id, WorkStartTime = e.StartDate, WorkEndTime = e.EndDate };
 
-      private RelayCommand<AppointmentMovedEvenArgs> inputDayChangedCommand;
+                IModalWindow dialog = KernelTimePlanner.Get<IModalWindow>(Constants.PopupInputDay);
+                this.modalDialogService.ShowDialog(
+                    dialog,
+                    new PopupInputDayViewModel(this.service) { Input = newInput },
+                    model => this.Days.Add(model.Input));
+            }
+        }
 
-      /// <summary>
-      /// Gets the InputDayChangedCommand.
-      /// </summary>
-      public RelayCommand<AppointmentMovedEvenArgs> InputDayChangedCommand
-      {
-         get
-         {
-            return inputDayChangedCommand
-                ?? (inputDayChangedCommand = new RelayCommand<AppointmentMovedEvenArgs>(ExecuteInputDayChangedCommand));
-         }
-      }
+        private RelayCommand<AppointmentMovedEvenArgs> inputDayChangedCommand;
 
-      private void ExecuteInputDayChangedCommand(AppointmentMovedEvenArgs e)
-      {
-         if (e != null)
-         {
-            StatutMessage.SendStatutMessage(string.Format("deplacement d'événement:{0}, depuis {1} vers {2}", e.AppointmentId, e.OldDay, e.NewDay));
-         }
-      }
-   }
+        /// <summary>
+        /// Gets the InputDayChangedCommand.
+        /// </summary>
+        public RelayCommand<AppointmentMovedEvenArgs> InputDayChangedCommand
+        {
+            get
+            {
+                return inputDayChangedCommand
+                    ?? (inputDayChangedCommand = new RelayCommand<AppointmentMovedEvenArgs>(ExecuteInputDayChangedCommand));
+            }
+        }
+
+        private void ExecuteInputDayChangedCommand(AppointmentMovedEvenArgs e)
+        {
+            if (e != null)
+            {
+                StatutMessage.SendStatutMessage(string.Format("deplacement d'événement:{0}, depuis {1} vers {2}", e.AppointmentId, e.OldDay, e.NewDay));
+            }
+        }
+    }
 }
