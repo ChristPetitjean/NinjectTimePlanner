@@ -2,12 +2,13 @@
 {
    using System.Windows;
 
+   using TimePlannerNinject.Model;
    using TimePlannerNinject.ViewModel;
 
    /// <summary>
    /// Interaction logic for MainWindow.xaml
    /// </summary>
-   public partial class MainWindow : Window
+   public partial class MainWindow : WindowView
    {
       /// <summary>
       /// Initializes a new instance of the MainWindow class.

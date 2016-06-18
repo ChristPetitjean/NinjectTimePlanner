@@ -10,10 +10,12 @@ namespace TimePlannerNinject
 
    using GalaSoft.MvvmLight.Threading;
 
+   using TimePlannerNinject.Interfaces;
    using TimePlannerNinject.Kernel;
    using TimePlannerNinject.Modules;
+   using TimePlannerNinject.ViewModel;
 
-   /// <summary>
+    /// <summary>
    ///    Interaction logic for App.xaml
    /// </summary>
    public partial class App
@@ -38,6 +40,7 @@ namespace TimePlannerNinject
        {
            KernelTimePlanner.Initialize(new ServiceModule());
            base.OnStartup(e);
+            KernelTimePlanner.Get<IWindowService>().OpenWindow<MainViewModel>();
        }
    }
 }

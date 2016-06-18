@@ -4,19 +4,17 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace TimePlannerNinject.Model
+namespace TimePlannerNinject.Services
 {
-   using System;
-   using System.Collections.Generic;
-   using System.Collections.ObjectModel;
-   using System.IO;
-   using System.Linq;
-   using System.Xml.Serialization;
+    using System.Collections.ObjectModel;
+    using System.IO;
+    using System.Linq;
+    using System.Xml.Serialization;
 
-   using TimePlannerNinject.Extensions;
-   using TimePlannerNinject.Interfaces;
+    using TimePlannerNinject.Interfaces;
+    using TimePlannerNinject.Model;
 
-   /// <summary>
+    /// <summary>
    /// The time planner data service.
    /// </summary>
    public class TimePlannerDataService : ATimePlannerDataService

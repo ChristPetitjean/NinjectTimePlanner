@@ -9,12 +9,16 @@
 
 namespace TimePlannerNinject.Modules
 {
-   using Ninject.Modules;
+    using System.Windows;
+
+    using Ninject.Modules;
 
    using TimePlannerNinject.Interfaces;
    using TimePlannerNinject.Model;
+    using TimePlannerNinject.Services;
+    using TimePlannerNinject.View;
 
-   /// <summary>
+    /// <summary>
    /// Module utiliser au Runtime.
    /// </summary>
    public class ServiceModule : NinjectModule
@@ -27,8 +31,8 @@ namespace TimePlannerNinject.Modules
        public override void Load()
        {
            this.Bind<ATimePlannerDataService>().To<TimePlannerDataService>().InSingletonScope();
-           this.Bind<IModalDialogService>().To<ModalDialogService>().InSingletonScope();
-       }
+            this.Bind<IWindowService>().To<WindowService>();
+        }
 
        #endregion
    }

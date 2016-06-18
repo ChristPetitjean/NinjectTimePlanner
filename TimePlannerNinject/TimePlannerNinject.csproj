@@ -116,19 +116,18 @@
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\DialogCloser.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
-    <Compile Include="Interfaces\IModalDialogService.cs" />
-    <Compile Include="Interfaces\IModalWindow.cs" />
+    <Compile Include="Interfaces\IWindowService.cs" />
     <Compile Include="Kernel\KernelTimePlanner.cs" />
     <Compile Include="Model\AppFile.cs" />
     <Compile Include="Model\AppointmentDblClickedEvenArgs.cs" />
     <Compile Include="Model\AppointmentMovedEvenArgs.cs" />
-    <Compile Include="Model\Constants.cs" />
-    <Compile Include="Model\ModalDialogService.cs" />
     <Compile Include="Model\InputDay.cs" />
     <Compile Include="Model\MonthChangedEventArgs.cs" />
     <Compile Include="Model\NewAppointmentEventArgs.cs" />
     <Compile Include="Model\StatutMessage.cs" />
-    <Compile Include="Model\TimePlannerDataService.cs" />
+    <Compile Include="Model\WindowView.cs" />
+    <Compile Include="Services\TimePlannerDataService.cs" />
+    <Compile Include="Services\WindowService.cs" />
     <Compile Include="Model\WorkPlace.cs" />
     <Compile Include="Interfaces\ATimePlannerDataService.cs" />
     <Compile Include="Modules\ServiceModule.cs" />
@@ -149,7 +148,7 @@
     <Compile Include="ViewModel\EditWorkPlacesViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\MenuPrincipalViewModel.cs" />
-    <Compile Include="ViewModel\PopupInputDayViewModel.cs" />
+    <Compile Include="ViewModel\InputDayViewModel.cs" />
     <Compile Include="ViewModel\StatusBarViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\EditWorkPlaces.xaml.cs">
@@ -161,8 +160,8 @@
     <Compile Include="View\MenuPrincipal.xaml.cs">
       <DependentUpon>MenuPrincipal.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\PopupInputDay.xaml.cs">
-      <DependentUpon>PopupInputDay.xaml</DependentUpon>
+    <Compile Include="View\InputDayWindow.xaml.cs">
+      <DependentUpon>InputDayWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\StatusBar.xaml.cs">
       <DependentUpon>StatusBar.xaml</DependentUpon>
@@ -219,8 +218,8 @@
       <SubType>Form</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\PopupInputDay.xaml">
-      <SubType>Form</SubType>
+    <Page Include="View\InputDayWindow.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\StatusBar.xaml">

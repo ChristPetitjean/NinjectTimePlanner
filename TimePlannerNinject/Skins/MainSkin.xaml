@@ -11,6 +11,7 @@
         <GradientStop Color="#FFF9D07D" Offset="0.732"/>
         <GradientStop Color="#FFF7BE57" Offset="1"/>
     </LinearGradientBrush>
+    <SolidColorBrush x:Key="WeekBorder" Color="LightSteelBlue"></SolidColorBrush>
     
     <Style TargetType="{x:Type Window}">
         <Setter Property="Background" Value="{StaticResource DefaultBackground}"></Setter>

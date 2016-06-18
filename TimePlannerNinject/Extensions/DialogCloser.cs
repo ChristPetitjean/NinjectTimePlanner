@@ -8,9 +8,9 @@ namespace TimePlannerNinject.Extensions
 {
     using System.Windows;
 
-    using Xceed.Wpf.Toolkit;
+    using TimePlannerNinject.Model;
 
-    public static class DialogCloser
+    public class DialogCloser
     {
         public static readonly DependencyProperty DialogResultProperty =
             DependencyProperty.RegisterAttached(
@@ -23,13 +23,25 @@ namespace TimePlannerNinject.Extensions
             DependencyObject d,
             DependencyPropertyChangedEventArgs e)
         {
-            var window = d as ChildWindow;
+            var window = d as WindowView;
             if (window != null)
-                window.DialogResult = e.NewValue as bool?;
+            {
+                bool? result = e.NewValue as bool?;
+                if (result.HasValue)
+                {
+                    window.DialogResult = result;
+                    window.Close();
+                }
+            }
         }
-        public static void SetDialogResult(ChildWindow target, bool? value)
+
+        public static void SetDialogResult(Window element, Boolean value)
         {
-            target.SetValue(DialogResultProperty, value);
+            element.SetValue(DialogResultProperty, value);
+        }
+        public static bool? GetDialogResult(Window element)
+        {
+            return (bool?)element.GetValue(DialogResultProperty);
         }
     }
 }

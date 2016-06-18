@@ -22,9 +22,7 @@ namespace TimePlannerNinject.Modules
            this.Bind<MenuPrincipalViewModel>().ToSelf().InTransientScope();
            this.Bind<StatusBarViewModel>().ToSelf().InTransientScope();
            this.Bind<EditWorkPlacesViewModel>().ToSelf().InTransientScope();
-           this.Bind<PopupInputDayViewModel>().ToSelf().InTransientScope();
-
-           this.Bind<IModalWindow>().To<PopupInputDay>().InSingletonScope().Named(Constants.PopupInputDay);
+           this.Bind<InputDayViewModel>().ToSelf().InTransientScope();
        }
    }
 }

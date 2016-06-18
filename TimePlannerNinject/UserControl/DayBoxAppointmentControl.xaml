@@ -4,16 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:userControl="clr-namespace:TimePlannerNinject.UserControl"
+             xmlns:model="clr-namespace:TimePlannerNinject.Model"
              mc:Ignorable="d"
-             Tag="{Binding Path=ID}">
-   <Border x:Name="BorderElement" CornerRadius="5" BorderBrush="DarkOliveGreen" BorderThickness="1" Margin="2,2,2,1">
-      <Border.Background>
-         <SolidColorBrush Color="{Binding Path=IdWorkPlace, Converter={StaticResource WorkplaceLookupConverter}, ConverterParameter='Color', FallbackValue='LightGreen'}"></SolidColorBrush>
-      </Border.Background>
-      <StackPanel>
-         <TextBlock x:Name="WorkPlace" Text="{Binding Path=IdWorkPlace, Converter={StaticResource WorkplaceLookupConverter}, ConverterParameter='Name', FallbackValue='Lieu de travail'}" />
-         <TextBlock x:Name="StartDate" Text="{Binding Path=WorkStartTime, FallbackValue='08:00', Converter={StaticResource DateTimeToTimeConverter}}" FontSize="10" Padding="2" TextWrapping="Wrap"/>
-         <TextBlock x:Name="EndDate" Text="{Binding Path=WorkEndTime, FallbackValue='18:00', Converter={StaticResource DateTimeToTimeConverter}}" FontSize="10" Padding="2" TextWrapping="Wrap"/>
-      </StackPanel>
-   </Border>
+             Tag="{Binding Path=ID}" d:DataContext="{d:DesignInstance model:InputDay }" Height="Auto" Width="Auto">
+    <Border x:Name="BorderElement" CornerRadius="5" BorderBrush="DarkOliveGreen" BorderThickness="1" Margin="2,2,2,1">
+        <Border.Background>
+            <SolidColorBrush Color="{Binding Path=IdWorkPlace, Converter={StaticResource WorkplaceLookupConverter}, ConverterParameter='Color', FallbackValue='LightGreen'}"></SolidColorBrush>
+        </Border.Background>
+        <StackPanel Margin="1">
+            <TextBlock x:Name="WorkPlace" Text="{Binding Path=IdWorkPlace, Converter={StaticResource WorkplaceLookupConverter}, ConverterParameter='Name', FallbackValue='Lieu de travail'}" FontWeight="Bold" FontStyle="Italic" TextDecorations="Underline" TextWrapping="Wrap" />
+            <TextBlock Text="Date de début:" FontStyle="Italic"></TextBlock>
+            <TextBlock x:Name="StartDate" Text="{Binding Path=WorkStartTime, FallbackValue='08:00', Converter={StaticResource DateTimeToTimeConverter}}" FontSize="10" Padding="2" TextWrapping="Wrap" HorizontalAlignment="Right"/>
+            <TextBlock Text="Date de fin:" FontStyle="Italic"></TextBlock>
+            <TextBlock x:Name="EndDate" Text="{Binding Path=WorkEndTime, FallbackValue='18:00', Converter={StaticResource DateTimeToTimeConverter}}" FontSize="10" Padding="2" TextWrapping="Wrap" HorizontalAlignment="Right"/>
+            <TextBlock Text="Heures supp.:" FontStyle="Italic"></TextBlock>
+            <TextBlock x:Name="ExtraHours" Text="{Binding Path=ExtraHours, FallbackValue='1'}" HorizontalAlignment="Right"></TextBlock>
+        </StackPanel>
+    </Border>
 </UserControl>

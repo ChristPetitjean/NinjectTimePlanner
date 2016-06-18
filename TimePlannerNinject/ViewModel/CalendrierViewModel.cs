@@ -27,15 +27,15 @@ namespace TimePlannerNinject.ViewModel
     {
         private readonly ATimePlannerDataService service;
 
-        private readonly IModalDialogService modalDialogService;
+        private readonly IWindowService windowService;
 
         /// <summary>
         /// Initializes a new instance of the CalendrierViewModel class.
         /// </summary>
-        public CalendrierViewModel(ATimePlannerDataService service, IModalDialogService modalDialogService)
+        public CalendrierViewModel(ATimePlannerDataService service, IWindowService windowService)
         {
             this.service = service;
-            this.modalDialogService = modalDialogService;
+            this.windowService = windowService;
             this.dateEnCours = DateTime.Today;
         }
 
@@ -102,11 +102,7 @@ namespace TimePlannerNinject.ViewModel
         {
             if (e != null)
             {
-                IModalWindow dialog = KernelTimePlanner.Get<IModalWindow>(Constants.PopupInputDay);
-                this.modalDialogService.ShowDialog(
-                    dialog,
-                    new PopupInputDayViewModel(this.service) { Input = this.Days.First(d => e.Id != null && d.ID == e.Id.Value) },
-                    model => this.Days.Add(model.Input));
+                this.windowService.OpenDialog<InputDayViewModel>(this.Days.First(d => e.Id != null && d.ID == e.Id.Value).Clone());
             }
             else
             {
@@ -133,13 +129,19 @@ namespace TimePlannerNinject.ViewModel
             if (e != null)
             {
                 int id = this.Days.Any() ? this.Days.Max(d => d.ID) + 1 : 1;
-                var newInput = new InputDay { ID = id, WorkStartTime = e.StartDate, WorkEndTime = e.EndDate };
+                var newInput = new InputDay
+                                   {
+                                       ID = id,
+                                       WorkStartTime = e.StartDate,
+                                       WorkEndTime = e.EndDate,
+                                       ExtraHours = 0
+                                   };
 
-                IModalWindow dialog = KernelTimePlanner.Get<IModalWindow>(Constants.PopupInputDay);
-                this.modalDialogService.ShowDialog(
-                    dialog,
-                    new PopupInputDayViewModel(this.service) { Input = newInput },
-                    model => this.Days.Add(model.Input));
+                this.windowService.OpenDialog<InputDayViewModel>(newInput);
+            }
+            else
+            {
+                StatutMessage.SendStatutMessage("Le double click sur l'événement à echoué");
             }
         }
 

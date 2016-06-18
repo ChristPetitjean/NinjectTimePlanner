@@ -20,7 +20,7 @@ namespace TimePlannerNinject.Model
    ///    The input day.
    /// </summary>
    [Serializable]
-   public class InputDay : ObservableObject, ISerializable
+   public class InputDay : ObservableObject, ISerializable, ICloneable
    {
       #region Fields
 
@@ -217,5 +217,10 @@ namespace TimePlannerNinject.Model
       }
 
       #endregion
+
+       public object Clone()
+       {
+           return this.MemberwiseClone();
+       }
    }
 }

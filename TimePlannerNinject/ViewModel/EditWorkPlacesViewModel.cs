@@ -33,9 +33,13 @@
         }
 
         public RelayCommand AddNewWorkplaceCommand
-            =>
-                this.addNewWorkplaceCommand
-                ?? (this.addNewWorkplaceCommand = new RelayCommand(this.ExecuteAddNewWorkplaceCommand));
+        {
+            get
+            {
+                return this.addNewWorkplaceCommand
+                       ?? (this.addNewWorkplaceCommand = new RelayCommand(this.ExecuteAddNewWorkplaceCommand));
+            }
+        }
 
         public ObservableCollection<WorkPlace> AllPlaces
         {

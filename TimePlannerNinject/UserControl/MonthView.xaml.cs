@@ -369,8 +369,8 @@ namespace TimePlannerNinject.UserControl
             var ev = new NewAppointmentEventArgs();
             if (((DayBoxControl)e.Source).Tag != null)
             {
-               ev.StartDate = new DateTime(this.displayYear, this.displayMonth, (int)((DayBoxControl)e.Source).Tag, 10, 0, 0);
-               ev.EndDate = ((DateTime)ev.StartDate).AddHours(2);
+               ev.StartDate = new DateTime(this.displayYear, this.displayMonth, (int)((DayBoxControl)e.Source).Tag);
+               ev.EndDate = ((DateTime)ev.StartDate);
             }
 
             if (this.DayBoxDoubleClicked != null)

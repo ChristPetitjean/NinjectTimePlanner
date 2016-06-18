@@ -41,6 +41,16 @@ namespace TimePlannerNinject.Kernel
         }
 
         /// <summary>
+        /// Obtient l'instance du service spécifié.
+        /// </summary>
+        /// <typeparam name="T">Service a rétourner</typeparam>
+        /// <returns>L'instance du service correspondant</returns>
+        public static T Get<T>(params IParameter[] parameters)
+        {
+            return kernel.Get<T>(parameters);
+        }
+
+        /// <summary>
         /// Initialize le kernel.
         /// </summary>
         /// <param name="modules">Les modules à charger.</param>

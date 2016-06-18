@@ -7,12 +7,12 @@ namespace TimePlannerNinject.View
     /// <summary>
     /// Description for PopupInputDay.
     /// </summary>
-    public partial class PopupInputDay : IModalWindow
+    public partial class InputDayWindow
     {
         /// <summary>
         /// Initializes a new instance of the PopupInputDay class.
         /// </summary>
-        public PopupInputDay()
+        public InputDayWindow()
         {
             InitializeComponent();
         }

@@ -73,11 +73,11 @@ namespace TimePlannerNinject.ViewModel
         /// <summary>
         ///    Obtient Le ViewModel de modification des lieux de travail.
         /// </summary>
-        public PopupInputDayViewModel PopupInputDay
+        public InputDayViewModel InputDay
         {
             get
             {
-                return KernelTimePlanner.Get<PopupInputDayViewModel>();
+                return KernelTimePlanner.Get<InputDayViewModel>();
             }
         }
 
