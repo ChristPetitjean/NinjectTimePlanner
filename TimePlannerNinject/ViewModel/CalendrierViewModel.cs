@@ -12,6 +12,7 @@ namespace TimePlannerNinject.ViewModel
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
 
+    using TimePlannerNinject.Extensions;
     using TimePlannerNinject.Model;
     using TimePlannerNinject.Services;
 

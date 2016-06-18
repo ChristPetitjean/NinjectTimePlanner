@@ -1,5 +1,6 @@
 ﻿namespace TimePlannerNinject.Services
 {
+    using TimePlannerNinject.Extensions;
     using TimePlannerNinject.Model;
 
     /// <summary>

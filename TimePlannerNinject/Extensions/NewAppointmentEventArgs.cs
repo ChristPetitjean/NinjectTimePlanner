@@ -4,11 +4,11 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace TimePlannerNinject.Model
+namespace TimePlannerNinject.Extensions
 {
-   using System;
+    using System;
 
-   /// <summary>
+    /// <summary>
    /// Arguments de nouvel événement.
    /// </summary>
    public class NewAppointmentEventArgs : EventArgs

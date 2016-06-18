@@ -1,8 +1,8 @@
-namespace TimePlannerNinject.Model
+namespace TimePlannerNinject.Extensions
 {
-   using System;
+    using System;
 
-   /// <summary>
+    /// <summary>
    ///    The appointment moved even args.
    /// </summary>
    public class AppointmentMovedEvenArgs : EventArgs

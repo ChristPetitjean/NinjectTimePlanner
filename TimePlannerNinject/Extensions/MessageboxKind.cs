@@ -1,10 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MessageboxKind.cs" company="Christophe PETITJEAN">
+//   Christophe PETITJEAN - 2016
+// </copyright>
+// <summary>
+//   The kind of message box that should be shown
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace TimePlannerNinject.Model
+namespace TimePlannerNinject.Extensions
 {
     /// <summary>
     /// The kind of message box that should be shown

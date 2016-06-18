@@ -8,6 +8,7 @@ namespace TimePlannerNinject.Services
 {
     using System.Windows;
 
+    using TimePlannerNinject.Extensions;
     using TimePlannerNinject.Model;
 
     /// <summary>

@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace TimePlannerNinject.Model
+namespace TimePlannerNinject.Extensions
 {
     using System;
     using System.Windows;

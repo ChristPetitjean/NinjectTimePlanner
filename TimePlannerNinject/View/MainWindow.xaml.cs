@@ -2,6 +2,7 @@
 {
    using System.Windows;
 
+   using TimePlannerNinject.Extensions;
    using TimePlannerNinject.Model;
    using TimePlannerNinject.ViewModel;
 

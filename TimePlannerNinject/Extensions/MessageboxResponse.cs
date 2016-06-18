@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TimePlannerNinject.Model
+﻿namespace TimePlannerNinject.Extensions
 {
     /// <summary>
     /// Represents the user's response to a message box

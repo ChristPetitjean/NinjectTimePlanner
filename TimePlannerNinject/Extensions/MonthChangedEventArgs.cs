@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TimePlannerNinject.Model
+﻿namespace TimePlannerNinject.Extensions
 {
-   /// <summary>
+    using System;
+
+    /// <summary>
    /// Evénement de changement de mois
    /// </summary>
    /// <seealso cref="System.EventArgs" />
