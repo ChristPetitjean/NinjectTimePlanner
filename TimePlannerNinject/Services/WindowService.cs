@@ -18,7 +18,6 @@ namespace TimePlannerNinject.Services
 
     using Ninject.Parameters;
 
-    using TimePlannerNinject.Interfaces;
     using TimePlannerNinject.Kernel;
     using TimePlannerNinject.Model;
 

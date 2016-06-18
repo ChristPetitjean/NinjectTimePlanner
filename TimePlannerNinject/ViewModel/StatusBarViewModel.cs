@@ -9,8 +9,8 @@ namespace TimePlannerNinject.ViewModel
    using GalaSoft.MvvmLight;
    using GalaSoft.MvvmLight.Messaging;
 
-   using TimePlannerNinject.Interfaces;
    using TimePlannerNinject.Model;
+   using TimePlannerNinject.Services;
 
     /// <summary>
     /// The status bar view model.

@@ -17,8 +17,8 @@ namespace TimePlannerNinject.ViewModel
 
     using Microsoft.Win32;
 
-    using TimePlannerNinject.Interfaces;
     using TimePlannerNinject.Model;
+    using TimePlannerNinject.Services;
 
     /// <summary>
     /// The menu view model.

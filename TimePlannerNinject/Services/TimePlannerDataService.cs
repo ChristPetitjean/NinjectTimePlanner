@@ -13,7 +13,6 @@ namespace TimePlannerNinject.Services
     using System.Net;
     using System.Xml.Serialization;
 
-    using TimePlannerNinject.Interfaces;
     using TimePlannerNinject.Model;
 
     /// <summary>

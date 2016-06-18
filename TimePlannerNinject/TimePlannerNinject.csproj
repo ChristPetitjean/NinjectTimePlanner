@@ -116,8 +116,6 @@
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\DialogCloser.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
-    <Compile Include="Interfaces\IMessageboxService.cs" />
-    <Compile Include="Interfaces\IWindowService.cs" />
     <Compile Include="Kernel\KernelTimePlanner.cs" />
     <Compile Include="Model\AppFile.cs" />
     <Compile Include="Model\AppointmentDblClickedEvenArgs.cs" />
@@ -129,11 +127,13 @@
     <Compile Include="Model\NewAppointmentEventArgs.cs" />
     <Compile Include="Model\StatutMessage.cs" />
     <Compile Include="Model\WindowView.cs" />
+    <Compile Include="Services\ATimePlannerDataService.cs" />
+    <Compile Include="Services\IMessageboxService.cs" />
+    <Compile Include="Services\IWindowService.cs" />
     <Compile Include="Services\MessageboxService.cs" />
     <Compile Include="Services\TimePlannerDataService.cs" />
     <Compile Include="Services\WindowService.cs" />
     <Compile Include="Model\WorkPlace.cs" />
-    <Compile Include="Interfaces\ATimePlannerDataService.cs" />
     <Compile Include="Modules\ServiceModule.cs" />
     <Compile Include="Modules\ViewModelModule.cs" />
     <Compile Include="UserControl\DayBoxAppointmentControl.xaml.cs">

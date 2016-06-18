@@ -10,9 +10,9 @@ namespace TimePlannerNinject
 
    using GalaSoft.MvvmLight.Threading;
 
-   using TimePlannerNinject.Interfaces;
    using TimePlannerNinject.Kernel;
    using TimePlannerNinject.Modules;
+   using TimePlannerNinject.Services;
    using TimePlannerNinject.ViewModel;
 
     /// <summary>

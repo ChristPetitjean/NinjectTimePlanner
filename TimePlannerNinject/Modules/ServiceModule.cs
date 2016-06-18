@@ -13,8 +13,7 @@ namespace TimePlannerNinject.Modules
 
     using Ninject.Modules;
 
-   using TimePlannerNinject.Interfaces;
-   using TimePlannerNinject.Model;
+    using TimePlannerNinject.Model;
     using TimePlannerNinject.Services;
     using TimePlannerNinject.View;
 

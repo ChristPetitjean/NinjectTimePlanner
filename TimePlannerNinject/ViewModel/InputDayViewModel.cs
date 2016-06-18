@@ -13,8 +13,8 @@ namespace TimePlannerNinject.ViewModel
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
 
-    using TimePlannerNinject.Interfaces;
     using TimePlannerNinject.Model;
+    using TimePlannerNinject.Services;
 
     /// <summary>
     ///     This class contains properties that a View can data bind to.

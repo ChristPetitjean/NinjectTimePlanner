@@ -2,9 +2,7 @@
 
 namespace TimePlannerNinject.View
 {
-   using TimePlannerNinject.Interfaces;
-
-   /// <summary>
+    /// <summary>
    /// Description for StatusBar.
    /// </summary>
    public partial class StatusBar

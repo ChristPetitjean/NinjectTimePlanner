@@ -8,9 +8,7 @@ namespace TimePlannerNinject.ViewModel
 {
    using GalaSoft.MvvmLight;
 
-   using TimePlannerNinject.Interfaces;
-
-   /// <summary>
+    /// <summary>
    ///    ViewModel principal
    /// </summary>
    public class MainViewModel : ViewModelBase

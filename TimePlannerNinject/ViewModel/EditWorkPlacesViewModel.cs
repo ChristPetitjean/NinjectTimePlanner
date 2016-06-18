@@ -17,8 +17,8 @@ namespace TimePlannerNinject.ViewModel
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
 
-    using TimePlannerNinject.Interfaces;
     using TimePlannerNinject.Model;
+    using TimePlannerNinject.Services;
 
     /// <summary>
     /// The edit work places view model.

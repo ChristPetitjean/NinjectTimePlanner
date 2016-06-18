@@ -1,17 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StatutMessage.cs" company="Christophe PETITJEAN">
+//   Christophe PETITJEAN - 2016
+// </copyright>
+// <summary>
+//   Defines the StatutMessage type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace TimePlannerNinject.Model
 {
    using GalaSoft.MvvmLight.Messaging;
 
-   public static class StatutMessage
+    /// <summary>
+    /// The statut message.
+    /// </summary>
+    public static class StatutMessage
    {
-      public const string Token = "tokenStatutMessage";
-      public static void SendStatutMessage(string message)
+        /// <summary>
+        /// The token.
+        /// </summary>
+        public const string Token = "tokenStatutMessage";
+
+        /// <summary>
+        /// The send statut message.
+        /// </summary>
+        /// <param name="message">
+        /// The message.
+        /// </param>
+        public static void SendStatutMessage(string message)
       {
          Messenger.Default.Send(message, Token);
       }

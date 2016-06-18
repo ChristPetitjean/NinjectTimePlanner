@@ -1,11 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="WindowView.cs" company="Christophe PETITJEAN">
+//   Christophe PETITJEAN - 2016
+// </copyright>
+// <summary>
+//   Base class for a window displayed in the bugView application
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace TimePlannerNinject.Model
 {
+    using System;
     using System.Windows;
 
     using GalaSoft.MvvmLight;

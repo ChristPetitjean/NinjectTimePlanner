@@ -2,8 +2,6 @@
 
 namespace TimePlannerNinject.View
 {
-    using TimePlannerNinject.Interfaces;
-
     /// <summary>
     /// Description for PopupInputDay.
     /// </summary>

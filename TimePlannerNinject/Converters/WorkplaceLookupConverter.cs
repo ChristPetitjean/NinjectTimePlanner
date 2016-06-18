@@ -12,10 +12,10 @@ namespace TimePlannerNinject.Converters
    using System.Reflection;
    using System.Windows.Data;
 
-   using TimePlannerNinject.Interfaces;
    using TimePlannerNinject.Kernel;
+   using TimePlannerNinject.Services;
 
-   /// <summary>
+    /// <summary>
    /// Convertis un id de lieu de travail en la valeur du champs correpondant au parametre
    /// </summary>
    /// <seealso cref="System.Windows.Data.IValueConverter" />

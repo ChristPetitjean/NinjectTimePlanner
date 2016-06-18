@@ -3,7 +3,7 @@
 //   Christophe PETITJEAN - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-namespace TimePlannerNinject.Interfaces
+namespace TimePlannerNinject.Services
 {
     using System;
     using System.Collections.ObjectModel;
