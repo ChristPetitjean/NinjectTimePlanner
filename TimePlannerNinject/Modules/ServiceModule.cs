@@ -31,8 +31,9 @@ namespace TimePlannerNinject.Modules
        public override void Load()
        {
            this.Bind<ATimePlannerDataService>().To<TimePlannerDataService>().InSingletonScope();
-            this.Bind<IWindowService>().To<WindowService>();
-        }
+           this.Bind<IWindowService>().To<WindowService>();
+           this.Bind<IMessageboxService>().To<MessageboxService>();
+       }
 
        #endregion
    }

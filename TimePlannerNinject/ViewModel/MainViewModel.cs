@@ -15,28 +15,5 @@ namespace TimePlannerNinject.ViewModel
    /// </summary>
    public class MainViewModel : ViewModelBase
    {
-      #region Fields
-
-      /// <summary>
-      ///    Service de données du planner
-      /// </summary>
-      private readonly ATimePlannerDataService service;
-
-      #endregion
-
-      #region Constructors and Destructors
-
-      /// <summary>
-      /// Initialise une nouvelle instance de la classe <see cref="MainViewModel"/>.
-      /// </summary>
-      /// <param name="service">
-      /// Le service de données.
-      /// </param>
-      public MainViewModel(ATimePlannerDataService service)
-      {
-         this.service = service;
-      }
-
-      #endregion
    }
 }

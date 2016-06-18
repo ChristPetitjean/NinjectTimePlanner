@@ -3,7 +3,6 @@
 //   Christophe PETITJEAN - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace TimePlannerNinject.ViewModel
 {
     using System;
@@ -36,6 +35,11 @@ namespace TimePlannerNinject.ViewModel
         public const string InputPropertyName = "Input";
 
         /// <summary>
+        /// The messageboxService.
+        /// </summary>
+        private readonly IMessageboxService messageboxService;
+
+        /// <summary>
         /// The service.
         /// </summary>
         private readonly ATimePlannerDataService service;
@@ -51,6 +55,11 @@ namespace TimePlannerNinject.ViewModel
         private RelayCommand cancelCommand;
 
         /// <summary>
+        /// The delete input day command.
+        /// </summary>
+        private RelayCommand deleteInputDayCommand;
+
+        /// <summary>
         /// The dialog result.
         /// </summary>
         private bool? dialogResult;
@@ -58,7 +67,7 @@ namespace TimePlannerNinject.ViewModel
         /// <summary>
         /// The input.
         /// </summary>
-        private InputDay input = new InputDay();
+        private InputDay input;
 
         /// <summary>
         /// The ok command.
@@ -74,9 +83,10 @@ namespace TimePlannerNinject.ViewModel
         /// <param name="model">
         /// The model.
         /// </param>
-        public InputDayViewModel(ATimePlannerDataService service, InputDay model)
+        public InputDayViewModel(ATimePlannerDataService service, InputDay model, IMessageboxService messageboxService)
         {
             this.service = service;
+            this.messageboxService = messageboxService;
             this.input = (InputDay)model.Clone();
         }
 
@@ -122,8 +132,20 @@ namespace TimePlannerNinject.ViewModel
         }
 
         /// <summary>
-        ///     Sets and gets the DialogResult property.
-        ///     Changes to that property's value raise the PropertyChanged event.
+        /// Gets the DeleteInputDayCommand.
+        /// </summary>
+        public RelayCommand DeleteInputDayCommand
+        {
+            get
+            {
+                return this.deleteInputDayCommand
+                       ?? (this.deleteInputDayCommand =
+                           new RelayCommand(this.ExecuteDeleteInputDayCommand, this.CanExecuteDeleteInputDayCommand));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the dialog result.
         /// </summary>
         public bool? DialogResult
         {
@@ -139,8 +161,7 @@ namespace TimePlannerNinject.ViewModel
         }
 
         /// <summary>
-        ///     Sets and gets the Input property.
-        ///     Changes to that property's value raise the PropertyChanged event.
+        /// Gets or sets the input.
         /// </summary>
         public InputDay Input
         {
@@ -167,6 +188,17 @@ namespace TimePlannerNinject.ViewModel
         }
 
         /// <summary>
+        /// The can execute delete input day command.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        private bool CanExecuteDeleteInputDayCommand()
+        {
+            return this.service.AllDays.Any(d => d.ID == this.Input.ID);
+        }
+
+        /// <summary>
         /// The execute all places selection change command.
         /// </summary>
         /// <param name="e">
@@ -174,21 +206,24 @@ namespace TimePlannerNinject.ViewModel
         /// </param>
         private void ExecuteAllPlacesSelectionChangeCommand(SelectionChangedEventArgs e)
         {
-            WorkPlace addedItem = (WorkPlace)e.AddedItems[0];
-            this.Input.WorkStartTime = new DateTime(
-                this.Input.WorkStartTime.Value.Year, 
-                this.Input.WorkStartTime.Value.Month, 
-                this.Input.WorkStartTime.Value.Day, 
-                addedItem.DefaultStartTime.Hour, 
-                addedItem.DefaultStartTime.Minute, 
-                addedItem.DefaultStartTime.Second);
-            this.Input.WorkEndTime = new DateTime(
-                this.Input.WorkEndTime.Value.Year, 
-                this.Input.WorkEndTime.Value.Month, 
-                this.Input.WorkEndTime.Value.Day, 
-                addedItem.DefaultEndTime.Hour, 
-                addedItem.DefaultEndTime.Minute, 
-                addedItem.DefaultEndTime.Second);
+            WorkPlace addedItem = e.AddedItems[0] as WorkPlace;
+            if (addedItem != null && this.Input.WorkStartTime.HasValue && this.Input.WorkEndTime.HasValue)
+            {
+                this.Input.WorkStartTime = new DateTime(
+                    this.Input.WorkStartTime.Value.Year, 
+                    this.Input.WorkStartTime.Value.Month, 
+                    this.Input.WorkStartTime.Value.Day, 
+                    addedItem.DefaultStartTime.Hour, 
+                    addedItem.DefaultStartTime.Minute, 
+                    addedItem.DefaultStartTime.Second);
+                this.Input.WorkEndTime = new DateTime(
+                    this.Input.WorkEndTime.Value.Year, 
+                    this.Input.WorkEndTime.Value.Month, 
+                    this.Input.WorkEndTime.Value.Day, 
+                    addedItem.DefaultEndTime.Hour, 
+                    addedItem.DefaultEndTime.Minute, 
+                    addedItem.DefaultEndTime.Second);
+            }
         }
 
         /// <summary>
@@ -199,11 +234,31 @@ namespace TimePlannerNinject.ViewModel
             this.DialogResult = false;
         }
 
+        private void ExecuteDeleteInputDayCommand()
+        {
+            InputDay inputDay = this.service.AllDays.FirstOrDefault(d => d.ID == this.Input.ID);
+            if (inputDay != null)
+            {
+                this.service.AllDays.Remove(inputDay);
+            }
+
+            this.DialogResult = true;
+        }
+
         /// <summary>
         /// The execute ok command.
         /// </summary>
         private void ExecuteOkCommand()
         {
+            if (!this.Input.IdWorkPlace.HasValue)
+            {
+                this.messageboxService.ShowMessagebox(
+                    "Le lieu est obligatoire pour pouvoir sauvegarder", 
+                    MessageboxKind.Ok, 
+                    "Enregistrement impossible");
+                return;
+            }
+
             var day = this.service.AllDays.FirstOrDefault(d => d.ID == this.Input.ID);
             if (day == null)
             {

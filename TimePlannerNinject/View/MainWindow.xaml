@@ -10,9 +10,14 @@
         Width="711.94"
         d:DesignHeight="600"
         Title="Gestion du temps"
-        DataContext="{Binding Main, Source={StaticResource Locator}}">
+        DataContext="{Binding Main, Source={StaticResource Locator}}"
+        Background="{StaticResource DefaultBackground}" ResizeMode="CanResizeWithGrip">
+    <model:WindowView.InputBindings>
+        <KeyBinding Gesture="CTRL+O" Command="{Binding MenuPrincipal.OpenNewFileCommand, Source={StaticResource Locator}}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+S" Command="{Binding MenuPrincipal.SaveFileCommand, Source={StaticResource Locator}}"></KeyBinding>
+    </model:WindowView.InputBindings>
     <Grid x:Name="LayoutRoot" Style="{StaticResource LayoutGridStyle}">
-        <DockPanel>
+        <DockPanel Margin="5,1,5,1">
             <ContentPresenter Content="{Binding MenuPrincipal, Source={StaticResource Locator}}" DockPanel.Dock="Top" />
             <ContentPresenter Content="{Binding StatusBar, Source={StaticResource Locator}}" DockPanel.Dock="Bottom" />
             <TabControl HorizontalAlignment="Stretch">

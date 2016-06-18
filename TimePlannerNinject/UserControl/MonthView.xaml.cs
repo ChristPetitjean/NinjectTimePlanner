@@ -203,6 +203,12 @@ namespace TimePlannerNinject.UserControl
                 var coll = (INotifyCollectionChanged)e.NewValue;
                 coll.CollectionChanged += action;
             }
+
+            MonthView mv = d as MonthView;
+            if (mv != null && mv.IsLoaded)
+            {
+                mv.BuildCalendarUI();
+            }
         }
 
       /// <summary>
@@ -333,7 +339,10 @@ namespace TimePlannerNinject.UserControl
             {
                var day = i;
                var aptDay = from d in this.Appointments
-                            where d.WorkStartTime.HasValue && d.WorkStartTime.Value.Day == day
+                            where d.WorkStartTime.HasValue 
+                            && d.WorkStartTime.Value.Day == day
+                            && d.WorkStartTime.Value.Month == this.displayMonth
+                            && d.WorkStartTime.Value.Year == this.displayYear
                             select d;
 
                foreach (var a in aptDay)

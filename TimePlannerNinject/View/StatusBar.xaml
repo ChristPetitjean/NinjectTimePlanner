@@ -7,7 +7,7 @@
         mc:Ignorable="d ignore"
         DataContext="{Binding StatusBar, Source={StaticResource Locator}}">
 
-    <Grid Height="20px" Background="AliceBlue">
-        <TextBlock Text="{Binding MessageToDisplay, Mode=TwoWay}" HorizontalAlignment="Right" />
-   </Grid>
+    <Border BorderThickness="1" BorderBrush="LightGray" Height="20px" Background="AliceBlue">
+        <TextBlock Text="{Binding MessageToDisplay, Mode=TwoWay}" HorizontalAlignment="Right" Margin="5,0,5,0" />
+   </Border>
 </UserControl>

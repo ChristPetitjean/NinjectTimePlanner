@@ -6,9 +6,11 @@
 
 namespace TimePlannerNinject.Services
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Xml.Serialization;
 
     using TimePlannerNinject.Interfaces;
@@ -34,6 +36,8 @@ namespace TimePlannerNinject.Services
 
                this.AllDays = new ObservableCollection<InputDay>(appFile.Inputdays ?? new InputDay[0]);
                this.AllPlaces = new ObservableCollection<WorkPlace>(appFile.Worplaces ?? new WorkPlace[0]);
+
+                base.ReadDataFromFile(filename);
             }
          }
          catch

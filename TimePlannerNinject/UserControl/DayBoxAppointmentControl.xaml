@@ -3,22 +3,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:userControl="clr-namespace:TimePlannerNinject.UserControl"
              xmlns:model="clr-namespace:TimePlannerNinject.Model"
              mc:Ignorable="d"
-             Tag="{Binding Path=ID}" d:DataContext="{d:DesignInstance model:InputDay }" Height="Auto" Width="Auto">
-    <Border x:Name="BorderElement" CornerRadius="5" BorderBrush="DarkOliveGreen" BorderThickness="1" Margin="2,2,2,1">
+             Tag="{Binding Path=ID}" 
+             Height="Auto" 
+             Width="Auto">
+    <Border x:Name="BorderElement" CornerRadius="5" BorderBrush="Black" BorderThickness="1" Margin="2,2,2,1" Cursor="Hand">
         <Border.Background>
-            <SolidColorBrush Color="{Binding Path=IdWorkPlace, Converter={StaticResource WorkplaceLookupConverter}, ConverterParameter='Color', FallbackValue='LightGreen'}"></SolidColorBrush>
+            <SolidColorBrush Color="{Binding Path=IdWorkPlace, Converter={StaticResource WorkplaceLookupConverter}, ConverterParameter='Color', FallbackValue='White'}"></SolidColorBrush>
         </Border.Background>
-        <StackPanel Margin="1">
-            <TextBlock x:Name="WorkPlace" Text="{Binding Path=IdWorkPlace, Converter={StaticResource WorkplaceLookupConverter}, ConverterParameter='Name', FallbackValue='Lieu de travail'}" FontWeight="Bold" FontStyle="Italic" TextDecorations="Underline" TextWrapping="Wrap" />
-            <TextBlock Text="Date de début:" FontStyle="Italic"></TextBlock>
-            <TextBlock x:Name="StartDate" Text="{Binding Path=WorkStartTime, FallbackValue='08:00', Converter={StaticResource DateTimeToTimeConverter}}" FontSize="10" Padding="2" TextWrapping="Wrap" HorizontalAlignment="Right"/>
-            <TextBlock Text="Date de fin:" FontStyle="Italic"></TextBlock>
-            <TextBlock x:Name="EndDate" Text="{Binding Path=WorkEndTime, FallbackValue='18:00', Converter={StaticResource DateTimeToTimeConverter}}" FontSize="10" Padding="2" TextWrapping="Wrap" HorizontalAlignment="Right"/>
-            <TextBlock Text="Heures supp.:" FontStyle="Italic"></TextBlock>
-            <TextBlock x:Name="ExtraHours" Text="{Binding Path=ExtraHours, FallbackValue='1'}" HorizontalAlignment="Right"></TextBlock>
-        </StackPanel>
+        <Grid Margin="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="2" x:Name="WorkPlace" Text="{Binding Path=(model:InputDay.IdWorkPlace), Converter={StaticResource WorkplaceLookupConverter}, ConverterParameter='Name', FallbackValue='Lieu de travail'}" FontWeight="Bold" FontStyle="Italic" TextDecorations="Underline" TextWrapping="Wrap" />
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Début:" TextWrapping="Wrap" FontStyle="Italic"></TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="1" x:Name="StartDate" Text="{Binding Path=(model:InputDay.WorkStartTime), Converter={StaticResource DateTimeToTimeConverter}}" VerticalAlignment="Center"  Padding="2" TextWrapping="NoWrap"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Fin:" TextWrapping="Wrap" FontStyle="Italic"></TextBlock>
+            <TextBlock Grid.Row="2" Grid.Column="1" x:Name="EndDate" Text="{Binding Path=(model:InputDay.WorkEndTime), Converter={StaticResource DateTimeToTimeConverter}}" VerticalAlignment="Center"  Padding="2" TextWrapping="NoWrap"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Heures supp.:" TextWrapping="Wrap" FontStyle="Italic"></TextBlock>
+            <TextBlock Grid.Row="3" Grid.Column="1" x:Name="ExtraHours" Text="{Binding Path=(model:InputDay.ExtraHours)}" Padding="2" VerticalAlignment="Center" TextWrapping="NoWrap"></TextBlock>
+        </Grid>
     </Border>
 </UserControl>
