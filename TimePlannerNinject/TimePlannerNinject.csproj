@@ -110,6 +110,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\DateTimeToTimeConverter.cs" />
+    <Compile Include="Converters\IfNullConverter.cs" />
     <Compile Include="Converters\WorkplaceLookupConverter.cs" />
     <Compile Include="Extensions\DialogCloser.cs" />
     <Compile Include="Kernel\KernelTimePlanner.cs" />

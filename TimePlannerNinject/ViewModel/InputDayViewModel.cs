@@ -7,6 +7,7 @@
 namespace TimePlannerNinject.ViewModel
 {
    using System;
+   using System.Collections.Generic;
    using System.Collections.ObjectModel;
    using System.Linq;
    using System.Windows.Controls;
@@ -29,6 +30,11 @@ namespace TimePlannerNinject.ViewModel
       ///    Le nom de la propriété <see cref="DialogResult" />.
       /// </summary>
       public const string DialogResultPropertyName = "DialogResult";
+
+      /// <summary>
+      ///    Le nom de la propriété <see cref="DatesToEdit" />.
+      /// </summary>
+      public const string IdsToEditPropertyName = "DatesToEdit";
 
       /// <summary>
       ///    Le nom de la propriété <see cref="Input" />.
@@ -70,9 +76,9 @@ namespace TimePlannerNinject.ViewModel
       private bool? dialogResult;
 
       /// <summary>
-      ///    L'inputation.
+      ///    Dates à modifier
       /// </summary>
-      private InputDay input;
+      private List<DateTime> datesToEdit;
 
       /// <summary>
       ///    Commande de validation.
@@ -93,13 +99,65 @@ namespace TimePlannerNinject.ViewModel
       ///    Le service d'affichage de messagebox
       /// </param>
       /// <param name="model">
-      ///    L'évènement a chargé.
+      ///    LIdentifiant des évènement à charger.
       /// </param>
-      public InputDayViewModel(ATimePlannerDataService service, IMessageboxService messageboxService, InputDay model)
+      public InputDayViewModel(ATimePlannerDataService service, IMessageboxService messageboxService, params DateTime[] model)
       {
+         if (model == null || !model.Any())
+         {
+            return;
+         }
+
          this.service = service;
          this.messageboxService = messageboxService;
-         this.input = (InputDay)model.Clone();
+
+         this.datesToEdit = model.ToList();
+         IEnumerable<InputDay> inputDays = (from d in this.service.AllDays
+                                            where d.WorkStartTime.HasValue && this.datesToEdit.Any(e => e.Date == d.WorkStartTime.Value.Date)
+                                            select d).ToList();
+
+         IEnumerable<int> idWorkplaces = inputDays.Select(d => d.IdWorkPlace ?? -1).Distinct().ToList();
+         if (idWorkplaces.Count() == 1)
+         {
+            this.IdWorkPlace = idWorkplaces.First();
+         }
+         else
+         {
+            this.IdWorkPlace = -1;
+         }
+
+         IEnumerable<int> extraHoursInputs = inputDays.Select(d => d.ExtraHours ?? 0).Distinct().ToList();
+         if (extraHoursInputs.Count() == 1)
+         {
+            this.ExtraHours = extraHoursInputs.First();
+         }
+         else
+         {
+            this.ExtraHours = 0;
+         }
+
+         IEnumerable<DateTime> startTime = inputDays.Select(d => d.WorkStartTime.Value).Distinct().ToList();
+         if (startTime.Count() == 1)
+         {
+            this.WorkStartTime = startTime.First();
+         }
+         else
+         {
+            DateTime dateTime = model.First();
+            this.WorkStartTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 8, 0, 0);
+         }
+
+         IEnumerable<DateTime> endTime = inputDays.Select(d => d.WorkEndTime.Value).Distinct().ToList();
+         if (endTime.Count() == 1)
+         {
+            this.WorkEndTime = endTime.First();
+         }
+         else
+         {
+            DateTime dateTime = model.First();
+            this.WorkEndTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 18, 0, 0);
+         }
+
       }
 
       #endregion
@@ -125,6 +183,10 @@ namespace TimePlannerNinject.ViewModel
       {
          get
          {
+            if (this.service == null)
+            {
+               return new ObservableCollection<WorkPlace>();
+            }
             return this.service.AllPlaces;
          }
 
@@ -175,18 +237,17 @@ namespace TimePlannerNinject.ViewModel
       }
 
       /// <summary>
-      ///    Obtient ou definit l'imputaton.
+      ///    Obtient ou définit la liste des dates à modifier
       /// </summary>
-      public InputDay Input
+      public List<DateTime> DatesToEdit
       {
          get
          {
-            return this.input;
+            return this.datesToEdit;
          }
-
          set
          {
-            this.Set(InputPropertyName, ref this.input, value);
+            this.Set(IdsToEditPropertyName, ref this.datesToEdit, value);
          }
       }
 
@@ -213,7 +274,9 @@ namespace TimePlannerNinject.ViewModel
       /// </returns>
       private bool CanExecuteDeleteInputDayCommand()
       {
-         return this.service.AllDays.Any(d => d.ID == this.Input.ID);
+         return this.service != null
+                && this.service.AllDays.Any(
+                   d => this.DatesToEdit != null && d.WorkStartTime.HasValue && this.DatesToEdit.Any(e => e.Date == d.WorkStartTime.Value.Date));
       }
 
       /// <summary>
@@ -225,19 +288,19 @@ namespace TimePlannerNinject.ViewModel
       private void ExecuteAllPlacesSelectionChangeCommand(SelectionChangedEventArgs e)
       {
          var addedItem = e.AddedItems[0] as WorkPlace;
-         if (addedItem != null && this.Input.WorkStartTime.HasValue && this.Input.WorkEndTime.HasValue)
+         if (addedItem != null)
          {
-            this.Input.WorkStartTime = new DateTime(
-               this.Input.WorkStartTime.Value.Year,
-               this.Input.WorkStartTime.Value.Month,
-               this.Input.WorkStartTime.Value.Day,
+            this.WorkStartTime = new DateTime(
+               this.WorkStartTime.Year,
+               this.WorkStartTime.Month,
+               this.WorkStartTime.Day,
                addedItem.DefaultStartTime.Hour,
                addedItem.DefaultStartTime.Minute,
                addedItem.DefaultStartTime.Second);
-            this.Input.WorkEndTime = new DateTime(
-               this.Input.WorkEndTime.Value.Year,
-               this.Input.WorkEndTime.Value.Month,
-               this.Input.WorkEndTime.Value.Day,
+            this.WorkEndTime = new DateTime(
+               this.WorkEndTime.Year,
+               this.WorkEndTime.Month,
+               this.WorkEndTime.Day,
                addedItem.DefaultEndTime.Hour,
                addedItem.DefaultEndTime.Minute,
                addedItem.DefaultEndTime.Second);
@@ -257,10 +320,12 @@ namespace TimePlannerNinject.ViewModel
       /// </summary>
       private void ExecuteDeleteInputDayCommand()
       {
-         var inputDay = this.service.AllDays.FirstOrDefault(d => d.ID == this.Input.ID);
-         if (inputDay != null)
+         var inputDay = from d in this.service.AllDays
+                         where d.WorkStartTime.HasValue && this.DatesToEdit.Any(e => e.Date == d.WorkStartTime.Value.Date)
+                         select d;
+         while (inputDay.Any())
          {
-            this.service.AllDays.Remove(inputDay);
+            this.service.AllDays.Remove(inputDay.ElementAt(0));
          }
 
          this.DialogResult = true;
@@ -271,29 +336,163 @@ namespace TimePlannerNinject.ViewModel
       /// </summary>
       private void ExecuteOkCommand()
       {
-         if (!this.Input.IdWorkPlace.HasValue)
+         if (this.IdWorkPlace <= 0)
          {
             this.messageboxService.ShowMessagebox("Le lieu est obligatoire pour pouvoir sauvegarder", MessageboxKind.Ok, "Enregistrement impossible");
             return;
          }
-
-         var day = this.service.AllDays.FirstOrDefault(d => d.ID == this.Input.ID);
-         if (day == null)
+         foreach (DateTime date in this.DatesToEdit)
          {
-            this.service.AllDays.Add(this.Input);
+            var day = this.service.AllDays.FirstOrDefault(d => d.WorkStartTime.Value.Date == date);
+            if (day == null)
+            {
+               var idInput = this.service.AllDays.Any() ? this.service.AllDays.Max(d => d.ID) + 1 : 1;
+               InputDay input = new InputDay
+                                   {
+                                      ID = idInput,
+                                      WorkStartTime =
+                                         new DateTime(
+                                         date.Year,
+                                         date.Month,
+                                         date.Day,
+                                         this.WorkStartTime.Hour,
+                                         this.WorkStartTime.Minute,
+                                         this.WorkStartTime.Second),
+                                      WorkEndTime =
+                                         new DateTime(
+                                         date.Year,
+                                         date.Month,
+                                         date.Day,
+                                         this.WorkEndTime.Hour,
+                                         this.WorkEndTime.Minute,
+                                         this.WorkEndTime.Second),
+                                      ExtraHours = this.ExtraHours,
+                                      IdWorkPlace = this.IdWorkPlace
+                                   };
+               this.service.AllDays.Add(input);
+            }
+            else
+            {
+               day.ExtraHours = this.ExtraHours;
+               day.IdWorkPlace = this.IdWorkPlace;
+               day.WorkEndTime = new DateTime(
+                                         date.Year,
+                                         date.Month,
+                                         date.Day,
+                                         this.WorkEndTime.Hour,
+                                         this.WorkEndTime.Minute,
+                                         this.WorkEndTime.Second);
+               day.WorkStartTime = new DateTime(
+                                         date.Year,
+                                         date.Month,
+                                         date.Day,
+                                         this.WorkStartTime.Hour,
+                                         this.WorkStartTime.Minute,
+                                         this.WorkStartTime.Second);
+            } 
          }
-         else
-         {
-            day.ExtraHours = this.Input.ExtraHours;
-            day.IdWorkPlace = this.Input.IdWorkPlace;
-            day.IsWorked = this.Input.IsWorked;
-            day.WorkEndTime = this.Input.WorkEndTime;
-            day.WorkStartTime = this.Input.WorkStartTime;
-         }
+      
 
          this.DialogResult = true;
       }
 
       #endregion
+
+      /// <summary>
+      /// Le nom de la propriété <see cref="IdWorkPlace" />.
+      /// </summary>
+      public const string IdWorkPlacePropertyName = "IdWorkPlace";
+
+      private int idWorkPlace;
+
+      /// <summary>
+      /// Obtient ou définit l'identifiant du lieu de travail choisit
+      /// </summary>
+      public int IdWorkPlace
+      {
+         get
+         {
+            return idWorkPlace;
+         }
+         set
+         {
+            Set(IdWorkPlacePropertyName, ref idWorkPlace, value);
+         }
+      }
+
+      /// <summary>
+      /// Le nom de la propriété <see cref="WorkStartTime" />.
+      /// </summary>
+      public const string WorkStartTimePropertyName = "WorkStartTime";
+
+      /// <summary>
+      /// L'heure de début de travail
+      /// </summary>
+      private DateTime workStartTime;
+
+      /// <summary>
+      /// Obtient ou définit l'heure de début de travail
+      /// </summary>
+      public DateTime WorkStartTime
+      {
+         get
+         {
+            return workStartTime;
+         }
+         set
+         {
+            Set(WorkStartTimePropertyName, ref workStartTime, value);
+         }
+      }
+
+      /// <summary>
+      /// Le nom de la propriété <see cref="WorkEndTime" />.
+      /// </summary>
+      public const string WorkEndTimePropertyName = "WorkEndTime";
+
+      /// <summary>
+      /// L'heure de fin de travail
+      /// </summary>
+      private DateTime workEndTime;
+
+      /// <summary>
+      /// Obtient ou définit l'heure de fin de travail
+      /// </summary>
+      public DateTime WorkEndTime
+      {
+         get
+         {
+            return workEndTime;
+         }
+         set
+         {
+            Set(WorkStartTimePropertyName, ref workEndTime, value);
+         }
+      }
+
+      /// <summary>
+      /// Le nom de la propriété <see cref="ExtraHours" />.
+      /// </summary>
+      public const string ExtraHoursPropertyName = "ExtraHours";
+
+      /// <summary>
+      /// Les heures supplémentaires
+      /// </summary>
+      private int extraHours;
+
+      /// <summary>
+      /// Obtient ou définit les heures supplémentaires 
+      /// </summary>
+      public int ExtraHours
+      {
+         get
+         {
+            return extraHours;
+         }
+         set
+         {
+            Set(ExtraHoursPropertyName, ref extraHours, value);
+         }
+      }
    }
 }

@@ -12,7 +12,7 @@
         d:DesignHeight="600"
         Title="Gestion du temps"
         DataContext="{Binding Main, Source={StaticResource Locator}}"
-        Background="{StaticResource DefaultBackground}" ResizeMode="CanResizeWithGrip">
+        Background="{StaticResource DefaultBackground}" ResizeMode="CanResizeWithGrip" WindowState="Maximized">
     <extensions:WindowView.InputBindings>
         <KeyBinding Gesture="CTRL+O" Command="{Binding MenuPrincipal.OpenNewFileCommand, Source={StaticResource Locator}}"></KeyBinding>
         <KeyBinding Gesture="CTRL+S" Command="{Binding MenuPrincipal.SaveFileCommand, Source={StaticResource Locator}}"></KeyBinding>

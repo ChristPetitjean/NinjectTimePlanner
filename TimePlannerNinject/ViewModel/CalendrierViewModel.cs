@@ -175,16 +175,7 @@ namespace TimePlannerNinject.ViewModel
 
             if (e != null)
             {
-                var id = this.Days.Any() ? this.Days.Max(d => d.ID) + 1 : 1;
-                var newInput = new InputDay
-                                   {
-                                       ID = id, 
-                                       WorkStartTime = e.StartDate, 
-                                       WorkEndTime = e.EndDate, 
-                                       ExtraHours = 0
-                                   };
-
-                this.windowService.OpenDialog<InputDayViewModel>(newInput);
+               this.windowService.OpenDialog<InputDayViewModel>(this.SelectedInputsId.ToArray());
             }
             else
             {
@@ -221,8 +212,7 @@ namespace TimePlannerNinject.ViewModel
         {
             if (e != null)
             {
-                this.windowService.OpenDialog<InputDayViewModel>(
-                    this.Days.First(d => e.Id != null && d.ID == e.Id.Value).Clone());
+               this.windowService.OpenDialog<InputDayViewModel>(this.SelectedInputsId.ToArray());
             }
             else
             {
@@ -243,6 +233,31 @@ namespace TimePlannerNinject.ViewModel
         {
             // Force a new Rebuild of calendar
             this.Days = this.service.AllDays;
+        }
+
+        /// <summary>
+        /// Le nom de la propriété <see cref="SelectedInputsId" />.
+        /// </summary>
+        public const string SelectedInputsIdPropertyName = "SelectedInputsId";
+
+        /// <summary>
+        /// Les dates selectionnées 
+        /// </summary>
+        private ObservableCollection<DateTime> selectedInputs = new ObservableCollection<DateTime>();
+
+        /// <summary>
+        /// Obtient ou définit les dates selectionnées 
+        /// </summary>
+        public ObservableCollection<DateTime> SelectedInputsId
+        {
+           get
+           {
+              return selectedInputs;
+           }
+           set
+           {
+              Set(SelectedInputsIdPropertyName, ref selectedInputs, value);
+           }
         }
     }
 }

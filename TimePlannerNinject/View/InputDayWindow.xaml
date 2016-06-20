@@ -49,7 +49,7 @@
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
             <GroupBox Grid.Row="0" Header="Lieu de travail">
-                <ComboBox ItemsSource="{Binding AllWorkPlace, Mode=TwoWay}" SelectedValue="{Binding Input.IdWorkPlace, Mode=TwoWay, FallbackValue=1}" SelectedValuePath="Id" Height="30">
+                <ComboBox ItemsSource="{Binding AllWorkPlace, Mode=TwoWay}" SelectedValue="{Binding IdWorkPlace, Mode=TwoWay, FallbackValue=1}" SelectedValuePath="Id" Height="30">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <command:EventToCommand Command="{Binding AllPlacesSelectionChangeCommand}" PassEventArgsToCommand="True"/>
@@ -88,13 +88,13 @@
                 </ComboBox>
             </GroupBox>
             <GroupBox Grid.Row="1" Header="Heure de début">
-                <xctk:TimePicker Value="{Binding Input.WorkStartTime, Mode=TwoWay}" />
+                <xctk:TimePicker Value="{Binding WorkStartTime, Mode=TwoWay}" />
             </GroupBox>
             <GroupBox Grid.Row="2" Header="Heure de fin">
-                <xctk:TimePicker Value="{Binding Input.WorkEndTime, Mode=TwoWay}" />
+                <xctk:TimePicker Value="{Binding WorkEndTime, Mode=TwoWay}" />
             </GroupBox>
             <GroupBox Grid.Row="3" Header="Heure supplémentaires">
-                <xctk:IntegerUpDown Value="{Binding Input.ExtraHours, Mode=TwoWay}" />
+                <xctk:IntegerUpDown Value="{Binding ExtraHours, Mode=TwoWay}" />
             </GroupBox>
         </Grid>
     </DockPanel>

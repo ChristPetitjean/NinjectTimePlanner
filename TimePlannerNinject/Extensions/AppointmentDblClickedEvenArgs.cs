@@ -3,7 +3,7 @@
 //   Christophe PETITJEAN - 2016
 // </copyright>
 // <summary>
-//   Argument de double click sur un évènement.
+//   Argument de click sur un évènement.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 namespace TimePlannerNinject.Extensions
@@ -11,7 +11,7 @@ namespace TimePlannerNinject.Extensions
    using System;
 
    /// <summary>
-   ///    Argument de double click sur un évènement.
+   ///    Argument de click sur un évènement.
    /// </summary>
    public class AppointmentDblClickedEvenArgs : EventArgs
    {

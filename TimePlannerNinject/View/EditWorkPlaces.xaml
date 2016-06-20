@@ -9,6 +9,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d ignore"
              d:DesignHeight="710.448"
              d:DesignWidth="1098.507"
@@ -26,7 +27,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate DataType="{x:Type model:WorkPlace}">
-                            <xctk:TimePicker Value="{Binding DefaultStartTime, Mode=TwoWay}"></xctk:TimePicker>
+                     <xctk:TimePicker Value="{Binding DefaultStartTime, Mode=TwoWay}"></xctk:TimePicker>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>

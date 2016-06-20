@@ -3,4 +3,5 @@
                     xmlns:converters="clr-namespace:TimePlannerNinject.Converters">
    <converters:DateTimeToTimeConverter x:Key="DateTimeToTimeConverter" />
    <converters:WorkplaceLookupConverter x:Key="WorkplaceLookupConverter" />
+   <converters:IfNullConverter x:Key="IfNullConverter"></converters:IfNullConverter>
 </ResourceDictionary>

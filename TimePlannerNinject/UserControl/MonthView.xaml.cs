@@ -82,6 +82,11 @@ namespace TimePlannerNinject.UserControl
       /// </summary>
       private readonly Brush todayStackBrush;
 
+      /// <summary>
+      /// The selected days border brush
+      /// </summary>
+      private readonly Brush selectedDaysBorderBrush;
+
       #endregion
 
       #region Constructors and Destructors
@@ -95,6 +100,7 @@ namespace TimePlannerNinject.UserControl
          this.dayBackBrush = (Brush)this.TryFindResource("DayBackBrush");
          this.targetBackBrush = (Brush)this.TryFindResource("TargetBackBrush");
          this.todayStackBrush = (Brush)this.TryFindResource("TodayStackBackBrush");
+         this.selectedDaysBorderBrush = (Brush)this.TryFindResource("SelectedDayBorderBrush");
 
          this.displayMonth = this.DisplayStartDate.Month;
          this.displayYear = this.DisplayStartDate.Year;
@@ -113,22 +119,22 @@ namespace TimePlannerNinject.UserControl
       #region Public Events
 
       /// <summary>
-      ///    The appointment dbl clicked.
+      ///    Levé lors du double click sur un évènement.
       /// </summary>
       public event EventHandler<AppointmentDblClickedEvenArgs> AppointmentDblClicked;
 
       /// <summary>
-      ///    The appointment moved.
+      ///    Levé lors du déplacement d'un évènement.
       /// </summary>
       public event EventHandler<AppointmentMovedEvenArgs> AppointmentMoved;
 
       /// <summary>
-      ///    The day box double clicked.
+      ///    Levé lors du double click sur un emplacement vide.
       /// </summary>
       public event EventHandler<NewAppointmentEventArgs> DayBoxDoubleClicked;
 
       /// <summary>
-      ///    The display month changed.
+      ///    Levé lors du changement de mois affiché.
       /// </summary>
       public event EventHandler<MonthChangedEventArgs> DisplayMonthChanged;
 
@@ -320,6 +326,13 @@ namespace TimePlannerNinject.UserControl
             dayBox.MouseDoubleClick += this.DayBoxOnMouseDoubleClick;
             dayBox.PreviewDragEnter += this.DayBoxOnPreviewDragEnter;
             dayBox.PreviewDragLeave += this.DayBoxOnPreviewDragLeave;
+            dayBox.MouseUp += this.DayBoxOnMouseUp;
+
+            if (this.SelectedDates.Any(s => s.Date.Day == i && s.Date.Month == this.displayMonth && s.Date.Year == this.displayYear))
+            {
+               dayBox.MainBorder.BorderBrush = this.selectedDaysBorderBrush;
+               dayBox.MainBorder.BorderThickness = new Thickness(2);
+            }
 
             NameScope.SetNameScope(dayBox, new NameScope());
             this.RegisterName("DayBox" + i, dayBox);
@@ -358,6 +371,119 @@ namespace TimePlannerNinject.UserControl
          Grid.SetRow(weekRowCtrl, weekCount);
          this.MonthViewGrid.Children.Add(weekRowCtrl);
       }
+
+      private int lastDayClicked;
+      private void DayBoxOnMouseUp(object sender, MouseButtonEventArgs e)
+      {
+         if (e.Source is DayBoxControl)
+         {
+            int day = (int)((DayBoxControl)e.Source).Tag;
+            if (Keyboard.Modifiers == ModifierKeys.Shift)
+            {
+               this.SelectedDates.Clear();
+               if (this.lastDayClicked != 0)
+               {
+                  if (this.lastDayClicked < day)
+                  {
+                     for (int i = this.lastDayClicked; i <= day; i++)
+                     {
+                        this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
+                     } 
+                  }
+                  else if (this.lastDayClicked > day)
+                  {
+                     for (int i = day; i <= this.lastDayClicked; i++)
+                     {
+                        this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
+                     } 
+                  }
+                  else
+                  {
+                     this.SelectedDates.Clear();
+                     this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+                  }
+                  
+               }
+               else
+               {
+                  this.SelectedDates.Clear();
+                  this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+               }
+            }
+            else if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+               if (!this.SelectedDates.Any(s => s.Date.Day == day && s.Date.Month == this.displayMonth && s.Date.Year == this.displayYear))
+               {
+                  this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+               }
+               else
+               {
+                  DateTime dateTime = this.SelectedDates.First(d => d.Year == this.displayYear && d.Month == this.displayMonth && d.Day == day);
+                  this.SelectedDates.Remove(dateTime);
+               }
+               this.lastDayClicked = day;
+            }
+            else
+            {
+               this.SelectedDates.Clear();
+               this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+               this.lastDayClicked = day;
+            }
+
+           
+            e.Handled = true;
+         }
+      }
+
+      public static readonly DependencyProperty SelectedDatesProperty = DependencyProperty.Register(
+         "SelectedDates",
+         typeof(ObservableCollection<DateTime>),
+         typeof(MonthView),
+         new PropertyMetadata(OnSelectedIdsChanged));
+
+      private static void OnSelectedIdsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+      {
+         var action = new NotifyCollectionChangedEventHandler(
+           (o, args) =>
+           {
+              MonthView me = d as MonthView;
+              if (me != null && me.IsLoaded)
+              {
+                 me.BuildCalendarUI();
+              }
+           });
+
+         if (e.OldValue != null)
+         {
+            var coll = (INotifyCollectionChanged)e.OldValue;
+            coll.CollectionChanged -= action;
+         }
+
+         if (e.NewValue != null)
+         {
+            var coll = (INotifyCollectionChanged)e.NewValue;
+            coll.CollectionChanged += action;
+         }
+
+         MonthView mv = d as MonthView;
+         if (mv != null && mv.IsLoaded)
+         {
+            mv.BuildCalendarUI();
+         }
+      }
+
+      public ObservableCollection<DateTime> SelectedDates
+      {
+         get
+         {
+            return (ObservableCollection<DateTime>)GetValue(SelectedDatesProperty);
+         }
+         set
+         {
+            SetValue(SelectedDatesProperty, value);
+         }
+      }
+
 
       /// <summary>
       /// The day box on mouse double click.
@@ -557,6 +683,9 @@ namespace TimePlannerNinject.UserControl
       /// </param>
       private void UpdateMonth(int monthsToAdd)
       {
+         this.lastDayClicked = 0;
+         this.SelectedDates.Clear();
+
          var ev = new MonthChangedEventArgs { OldDisplayStartDate = this.DisplayStartDate };
          this.DisplayStartDate = this.DisplayStartDate.AddMonths(monthsToAdd);
          ev.NewDisplayStartDate = this.DisplayStartDate;
