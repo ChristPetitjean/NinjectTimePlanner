@@ -416,15 +416,23 @@ namespace TimePlannerNinject.ViewModel
       /// </summary>
       private void ExecuteDeleteInputDayCommand()
       {
-         var inputDay = from d in this.service.AllDays
-                        where d.WorkStartTime.HasValue && this.DatesToEdit.Any(e => e.Date == d.WorkStartTime.Value.Date)
-                        select d;
-         while (inputDay.Any())
-         {
-            this.service.AllDays.Remove(inputDay.ElementAt(0));
-         }
+          MessageboxResponse response =
+              this.messageboxService.ShowMessagebox(
+                  "Etes-vos sûr de vouloir supprimer les éléments sélectionné ?",
+                  MessageboxKind.YesNo,
+                  "Demande de confirmation");
+          if (response == MessageboxResponse.Yes)
+          {
+                var inputDay = from d in this.service.AllDays
+                               where d.WorkStartTime.HasValue && this.DatesToEdit.Any(e => e.Date == d.WorkStartTime.Value.Date)
+                               select d;
+                while (inputDay.Any())
+                {
+                    this.service.AllDays.Remove(inputDay.ElementAt(0));
+                }
 
-         this.DialogResult = true;
+                this.DialogResult = true;
+            }
       }
 
       /// <summary>
