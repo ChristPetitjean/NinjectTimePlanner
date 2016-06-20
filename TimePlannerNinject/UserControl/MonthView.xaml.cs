@@ -110,6 +110,8 @@ namespace TimePlannerNinject.UserControl
          this.DisplayStartDate = DateTime.Now.AddDays(-1 * (DateTime.Now.Day - 1));
 
          this.Loaded += this.MonthViewLoaded;
+         this.KeyDown += this.OnAppointmentKeyDown;
+         this.Focus();
 
          this.InitializeComponent();
       }
@@ -125,7 +127,6 @@ namespace TimePlannerNinject.UserControl
                arg.EndDate = this.SelectedDates.Any() ? this.SelectedDates.OrderBy(d => d).Last() : (DateTime?)null;
                this.DayBoxDoubleClicked(sender, arg); 
             }
-       
          }
       }
 
@@ -337,12 +338,20 @@ namespace TimePlannerNinject.UserControl
                weekCount += 1;
             }
 
+            var contextextMenuItem = new MenuItem() { Header = "Ajouter / Modifier la sélection", };
+
             var dayBox = new DayBoxControl { Name = "DayBox" + i, DayNumberLabel = { Content = i.ToString() }, Tag = i };
             dayBox.MouseDoubleClick += this.DayBoxOnMouseDoubleClick;
             dayBox.PreviewDragEnter += this.DayBoxOnPreviewDragEnter;
             dayBox.PreviewDragLeave += this.DayBoxOnPreviewDragLeave;
             dayBox.MouseUp += this.DayBoxOnMouseUp;
-            dayBox.KeyDown += this.OnAppointmentKeyDown;
+
+            contextextMenuItem.Click += (sender, e) =>
+            {
+                this.DayBoxOnMouseDoubleClick(dayBox, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left));
+            };
+
+                dayBox.ContextMenu = new ContextMenu { Items = { contextextMenuItem } };
 
             if (this.SelectedDates.Any(s => s.Date.Day == i && s.Date.Month == this.displayMonth && s.Date.Year == this.displayYear))
             {
@@ -388,10 +397,10 @@ namespace TimePlannerNinject.UserControl
          this.MonthViewGrid.Children.Add(weekRowCtrl);
       }
 
-      private int lastDayClicked;
+       private int lastDayClicked;
       private void DayBoxOnMouseUp(object sender, MouseButtonEventArgs e)
       {
-         if (e.Source is DayBoxControl)
+         if (e.Source is DayBoxControl && e.ChangedButton == MouseButton.Left)
          {
             int day = (int)((DayBoxControl)e.Source).Tag;
             if (Keyboard.Modifiers == ModifierKeys.Shift)
@@ -446,7 +455,6 @@ namespace TimePlannerNinject.UserControl
                this.lastDayClicked = day;
             }
 
-           
             e.Handled = true;
          }
       }
@@ -512,7 +520,7 @@ namespace TimePlannerNinject.UserControl
       /// </param>
       private void DayBoxOnMouseDoubleClick(object sender, MouseButtonEventArgs e)
       {
-         if (e.Source is DayBoxControl && ((Visual)e.OriginalSource).FindVisualAncestor<DayBoxAppointmentControl>() == null)
+         if (e.Source is DayBoxControl && ((Visual)e.OriginalSource).FindVisualAncestor<DayBoxAppointmentControl>() == null && e.LeftButton == MouseButtonState.Pressed)
          {
             var ev = new NewAppointmentEventArgs();
             if (((DayBoxControl)e.Source).Tag != null)
@@ -527,6 +535,21 @@ namespace TimePlannerNinject.UserControl
             }
 
             e.Handled = true;
+         }
+         else if (sender is DayBoxControl)
+         {
+             DayBoxControl dayBoxControl = (DayBoxControl)sender;
+             var ev = new NewAppointmentEventArgs();
+             if (dayBoxControl.Tag != null)
+             {
+                 ev.StartDate = new DateTime(this.displayYear, this.displayMonth, (int)dayBoxControl.Tag);
+                 ev.EndDate = ((DateTime)ev.StartDate);
+             }
+
+             if (this.DayBoxDoubleClicked != null)
+             {
+                 this.DayBoxDoubleClicked(sender, ev);
+             }
          }
       }
 
@@ -563,30 +586,6 @@ namespace TimePlannerNinject.UserControl
          {
             this.RestoreDayBoxBackground((DayBoxControl)sender);
          }
-      }
-
-      /// <summary>
-      /// The get dummy apt.
-      /// </summary>
-      /// <param name="day">
-      /// The day.
-      /// </param>
-      /// <returns>
-      /// The <see cref="Border"/>.
-      /// </returns>
-      private Border GetDummyApt(int day)
-      {
-         var brd = new Border
-                      {
-                         CornerRadius = new CornerRadius(5),
-                         BorderBrush = Brushes.DarkOliveGreen,
-                         Background = Brushes.LightGreen,
-                         Margin = new Thickness(2, 2, 2, 1),
-                         BorderThickness = new Thickness(1),
-                         Child = new TextBlock(new Run("Evènement le" + day)) { Padding = new Thickness(2), FontSize = 10 }
-                      };
-
-         return brd;
       }
 
       /// <summary>

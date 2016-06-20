@@ -11,18 +11,17 @@
              BorderBrush="LightSlateGray" 
              BorderThickness="1"
              IsHitTestVisible="True">
-   <UserControl.Resources>
-      <ResourceDictionary>
-         <LinearGradientBrush x:Key="BlueGradientBrush" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFFFFFFF" Offset="0"/>
-            <GradientStop Color="#FFC4DDFF" Offset="0.987"/>
-            <GradientStop Color="#FFDEECFF" Offset="0.535"/>
-         </LinearGradientBrush>
-      </ResourceDictionary>
-   </UserControl.Resources>
-
-   <Border x:Name="MainBorder" BorderThickness="1" BorderBrush="Transparent">
-      <Grid>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <LinearGradientBrush x:Key="BlueGradientBrush" EndPoint="0,1" StartPoint="0,0">
+                <GradientStop Color="#FFFFFFFF" Offset="0"/>
+                <GradientStop Color="#FFC4DDFF" Offset="0.987"/>
+                <GradientStop Color="#FFDEECFF" Offset="0.535"/>
+            </LinearGradientBrush>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border x:Name="MainBorder" BorderThickness="1" BorderBrush="Transparent">
+        <Grid>
          <Grid.RowDefinitions>
             <RowDefinition Height="21" />
             <RowDefinition Height="*" />
