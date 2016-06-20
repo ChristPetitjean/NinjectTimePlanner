@@ -117,8 +117,8 @@
     <Compile Include="Extensions\AppointmentDblClickedEvenArgs.cs" />
     <Compile Include="Extensions\AppointmentMovedEvenArgs.cs" />
     <Compile Include="Model\InputDay.cs" />
-    <Compile Include="Extensions\MessageboxKind.cs" />
-    <Compile Include="Extensions\MessageboxResponse.cs" />
+    <Compile Include="Services\MessageboxKind.cs" />
+    <Compile Include="Services\MessageboxResponse.cs" />
     <Compile Include="Extensions\MonthChangedEventArgs.cs" />
     <Compile Include="Extensions\NewAppointmentEventArgs.cs" />
     <Compile Include="Model\StatutMessage.cs" />
