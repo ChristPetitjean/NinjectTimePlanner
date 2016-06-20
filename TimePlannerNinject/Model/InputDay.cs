@@ -3,6 +3,7 @@
 //   Christophe PETITJEAN - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace TimePlannerNinject.Model
 {
    using System;
@@ -61,13 +62,13 @@ namespace TimePlannerNinject.Model
       }
 
       /// <summary>
-      /// Initialise une nouvelle instance de la classe <see cref="InputDay"/>.
+      ///    Initialise une nouvelle instance de la classe <see cref="InputDay" />.
       /// </summary>
       /// <param name="info">
-      /// Les infos de sérilisation.
+      ///    Les infos de sérilisation.
       /// </param>
       /// <param name="context">
-      /// le context de sérialisation.
+      ///    le context de sérialisation.
       /// </param>
       protected InputDay(SerializationInfo info, StreamingContext context)
       {
@@ -95,6 +96,39 @@ namespace TimePlannerNinject.Model
          set
          {
             this.Set("ExtraHours", ref this.extraHours, value);
+         }
+      }
+
+      /// <summary>
+      ///    Obtient ou définit l'identifiant.
+      /// </summary>
+      // ReSharper disable once InconsistentNaming
+      public int ID
+      {
+         get
+         {
+            return this.id;
+         }
+
+         set
+         {
+            this.Set("ID", ref this.id, value);
+         }
+      }
+
+      /// <summary>
+      ///    Obtient ou définit le lieux de travail pour l'entrée.
+      /// </summary>
+      public int? IdWorkPlace
+      {
+         get
+         {
+            return this.idWorkPlace;
+         }
+
+         set
+         {
+            this.Set("IdWorkPlace", ref this.idWorkPlace, value);
          }
       }
 
@@ -138,22 +172,6 @@ namespace TimePlannerNinject.Model
       }
 
       /// <summary>
-      ///    Obtient ou définit le lieux de travail pour l'entrée.
-      /// </summary>
-      public int? IdWorkPlace
-      {
-         get
-         {
-            return this.idWorkPlace;
-         }
-
-         set
-         {
-            this.Set("IdWorkPlace", ref this.idWorkPlace, value);
-         }
-      }
-
-      /// <summary>
       ///    Obtient ou définit l'heure de début du travail quotidien.
       /// </summary>
       public DateTime? WorkStartTime
@@ -169,36 +187,30 @@ namespace TimePlannerNinject.Model
          }
       }
 
-      /// <summary>
-      ///    Obtient ou définit l'identifiant.
-      /// </summary>
-      // ReSharper disable once InconsistentNaming
-      public int ID
-      {
-         get
-         {
-            return this.id;
-         }
-
-         set
-         {
-            this.Set("ID", ref this.id, value);
-         }
-      }
-
       #endregion
 
       #region Public Methods and Operators
 
       /// <summary>
-      /// Remplit <see cref="T:System.Runtime.Serialization.SerializationInfo"/> avec les données nécessaires pour sérialiser
+      ///    Crée un objet qui est une copie de l'instance actuelle.
+      /// </summary>
+      /// <returns>
+      ///    Nouvel objet qui est une copie de cette instance.
+      /// </returns>
+      public object Clone()
+      {
+         return this.MemberwiseClone();
+      }
+
+      /// <summary>
+      ///    Remplit <see cref="T:System.Runtime.Serialization.SerializationInfo" /> avec les données nécessaires pour sérialiser
       ///    l'objet cible.
       /// </summary>
       /// <param name="info">
-      /// <see cref="T:System.Runtime.Serialization.SerializationInfo"/> à remplir de données.
+      ///    <see cref="T:System.Runtime.Serialization.SerializationInfo" /> à remplir de données.
       /// </param>
       /// <param name="context">
-      /// Destination (consultez <see cref="T:System.Runtime.Serialization.StreamingContext"/>) de cette
+      ///    Destination (consultez <see cref="T:System.Runtime.Serialization.StreamingContext" />) de cette
       ///    sérialisation.
       /// </param>
       [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
@@ -212,16 +224,5 @@ namespace TimePlannerNinject.Model
       }
 
       #endregion
-
-      /// <summary>
-      ///    Crée un objet qui est une copie de l'instance actuelle.
-      /// </summary>
-      /// <returns>
-      ///    Nouvel objet qui est une copie de cette instance.
-      /// </returns>
-      public object Clone()
-      {
-         return this.MemberwiseClone();
-      }
    }
 }
