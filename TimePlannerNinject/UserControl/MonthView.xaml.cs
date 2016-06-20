@@ -114,6 +114,21 @@ namespace TimePlannerNinject.UserControl
          this.InitializeComponent();
       }
 
+      void OnAppointmentKeyDown(object sender, KeyEventArgs e)
+      {
+         if (e.Key == Key.Enter)
+         {
+            if (this.DayBoxDoubleClicked != null)
+            {
+               NewAppointmentEventArgs arg = new NewAppointmentEventArgs();
+               arg.StartDate = this.SelectedDates.Any() ? this.SelectedDates.OrderBy(d => d).First() : (DateTime?)null;
+               arg.EndDate = this.SelectedDates.Any() ? this.SelectedDates.OrderBy(d => d).Last() : (DateTime?)null;
+               this.DayBoxDoubleClicked(sender, arg); 
+            }
+       
+         }
+      }
+
       #endregion
 
       #region Public Events
@@ -327,6 +342,7 @@ namespace TimePlannerNinject.UserControl
             dayBox.PreviewDragEnter += this.DayBoxOnPreviewDragEnter;
             dayBox.PreviewDragLeave += this.DayBoxOnPreviewDragLeave;
             dayBox.MouseUp += this.DayBoxOnMouseUp;
+            dayBox.KeyDown += this.OnAppointmentKeyDown;
 
             if (this.SelectedDates.Any(s => s.Date.Day == i && s.Date.Month == this.displayMonth && s.Date.Year == this.displayYear))
             {

@@ -9,8 +9,6 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d ignore"
-             d:DesignHeight="710.448"
-             d:DesignWidth="1098.507"
         DataContext="{Binding Calendrier, Source={StaticResource Locator}}">
 
    <Grid x:Name="LayoutRoot">
