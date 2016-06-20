@@ -4,119 +4,136 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
-using GalaSoft.MvvmLight.CommandWpf;
-using TimePlannerNinject.Kernel;
-
 namespace TimePlannerNinject.ViewModel
 {
-    using System.Windows;
-    using System.Xml.Serialization;
+   using System.Windows;
 
-    using GalaSoft.MvvmLight;
+   using GalaSoft.MvvmLight;
+   using GalaSoft.MvvmLight.CommandWpf;
 
-    using Microsoft.Win32;
+   using Microsoft.Win32;
 
-    using TimePlannerNinject.Model;
-    using TimePlannerNinject.Services;
+   using TimePlannerNinject.Model;
+   using TimePlannerNinject.Services;
 
-    /// <summary>
-    /// The menu view model.
-    /// </summary>
-    public class MenuPrincipalViewModel : ViewModelBase
-    {
-        #region Fields
+   /// <summary>
+   ///    View model du menu principal.
+   /// </summary>
+   public class MenuPrincipalViewModel : ViewModelBase
+   {
+      #region Fields
 
-        /// <summary>
-        /// The service.
-        /// </summary>
-        private readonly ATimePlannerDataService service;
+      /// <summary>
+      ///    Le service de données.
+      /// </summary>
+      private readonly ATimePlannerDataService service;
 
-        #endregion
+      /// <summary>
+      ///    Commande de sortie de l'application
+      /// </summary>
+      private RelayCommand exitCommand;
 
-        #region Constructors and Destructors
+      /// <summary>
+      ///    Commande d'ouverture de fichier
+      /// </summary>
+      private RelayCommand openNewFileCommand;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MenuPrincipalViewModel"/> class.
-        /// </summary>
-        /// <param name="service">
-        /// The service.
-        /// </param>
-        public MenuPrincipalViewModel(ATimePlannerDataService service)
-        {
-            this.service = service;
-        }
+      /// <summary>
+      ///    Commande de sauvegarde
+      /// </summary>
+      private RelayCommand saveFileCommand;
 
-        private RelayCommand openNewFileCommand;
+      #endregion
 
-        /// <summary>
-        /// Gets the OpenNewFileCommand.
-        /// </summary>
-        public RelayCommand OpenNewFileCommand
-        {
-            get
-            {
-                return openNewFileCommand
-                    ?? (openNewFileCommand = new RelayCommand(ExecuteOpenNewFileCommand));
-            }
-        }
+      #region Constructors and Destructors
 
-        private void ExecuteOpenNewFileCommand()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Fichier d'évenement | *.tpn";
-            openFileDialog.Multiselect = false;
-            if (openFileDialog.ShowDialog(Application.Current.MainWindow) == true)
-            {
-                this.service.ReadDataFromFile(openFileDialog.FileName);
-                StatutMessage.SendStatutMessage(string.Format("Fichier \"{0}\" ouvert", openFileDialog.FileName));
-            }
-        }
+      /// <summary>
+      ///    Initialise une nouvelle instance de la classe <see cref="MenuPrincipalViewModel" />.
+      /// </summary>
+      /// <param name="service">Le service de données.</param>
+      public MenuPrincipalViewModel(ATimePlannerDataService service)
+      {
+         this.service = service;
+      }
 
-        private RelayCommand saveFileCommand;
+      #endregion
 
-        /// <summary>
-        /// Gets the SaveFileCommand.
-        /// </summary>
-        public RelayCommand SaveFileCommand
-        {
-            get
-            {
-                return saveFileCommand
-                    ?? (saveFileCommand = new RelayCommand(ExecuteSaveFileCommand));
-            }
-        }
+      #region Public Properties
 
-        private void ExecuteSaveFileCommand()
-        {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Fichier d'évenement | *.tpn";
-            if (saveFileDialog.ShowDialog(Application.Current.MainWindow) == true)
-            {
-                this.service.SaveDataToFile(saveFileDialog.FileName);
-                StatutMessage.SendStatutMessage(string.Format("Fichier \"{0}\" sauvegardé", saveFileDialog.FileName));
-            }
-        }
+      /// <summary>
+      ///    Obtient la commande de sortie de l'application.
+      /// </summary>
+      public RelayCommand ExitCommand
+      {
+         get
+         {
+            return this.exitCommand ?? (this.exitCommand = new RelayCommand(this.ExecuteExitCommand));
+         }
+      }
 
-        private RelayCommand exitCommand;
+      /// <summary>
+      ///    Obtient la commande d'ouverture de fichier.
+      /// </summary>
+      public RelayCommand OpenNewFileCommand
+      {
+         get
+         {
+            return this.openNewFileCommand ?? (this.openNewFileCommand = new RelayCommand(this.ExecuteOpenNewFileCommand));
+         }
+      }
 
-        /// <summary>
-        /// Gets the ExitCommand.
-        /// </summary>
-        public RelayCommand ExitCommand
-        {
-            get
-            {
-                return exitCommand
-                    ?? (exitCommand = new RelayCommand(ExecuteExitCommand));
-            }
-        }
+      /// <summary>
+      ///    Obtient la commande de sauvegarde.
+      /// </summary>
+      public RelayCommand SaveFileCommand
+      {
+         get
+         {
+            return this.saveFileCommand ?? (this.saveFileCommand = new RelayCommand(this.ExecuteSaveFileCommand));
+         }
+      }
 
-        private void ExecuteExitCommand()
-        {
-            Application.Current.Shutdown();
-        }
+      #endregion
 
-        #endregion
-    }
+      #region Methods
+
+      /// <summary>
+      ///    Executela commande de sortie de l'application.
+      /// </summary>
+      private void ExecuteExitCommand()
+      {
+         Application.Current.Shutdown();
+      }
+
+      /// <summary>
+      ///    Execute la commande d'ouverture de nouveau fichier.
+      /// </summary>
+      private void ExecuteOpenNewFileCommand()
+      {
+         var openFileDialog = new OpenFileDialog();
+         openFileDialog.Filter = "Fichier d'évenement | *.tpn";
+         openFileDialog.Multiselect = false;
+         if (openFileDialog.ShowDialog(Application.Current.MainWindow) == true)
+         {
+            this.service.ReadDataFromFile(openFileDialog.FileName);
+            StatutMessage.SendStatutMessage(string.Format("Fichier \"{0}\" ouvert", openFileDialog.FileName));
+         }
+      }
+
+      /// <summary>
+      ///    Executela commande de sauvegarde.
+      /// </summary>
+      private void ExecuteSaveFileCommand()
+      {
+         var saveFileDialog = new SaveFileDialog();
+         saveFileDialog.Filter = "Fichier d'évenement | *.tpn";
+         if (saveFileDialog.ShowDialog(Application.Current.MainWindow) == true)
+         {
+            this.service.SaveDataToFile(saveFileDialog.FileName);
+            StatutMessage.SendStatutMessage(string.Format("Fichier \"{0}\" sauvegardé", saveFileDialog.FileName));
+         }
+      }
+
+      #endregion
+   }
 }

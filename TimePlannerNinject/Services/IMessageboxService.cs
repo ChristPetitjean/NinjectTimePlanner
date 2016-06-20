@@ -1,20 +1,40 @@
-﻿namespace TimePlannerNinject.Services
-{
-    using TimePlannerNinject.Extensions;
-    using TimePlannerNinject.Model;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IMessageboxService.cs" company="Christophe PETITJEAN">
+//   Christophe PETITJEAN - 2016
+// </copyright>
+// <summary>
+//   Service permettant l'affichage d'une messagebox
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-    /// <summary>
-    /// Defines functionality for the displaying of message boxes
-    /// </summary>
-    public interface IMessageboxService
-    {
-        /// <summary>
-        /// Shows a message box, and blocks until it is closed.
-        /// </summary>
-        /// <param name="message">The message to shown in the message box</param>
-        /// <param name="messageboxKind">The kind of message box to display</param>
-        /// <param name="title">The title of the message box window</param>
-        /// <returns>The button that the user clicked</returns>
-        MessageboxResponse ShowMessagebox(string message, MessageboxKind messageboxKind, string title = null);
-    }
+namespace TimePlannerNinject.Services
+{
+   using TimePlannerNinject.Extensions;
+
+   /// <summary>
+   ///    Service permettant l'affichage d'une messagebox
+   /// </summary>
+   public interface IMessageboxService
+   {
+      #region Public Methods and Operators
+
+      /// <summary>
+      /// Affiche une MessageBox bloquante.
+      /// </summary>
+      /// <param name="message">
+      /// Message à afficher
+      /// </param>
+      /// <param name="messageboxKind">
+      /// Type de MessageBox
+      /// </param>
+      /// <param name="title">
+      /// Titre de la MessageBox
+      /// </param>
+      /// <returns>
+      /// Bouton cliqué par l'utilisateur
+      /// </returns>
+      MessageboxResponse ShowMessagebox(string message, MessageboxKind messageboxKind, string title = null);
+
+      #endregion
+   }
 }

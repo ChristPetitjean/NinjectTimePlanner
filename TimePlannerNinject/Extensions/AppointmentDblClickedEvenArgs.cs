@@ -2,21 +2,23 @@
 // <copyright file="AppointmentDblClickedEvenArgs.cs" company="Christophe PETITJEAN">
 //   Christophe PETITJEAN - 2016
 // </copyright>
+// <summary>
+//   Argument de double click sur un évènement.
+// </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace TimePlannerNinject.Extensions
 {
-    using System;
+   using System;
 
-    /// <summary>
-   /// The appointment dbl clicked even args.
+   /// <summary>
+   ///    Argument de double click sur un évènement.
    /// </summary>
    public class AppointmentDblClickedEvenArgs : EventArgs
    {
       #region Public Properties
 
       /// <summary>
-      /// Obtient ou définit l'identifiant de l'événement.
+      ///    Obtient ou définit l'identifiant de l'événement.
       /// </summary>
       public int? Id { get; set; }
 

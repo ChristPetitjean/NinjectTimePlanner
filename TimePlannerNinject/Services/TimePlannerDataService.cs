@@ -2,41 +2,45 @@
 // <copyright file="TimePlannerDataService.cs" company="Christophe PETITJEAN">
 //   Christophe PETITJEAN - 2016
 // </copyright>
+// <summary>
+//   Service de récupération des données.
+// </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace TimePlannerNinject.Services
 {
-    using System;
-    using System.Collections.ObjectModel;
-    using System.IO;
-    using System.Linq;
-    using System.Net;
-    using System.Xml.Serialization;
+   using System.Collections.ObjectModel;
+   using System.IO;
+   using System.Linq;
+   using System.Xml.Serialization;
 
-    using TimePlannerNinject.Model;
+   using TimePlannerNinject.Model;
 
-    /// <summary>
-   /// The time planner data service.
+   /// <summary>
+   ///    Service de récupération des données.
    /// </summary>
    public class TimePlannerDataService : ATimePlannerDataService
    {
+      #region Public Methods and Operators
+
       /// <summary>
       /// Lit les données a partir d'un fichier.
       /// </summary>
-      /// <param name="filename">Le nom du fichier contenant les données.</param>
+      /// <param name="filename">
+      /// Le nom du fichier contenant les données.
+      /// </param>
       public override void ReadDataFromFile(string filename)
       {
          try
          {
-            using (StreamReader fileStream = new StreamReader(filename))
+            using (var fileStream = new StreamReader(filename))
             {
-               XmlSerializer serializer = new XmlSerializer(typeof(AppFile));
-               AppFile appFile = (AppFile)serializer.Deserialize(fileStream);
+               var serializer = new XmlSerializer(typeof(AppFile));
+               var appFile = (AppFile)serializer.Deserialize(fileStream);
 
                this.AllDays = new ObservableCollection<InputDay>(appFile.Inputdays ?? new InputDay[0]);
                this.AllPlaces = new ObservableCollection<WorkPlace>(appFile.Worplaces ?? new WorkPlace[0]);
 
-                base.ReadDataFromFile(filename);
+               base.ReadDataFromFile(filename);
             }
          }
          catch
@@ -49,7 +53,9 @@ namespace TimePlannerNinject.Services
       /// <summary>
       /// Sauvegarde les données dans un fichier.
       /// </summary>
-      /// <param name="filename">Le nom du fichier.</param>
+      /// <param name="filename">
+      /// Le nom du fichier.
+      /// </param>
       /// <returns>
       /// True en cas de succès, false sinon.
       /// </returns>
@@ -57,10 +63,10 @@ namespace TimePlannerNinject.Services
       {
          try
          {
-            using (StreamWriter fileStream = new StreamWriter(filename))
+            using (var fileStream = new StreamWriter(filename))
             {
-               AppFile appFile = new AppFile { Inputdays = this.AllDays.ToArray(), Worplaces = this.AllPlaces.ToArray() };
-               XmlSerializer serializer = new XmlSerializer(typeof(AppFile));
+               var appFile = new AppFile { Inputdays = this.AllDays.ToArray(), Worplaces = this.AllPlaces.ToArray() };
+               var serializer = new XmlSerializer(typeof(AppFile));
                serializer.Serialize(fileStream, appFile);
             }
 
@@ -71,5 +77,7 @@ namespace TimePlannerNinject.Services
             return false;
          }
       }
+
+      #endregion
    }
 }

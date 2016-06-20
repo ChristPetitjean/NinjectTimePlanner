@@ -1,33 +1,42 @@
-﻿namespace TimePlannerNinject.Extensions
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MessageboxResponse.cs" company="Christophe PETITJEAN">
+//   Christophe PETITJEAN - 2016
+// </copyright>
+// <summary>
+//   Réprésente le résultat utilisateur de la MessageBox
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace TimePlannerNinject.Extensions
 {
-    /// <summary>
-    /// Represents the user's response to a message box
-    /// </summary>
-    public enum MessageboxResponse
-    {
-        /// <summary>
-        /// No button was pressed
-        /// </summary>
-        None = 0,
+   /// <summary>
+   ///    Réprésente le résultat utilisateur de la MessageBox
+   /// </summary>
+   public enum MessageboxResponse
+   {
+      /// <summary>
+      ///    Click sur le bouton non
+      /// </summary>
+      None = 0, 
 
-        /// <summary>
-        /// The OK button was pressed
-        /// </summary>
-        Ok,
+      /// <summary>
+      ///    Click sur le bouton Ok
+      /// </summary>
+      Ok, 
 
-        /// <summary>
-        /// The Cancel button was pressed
-        /// </summary>
-        Cancel,
+      /// <summary>
+      ///    Click sur le bouton annuler
+      /// </summary>
+      Cancel, 
 
-        /// <summary>
-        /// The Yes button was pressed
-        /// </summary>
-        Yes,
+      /// <summary>
+      ///    Click sur le bouton oui
+      /// </summary>
+      Yes, 
 
-        /// <summary>
-        /// The No button was pressed
-        /// </summary>
-        No,
-    }
+      /// <summary>
+      ///    Click sur le bouton non
+      /// </summary>
+      No
+   }
 }

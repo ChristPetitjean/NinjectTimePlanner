@@ -12,20 +12,20 @@ namespace TimePlannerNinject.Model
    using GalaSoft.MvvmLight.Messaging;
 
     /// <summary>
-    /// The statut message.
+    /// Classe permettant la mise en place d'un message dans la barre de statut.
     /// </summary>
     public static class StatutMessage
    {
         /// <summary>
-        /// The token.
+        /// Token de messenger MvvM light pour l'affichage d'un message dans la barre de statut.
         /// </summary>
         public const string Token = "tokenStatutMessage";
 
         /// <summary>
-        /// The send statut message.
+        /// Met en place un message dans la barre de statut.
         /// </summary>
         /// <param name="message">
-        /// The message.
+        /// Message a afficher.
         /// </param>
         public static void SendStatutMessage(string message)
       {

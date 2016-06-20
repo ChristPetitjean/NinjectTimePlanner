@@ -6,15 +6,10 @@
 namespace TimePlannerNinject.Model
 {
    using System;
-   using System.Collections.Generic;
-   using System.Linq;
    using System.Runtime.Serialization;
    using System.Security.Permissions;
-   using System.Windows.Media.Effects;
 
    using GalaSoft.MvvmLight;
-
-   using TimePlannerNinject.Extensions;
 
    /// <summary>
    ///    The input day.
@@ -25,14 +20,19 @@ namespace TimePlannerNinject.Model
       #region Fields
 
       /// <summary>
+      ///    Heures supplémentaires.
+      /// </summary>
+      private int? extraHours;
+
+      /// <summary>
       ///    Identifiant de l'événement.
       /// </summary>
       private int id;
 
       /// <summary>
-      ///    Heures supplémentaires.
+      ///    Lieux de travail.
       /// </summary>
-      private int? extraHours;
+      private int? idWorkPlace;
 
       /// <summary>
       ///    Jour travaillé.
@@ -43,11 +43,6 @@ namespace TimePlannerNinject.Model
       ///    Heure de fin du travail quotidien.
       /// </summary>
       private DateTime? workEndTime;
-
-      /// <summary>
-      ///    Lieux de travail.
-      /// </summary>
-      private int? idWorkPlace;
 
       /// <summary>
       ///    Heure de début du travail quotidien.
@@ -218,9 +213,15 @@ namespace TimePlannerNinject.Model
 
       #endregion
 
-       public object Clone()
-       {
-           return this.MemberwiseClone();
-       }
+      /// <summary>
+      ///    Crée un objet qui est une copie de l'instance actuelle.
+      /// </summary>
+      /// <returns>
+      ///    Nouvel objet qui est une copie de cette instance.
+      /// </returns>
+      public object Clone()
+      {
+         return this.MemberwiseClone();
+      }
    }
 }

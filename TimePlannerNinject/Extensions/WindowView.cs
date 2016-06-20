@@ -3,54 +3,59 @@
 //   Christophe PETITJEAN - 2016
 // </copyright>
 // <summary>
-//   Base class for a window displayed in the bugView application
+//   Classe de base permettant l'affichage d'une fenêtre en MvvM
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace TimePlannerNinject.Extensions
 {
-    using System;
-    using System.Windows;
+   using System;
+   using System.Windows;
 
-    using GalaSoft.MvvmLight;
+   using GalaSoft.MvvmLight;
 
-    /// <summary>
-    /// Base class for a window displayed in the bugView application
-    /// </summary>
-    public abstract class WindowView : Window
-    {
-        /// <summary>
-        /// Initializes the data context of the window.
-        /// </summary>
-        /// <param name="viewModel">
-        /// The view model
-        /// </param>
-        public void Initialize(ViewModelBase viewModel)
-        {
-            this.DataContext = viewModel;
-            if (this != Application.Current.MainWindow)
-            {
-                this.Owner = Application.Current.MainWindow;
-            }
-            
-        }
+   /// <summary>
+   ///    Classe de base permettant l'affichage d'une fenêtre en MvvM
+   /// </summary>
+   public abstract class WindowView : Window
+   {
+      #region Public Methods and Operators
 
-        /// <summary>
-        /// Cleans up the bound view model when the window is closed. 
-        /// Override Cleanup() in the view model if you need to dispose custom objects.
-        /// </summary>
-        /// <param name="e">
-        /// The closed event args.
-        /// </param>
-        protected override void OnClosed(EventArgs e)
-        {
-            var viewModel = this.DataContext as ViewModelBase;
-            if (viewModel != null)
-            {
-                viewModel.Cleanup();
-            }
+      /// <summary>
+      /// Initialise le contexte de données de la vue
+      /// </summary>
+      /// <param name="viewModel">
+      /// Le VM correspondant à la vue
+      /// </param>
+      public void Initialize(ViewModelBase viewModel)
+      {
+         this.DataContext = viewModel;
+         if (this != Application.Current.MainWindow)
+         {
+            this.Owner = Application.Current.MainWindow;
+         }
+      }
 
-            base.OnClosed(e);
-        }
-    }
+      #endregion
+
+      #region Methods
+
+      /// <summary>
+      /// Déclenche l'événement <see cref="E:System.Windows.Window.Closed"/>.
+      /// </summary>
+      /// <param name="e">
+      /// <see cref="T:System.EventArgs"/> qui contient les données de l'événement.
+      /// </param>
+      protected override void OnClosed(EventArgs e)
+      {
+         var viewModel = this.DataContext as ViewModelBase;
+         if (viewModel != null)
+         {
+            viewModel.Cleanup();
+         }
+
+         base.OnClosed(e);
+      }
+
+      #endregion
+   }
 }

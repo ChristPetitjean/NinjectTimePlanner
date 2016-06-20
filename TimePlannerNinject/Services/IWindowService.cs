@@ -1,60 +1,85 @@
-﻿namespace TimePlannerNinject.Services
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IWindowService.cs" company="Christophe PETITJEAN">
+//   Christophe PETITJEAN - 2016
+// </copyright>
+// <summary>
+//   Interface du service permettant l'ouverture de fenêtre en MvvM pur.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace TimePlannerNinject.Services
 {
-    using GalaSoft.MvvmLight;
+   using GalaSoft.MvvmLight;
 
-    /// <summary>
-    /// Defines the Window service functionality.
-    /// </summary>
-    public interface IWindowService
-    {
-        /// <summary>
-        /// Opens the window for a given view model type
-        /// </summary>
-        /// <typeparam name="T">
-        /// The view model type
-        /// </typeparam>
-        /// <param name="viewName">
-        /// The name of a the view to open.
-        /// </param>
-        /// <param name="model">
-        /// The model to pass to the view model
-        /// </param>
-        void OpenWindow<T>(string viewName, object model = null) where T : ViewModelBase;
+   /// <summary>
+   ///    Interface du service permettant l'ouverture de fenêtre en MvvM pur.
+   /// </summary>
+   public interface IWindowService
+   {
+      #region Public Methods and Operators
 
-        /// <summary>
-        /// Opens the window for a given view model type
-        /// </summary>
-        /// <typeparam name="T">
-        /// The view model type
-        /// </typeparam>
-        /// <param name="model">
-        /// The model to pass to the view model
-        /// </param>
-        void OpenWindow<T>(object model = null) where T : ViewModelBase;
+      /// <summary>
+      /// Ouvre la fenêtre bloquante correspondant au ViewModel
+      /// </summary>
+      /// <typeparam name="T">
+      /// Type de ViewModel
+      /// </typeparam>
+      /// <param name="viewName">
+      /// Nom de la vue à ouvrir.
+      /// </param>
+      /// <param name="model">
+      /// Paramètre à passer au ViewModel
+      ///    <remarks>
+      /// Le paramètre doit obligatoirement se nommer model pour correspondre
+      ///    </remarks>
+      /// </param>
+      void OpenDialog<T>(string viewName, object model = null) where T : ViewModelBase;
 
-        /// <summary>
-        /// Opens the window for a given view model type as a dialogue
-        /// </summary>
-        /// <typeparam name="T">
-        /// The view model type
-        /// </typeparam>
-        /// <param name="viewName">
-        /// The name of a the view to open.
-        /// </param>
-        /// <param name="model">
-        /// The model to pass to the view model
-        /// </param>
-        void OpenDialog<T>(string viewName, object model = null) where T : ViewModelBase;
+      /// <summary>
+      /// Ouvre la fenêtre bloquante correspondant au ViewModel
+      /// </summary>
+      /// <typeparam name="T">
+      /// Type de ViewModel
+      /// </typeparam>
+      /// <param name="model">
+      /// Paramètre à passer au ViewModel
+      ///    <remarks>
+      /// Le paramètre doit obligatoirement se nommer model pour correspondre
+      ///    </remarks>
+      /// </param>
+      void OpenDialog<T>(object model = null) where T : ViewModelBase;
 
-        /// <summary>
-        /// Opens the window for a given view model type as a dialogue
-        /// </summary>
-        /// <typeparam name="T">
-        /// The view model type
-        /// </typeparam>
-        /// <param name="model">
-        /// The model to pass to the view model
-        /// </param>
-        void OpenDialog<T>(object model = null) where T : ViewModelBase;
-    }
+      /// <summary>
+      /// Ouvre la fenêtre correspondant au ViewModel
+      /// </summary>
+      /// <typeparam name="T">
+      /// Type de ViewModel
+      /// </typeparam>
+      /// <param name="viewName">
+      /// Nom de la vue à ouvrir.
+      /// </param>
+      /// <param name="model">
+      /// Paramètre à passer au ViewModel
+      ///    <remarks>
+      /// Le paramètre doit obligatoirement se nommer model pour correspondre
+      ///    </remarks>
+      /// </param>
+      void OpenWindow<T>(string viewName, object model = null) where T : ViewModelBase;
+
+      /// <summary>
+      /// Ouvre la fenêtre correspondant au ViewModel
+      /// </summary>
+      /// <typeparam name="T">
+      /// Type de ViewModel
+      /// </typeparam>
+      /// <param name="model">
+      /// Paramètre à passer au ViewModel
+      ///    <remarks>
+      /// Le paramètre doit obligatoirement se nommer model pour correspondre
+      ///    </remarks>
+      /// </param>
+      void OpenWindow<T>(object model = null) where T : ViewModelBase;
+
+      #endregion
+   }
 }

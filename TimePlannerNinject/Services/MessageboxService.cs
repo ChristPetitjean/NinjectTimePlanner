@@ -1,87 +1,112 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MessageboxService.cs" company="Christophe PETITJEAN">
+//   Christophe PETITJEAN - 2016
+// </copyright>
+// <summary>
+//   Service permettant l'affichage de MessageBox en MvvM pur.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace TimePlannerNinject.Services
 {
-    using System.Windows;
+   using System;
+   using System.Windows;
 
-    using TimePlannerNinject.Extensions;
-    using TimePlannerNinject.Model;
+   using TimePlannerNinject.Extensions;
 
-    /// <summary>
-    /// Concrete implementation of the <see cref="IMessageboxService"/> for WPF.
-    /// </summary>
-    public class MessageboxService : IMessageboxService
-    {
-        /// <inheritdoc />
-        public MessageboxResponse ShowMessagebox(string message, MessageboxKind messageboxKind, string title = null)
-        {
-            var result = MessageBox.Show(message, title, GetButtonFromMessageBoxKind(messageboxKind));
-            return GetMessageboxResponceFromResult(result);
-        }
+   /// <summary>
+   ///    Service permettant l'affichage de MessageBox en MvvM pur.
+   /// </summary>
+   public class MessageboxService : IMessageboxService
+   {
+      #region Public Methods and Operators
 
-        /// <summary>
-        /// Converts the <see cref="MessageBoxResult"/> enum to its equivalent <see cref="MessageboxResponse"/> value.
-        /// </summary>
-        /// <param name="messageboxResult">
-        /// The native message box result
-        /// </param>
-        /// <returns>
-        /// The message box response
-        /// </returns>
-        private static MessageboxResponse GetMessageboxResponceFromResult(MessageBoxResult messageboxResult)
-        {
-            switch (messageboxResult)
-            {
-                case MessageBoxResult.Cancel:
-                    return MessageboxResponse.Cancel;
+      /// <summary>
+      ///    Affiche une MessageBox bloquante.
+      /// </summary>
+      /// <param name="message">Message à afficher</param>
+      /// <param name="messageboxKind">Type de MessageBox</param>
+      /// <param name="title">Titre de la MessageBox</param>
+      /// <returns>
+      ///    Bouton cliqué par l'utilisateur
+      /// </returns>
+      /// <inheritdoc />
+      public MessageboxResponse ShowMessagebox(string message, MessageboxKind messageboxKind, string title = null)
+      {
+         var result = MessageBox.Show(message, title, GetButtonFromMessageBoxKind(messageboxKind));
+         return GetMessageboxResponceFromResult(result);
+      }
 
-                case MessageBoxResult.No:
-                    return MessageboxResponse.No;
+      #endregion
 
-                case MessageBoxResult.None:
-                    return MessageboxResponse.None;
+      #region Methods
 
-                case MessageBoxResult.OK:
-                    return MessageboxResponse.Ok;
+      /// <summary>
+      /// Converti un <see cref="MessageboxKind"/> en sont équivalent <see cref="MessageBoxButton"/>.
+      /// </summary>
+      /// <param name="messageboxKind">
+      /// Type de messagebox
+      /// </param>
+      /// <returns>
+      /// L'équivalence en <see cref="MessageBoxButton"/>
+      /// </returns>
+      private static MessageBoxButton GetButtonFromMessageBoxKind(MessageboxKind messageboxKind)
+      {
+         switch (messageboxKind)
+         {
+            case MessageboxKind.Ok:
+               return MessageBoxButton.OK;
 
-                case MessageBoxResult.Yes:
-                    return MessageboxResponse.Yes;
+            case MessageboxKind.OkCancel:
+               return MessageBoxButton.OKCancel;
 
-                default:
-                    throw new ArgumentException(string.Format("Unsupported message box result '{0}'", messageboxResult), messageboxResult.ToString());
-            }
-        }
+            case MessageboxKind.YesNo:
+               return MessageBoxButton.YesNo;
 
-        /// <summary>
-        /// Converts the <see cref="MessageboxKind"/> enum into its equivalent <see cref="MessageBoxButton"/> value.
-        /// </summary>
-        /// <param name="messageboxKind">The message box kind</param>
-        /// <returns>
-        /// The equivalent <see cref="MessageBoxButton"/>
-        /// </returns>
-        private static MessageBoxButton GetButtonFromMessageBoxKind(MessageboxKind messageboxKind)
-        {
-            switch (messageboxKind)
-            {
-                case MessageboxKind.Ok:
-                    return MessageBoxButton.OK;
+            case MessageboxKind.YesNoCancel:
+               return MessageBoxButton.YesNoCancel;
 
-                case MessageboxKind.OKCancel:
-                    return MessageBoxButton.OKCancel;
+            default:
+               throw new ArgumentException(string.Format("Unsupported message box kind '{0}'", messageboxKind), messageboxKind.ToString());
+         }
+      }
 
-                case MessageboxKind.YesNo:
-                    return MessageBoxButton.YesNo;
+      /// <summary>
+      /// Obtient le resultat du choix utilisateur
+      /// </summary>
+      /// <param name="messageboxResult">
+      /// Le résultat.
+      /// </param>
+      /// <returns>
+      /// Le résutlat correspondant
+      /// </returns>
+      /// <exception cref="ArgumentException">
+      /// Le résutlat n'est pas attendu
+      /// </exception>
+      private static MessageboxResponse GetMessageboxResponceFromResult(MessageBoxResult messageboxResult)
+      {
+         switch (messageboxResult)
+         {
+            case MessageBoxResult.Cancel:
+               return MessageboxResponse.Cancel;
 
-                case MessageboxKind.YesNoCancel:
-                    return MessageBoxButton.YesNoCancel;
+            case MessageBoxResult.No:
+               return MessageboxResponse.No;
 
-                default:
-                    throw new ArgumentException(string.Format("Unsupported message box kind '{0}'", messageboxKind), messageboxKind.ToString());
-            }
-        }
-    }
+            case MessageBoxResult.None:
+               return MessageboxResponse.None;
+
+            case MessageBoxResult.OK:
+               return MessageboxResponse.Ok;
+
+            case MessageBoxResult.Yes:
+               return MessageboxResponse.Yes;
+
+            default:
+               throw new ArgumentException(string.Format("Unsupported message box result '{0}'", messageboxResult), messageboxResult.ToString());
+         }
+      }
+
+      #endregion
+   }
 }

@@ -18,7 +18,7 @@ namespace TimePlannerNinject.Modules
     using TimePlannerNinject.View;
 
     /// <summary>
-   /// Module utiliser au Runtime.
+   /// Module utiliser pour l'enregistrement des services ninject.
    /// </summary>
    public class ServiceModule : NinjectModule
    {

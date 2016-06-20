@@ -3,130 +3,152 @@
 //   Christophe PETITJEAN - 2016
 // </copyright>
 // <summary>
-//   The edit work places view model.
+//   ViewModel d'édition des lieux de travail.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace TimePlannerNinject.ViewModel
 {
-    using System;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using System.Windows.Media;
+   using System;
+   using System.Collections.ObjectModel;
+   using System.Linq;
+   using System.Windows.Media;
 
-    using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.CommandWpf;
+   using GalaSoft.MvvmLight;
+   using GalaSoft.MvvmLight.CommandWpf;
 
-    using TimePlannerNinject.Model;
-    using TimePlannerNinject.Services;
+   using TimePlannerNinject.Model;
+   using TimePlannerNinject.Services;
 
-    /// <summary>
-    /// The edit work places view model.
-    /// </summary>
-    public class EditWorkPlacesViewModel : ViewModelBase
-    {
-        /// <summary>
-        /// The service.
-        /// </summary>
-        private readonly ATimePlannerDataService service;
+   /// <summary>
+   ///    ViewModel d'édition des lieux de travail.
+   /// </summary>
+   public class EditWorkPlacesViewModel : ViewModelBase
+   {
+      #region Fields
 
-        /// <summary>
-        /// The add new workplace command.
-        /// </summary>
-        private RelayCommand addNewWorkplaceCommand;
+      /// <summary>
+      ///    Service de données.
+      /// </summary>
+      private readonly ATimePlannerDataService service;
 
-        /// <summary>
-        /// The delete work place command.
-        /// </summary>
-        private RelayCommand<int> deleteWorkPlaceCommand;
+      /// <summary>
+      ///    Commande d'ajout de nouveau lieu.
+      /// </summary>
+      private RelayCommand addNewWorkplaceCommand;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EditWorkPlacesViewModel"/> class.
-        /// </summary>
-        /// <param name="service">
-        /// The service.
-        /// </param>
-        public EditWorkPlacesViewModel(ATimePlannerDataService service)
-        {
-            this.service = service;
-            this.service.DataReadEnd += this.ServiceDataReadEnd;
-        }
+      /// <summary>
+      ///    Command de suppression de lieu.
+      /// </summary>
+      private RelayCommand<int> deleteWorkPlaceCommand;
 
-        private void ServiceDataReadEnd(object sender, EventArgs e)
-        {
-            this.AllPlaces = new ObservableCollection<WorkPlace>(this.service.AllPlaces);
-        }
+      #endregion
 
-        /// <summary>
-        /// Gets the add new workplace command.
-        /// </summary>
-        public RelayCommand AddNewWorkplaceCommand
-        {
-            get
-            {
-                return this.addNewWorkplaceCommand
-                       ?? (this.addNewWorkplaceCommand = new RelayCommand(this.ExecuteAddNewWorkplaceCommand));
-            }
-        }
+      #region Constructors and Destructors
 
-        /// <summary>
-        /// Gets or sets the all places.
-        /// </summary>
-        public ObservableCollection<WorkPlace> AllPlaces
-        {
-            get
-            {
-                return this.service.AllPlaces;
-            }
+      /// <summary>
+      ///    Initialise une nouvelle instance de la classe <see cref="EditWorkPlacesViewModel" />.
+      /// </summary>
+      /// <param name="service">
+      ///    Le service de données.
+      /// </param>
+      public EditWorkPlacesViewModel(ATimePlannerDataService service)
+      {
+         this.service = service;
+         this.service.DataReadEnd += this.ServiceDataReadEnd;
+      }
 
-            set
-            {
-                this.service.AllPlaces = value;
-                this.RaisePropertyChanged();
-            }
-        }
+      #endregion
 
-        /// <summary>
-        ///     Gets the DeleteWorkPlaceCommand.
-        /// </summary>
-        public RelayCommand<int> DeleteWorkPlaceCommand
-        {
-            get
-            {
-                return this.deleteWorkPlaceCommand
-                       ?? (this.deleteWorkPlaceCommand = new RelayCommand<int>(this.ExecuteDeleteWorkPlaceCommand));
-            }
-        }
+      #region Public Properties
 
-        /// <summary>
-        /// The execute add new workplace command.
-        /// </summary>
-        private void ExecuteAddNewWorkplaceCommand()
-        {
-            var id = this.AllPlaces.Any() ? (from p in this.AllPlaces select p.Id).Max() + 1 : 1;
-            var newWorkPlace = new WorkPlace
-                                   {
-                                       Id = id, 
-                                       DefaultStartTime = new DateTime(1, 1, 1, 8, 0, 0), 
-                                       DefaultEndTime = new DateTime(1, 1, 1, 17, 0, 0), 
-                                       Color = Colors.White, 
-                                       OneWayKilometers = 0, 
-                                       ReturnKilometers = 0, 
-                                       Name = id.ToString()
-                                   };
-            this.AllPlaces.Add(newWorkPlace);
-        }
+      /// <summary>
+      ///    Obtient la commande d'ajout de nouveau lieu.
+      /// </summary>
+      public RelayCommand AddNewWorkplaceCommand
+      {
+         get
+         {
+            return this.addNewWorkplaceCommand ?? (this.addNewWorkplaceCommand = new RelayCommand(this.ExecuteAddNewWorkplaceCommand));
+         }
+      }
 
-        /// <summary>
-        /// The execute delete work place command.
-        /// </summary>
-        /// <param name="id">
-        /// The id.
-        /// </param>
-        private void ExecuteDeleteWorkPlaceCommand(int id)
-        {
-            var workPlace = this.service.AllPlaces.First(d => d.Id == id);
-            this.service.AllPlaces.Remove(workPlace);
-        }
-    }
+      /// <summary>
+      ///    Obitent ou définit la collection de lieu
+      /// </summary>
+      public ObservableCollection<WorkPlace> AllPlaces
+      {
+         get
+         {
+            return this.service.AllPlaces;
+         }
+
+         set
+         {
+            this.service.AllPlaces = value;
+            this.RaisePropertyChanged();
+         }
+      }
+
+      /// <summary>
+      ///    Obtient la commande de suppression de lieu.
+      /// </summary>
+      public RelayCommand<int> DeleteWorkPlaceCommand
+      {
+         get
+         {
+            return this.deleteWorkPlaceCommand ?? (this.deleteWorkPlaceCommand = new RelayCommand<int>(this.ExecuteDeleteWorkPlaceCommand));
+         }
+      }
+
+      #endregion
+
+      #region Methods
+
+      /// <summary>
+      ///    Execute la commande d'ajout de nouveau lieu.
+      /// </summary>
+      private void ExecuteAddNewWorkplaceCommand()
+      {
+         var id = this.AllPlaces.Any()
+                     ? (from p in this.AllPlaces
+                        select p.Id).Max() + 1
+                     : 1;
+         var newWorkPlace = new WorkPlace
+                               {
+                                  Id = id,
+                                  DefaultStartTime = new DateTime(1, 1, 1, 8, 0, 0),
+                                  DefaultEndTime = new DateTime(1, 1, 1, 17, 0, 0),
+                                  Color = Colors.White,
+                                  OneWayKilometers = 0,
+                                  ReturnKilometers = 0,
+                                  Name = id.ToString()
+                               };
+         this.AllPlaces.Add(newWorkPlace);
+      }
+
+      /// <summary>
+      ///    Execute la command de suppression de lieu.
+      /// </summary>
+      /// <param name="id">
+      ///    Identifiant du lieu.
+      /// </param>
+      private void ExecuteDeleteWorkPlaceCommand(int id)
+      {
+         var workPlace = this.service.AllPlaces.First(d => d.Id == id);
+         this.service.AllPlaces.Remove(workPlace);
+      }
+
+      /// <summary>
+      ///    Evènement de fin de lecture d'un nouveau fichier.
+      /// </summary>
+      /// <param name="sender">Objet ayant levé l'évènement.</param>
+      /// <param name="e">The <see cref="EventArgs" />Arguments de l'évènement.</param>
+      private void ServiceDataReadEnd(object sender, EventArgs e)
+      {
+         this.AllPlaces = new ObservableCollection<WorkPlace>(this.service.AllPlaces);
+      }
+
+      #endregion
+   }
 }

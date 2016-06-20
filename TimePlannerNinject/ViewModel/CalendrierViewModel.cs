@@ -17,70 +17,61 @@ namespace TimePlannerNinject.ViewModel
     using TimePlannerNinject.Services;
 
     /// <summary>
-    ///     This class contains properties that a View can data bind to.
-    ///     <para>
-    ///         See http://www.galasoft.ch/mvvm
-    ///     </para>
+    ///     ViewModel des Calendrier
     /// </summary>
     public class CalendrierViewModel : ViewModelBase
     {
         /// <summary>
-        ///     The <see cref="DateEnCours" /> property's name.
+        ///     Le nom de la propriété <see cref="DateEnCours" />.
         /// </summary>
         public const string DateEnCoursPropertyName = "DateEnCours";
 
         /// <summary>
-        ///     The <see cref="Days" /> property's name.
+        ///     Le nom de la propriété <see cref="Days" />.
         /// </summary>
         public const string DaysPropertyName = "Days";
 
         /// <summary>
-        ///     The messagebox service.
+        ///     Service d'affichage des messagesbox.
         /// </summary>
         private readonly IMessageboxService messageboxService;
 
         /// <summary>
-        ///     The service.
+        ///     Service de données.
         /// </summary>
         private readonly ATimePlannerDataService service;
 
         /// <summary>
-        ///     The window service.
+        ///     Service d'affichage de fenêtre utilisateur.
         /// </summary>
         private readonly IWindowService windowService;
 
         /// <summary>
-        ///     The date en cours.
+        ///     La date en cours.
         /// </summary>
         private DateTime dateEnCours;
 
         /// <summary>
-        ///     The day box double clicked command.
+        ///     Commande de double click sur un emplacement vide du calendrier.
         /// </summary>
         private RelayCommand<NewAppointmentEventArgs> dayBoxDoubleClickedCommand;
 
         /// <summary>
-        ///     The input day changed command.
+        ///     Commande de modification d'un évènement.
         /// </summary>
         private RelayCommand<AppointmentMovedEvenArgs> inputDayChangedCommand;
 
         /// <summary>
-        ///     The input day double clicked command.
+        ///     Commande de double click sur un évènement.
         /// </summary>
         private RelayCommand<AppointmentDblClickedEvenArgs> inputDayDoubleClickedCommand;
 
         /// <summary>
-        ///     Initializes a new instance of the CalendrierViewModel class.
+        /// Initialise une nouvelle instance de la classe <see cref="CalendrierViewModel"/>.
         /// </summary>
-        /// <param name="service">
-        ///     The service.
-        /// </param>
-        /// <param name="windowService">
-        ///     The window Service.
-        /// </param>
-        /// <param name="messageboxService">
-        ///     The messagebox Service.
-        /// </param>
+        /// <param name="service">Le service de données.</param>
+        /// <param name="windowService">Le service d'affichage de fenêtre personnalisée.</param>
+        /// <param name="messageboxService">Le service d'affichage de messagebox.</param>
         public CalendrierViewModel(
             ATimePlannerDataService service, 
             IWindowService windowService, 
@@ -94,7 +85,7 @@ namespace TimePlannerNinject.ViewModel
         }
 
         /// <summary>
-        /// Gets or sets the date en cours.
+        /// Obtient ou définit la date en cours.
         /// </summary>
         public DateTime DateEnCours
         {
@@ -110,7 +101,7 @@ namespace TimePlannerNinject.ViewModel
         }
 
         /// <summary>
-        ///     Gets the DayBoxDoubleClickedCommand.
+        ///     Obtient la commande de double clcik sur un emplacement vide du calendrier.
         /// </summary>
         public RelayCommand<NewAppointmentEventArgs> DayBoxDoubleClickedCommand
         {
@@ -123,7 +114,7 @@ namespace TimePlannerNinject.ViewModel
         }
 
         /// <summary>
-        /// Gets or sets the days.
+        /// Obtient ou définit la collection de tous les évènements.
         /// </summary>
         public ObservableCollection<InputDay> Days
         {
@@ -140,7 +131,7 @@ namespace TimePlannerNinject.ViewModel
         }
 
         /// <summary>
-        ///     Gets the InputDayChangedCommand.
+        ///     Obtient la commande de mofification d'un évènement.
         /// </summary>
         public RelayCommand<AppointmentMovedEvenArgs> InputDayChangedCommand
         {
@@ -166,10 +157,10 @@ namespace TimePlannerNinject.ViewModel
         }
 
         /// <summary>
-        ///     The execute day box double clicked command.
+        ///     Execute de la commande de double click sur un évènement.
         /// </summary>
         /// <param name="e">
-        ///     The e.
+        ///     Arguments de la commande.
         /// </param>
         private void ExecuteDayBoxDoubleClickedCommand(NewAppointmentEventArgs e)
         {
@@ -202,10 +193,10 @@ namespace TimePlannerNinject.ViewModel
         }
 
         /// <summary>
-        ///     The execute input day changed command.
+        ///     Execute de la commande de modification d'un évènement.
         /// </summary>
         /// <param name="e">
-        ///     The e.
+        ///     Arguments de la commande.
         /// </param>
         private void ExecuteInputDayChangedCommand(AppointmentMovedEvenArgs e)
         {
@@ -221,10 +212,10 @@ namespace TimePlannerNinject.ViewModel
         }
 
         /// <summary>
-        ///     The execute input day double clicked command.
+        ///     Execute de la commande de double click sur un emplacement vide du calendrier.
         /// </summary>
         /// <param name="e">
-        ///     The e.
+        ///     Arguments de la commande.
         /// </param>
         private void ExecuteInputDayDoubleClickedCommand(AppointmentDblClickedEvenArgs e)
         {
@@ -240,7 +231,7 @@ namespace TimePlannerNinject.ViewModel
         }
 
         /// <summary>
-        /// The service data read end.
+        /// Evènement de fin de lecture des données.
         /// </summary>
         /// <param name="sender">
         /// The sender.

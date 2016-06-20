@@ -3,7 +3,7 @@
 //   Christophe PETITJEAN - 2016
 // </copyright>
 // <summary>
-//   Module de liaison des viewmodels.
+//   Module de chargement des ViewModel.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -14,7 +14,7 @@ namespace TimePlannerNinject.Modules
    using TimePlannerNinject.ViewModel;
 
     /// <summary>
-    /// Module de liaison des viewmodels.
+    /// Module de chargement des ViewModel.
     /// </summary>
     public class ViewModelModule: NinjectModule
    {

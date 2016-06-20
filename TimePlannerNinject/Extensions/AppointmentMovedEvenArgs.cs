@@ -1,9 +1,18 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AppointmentMovedEvenArgs.cs" company="Christophe PETITJEAN">
+//   Christophe PETITJEAN - 2016
+// </copyright>
+// <summary>
+//   Argument de déplacement d'évènement.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace TimePlannerNinject.Extensions
 {
-    using System;
+   using System;
 
-    /// <summary>
-   ///    The appointment moved even args.
+   /// <summary>
+   ///    Argument de déplacement d'évènement.
    /// </summary>
    public class AppointmentMovedEvenArgs : EventArgs
    {
