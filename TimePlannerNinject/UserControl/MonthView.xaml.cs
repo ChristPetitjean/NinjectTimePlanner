@@ -120,7 +120,7 @@ namespace TimePlannerNinject.UserControl
       /// <summary>
       /// Définit le sens de la derniere sélection multiple par shift
       /// </summary>
-      private bool LastDayClickIsUp;
+      private bool lastDayClickIsUp;
 
       #endregion
 
@@ -519,7 +519,7 @@ namespace TimePlannerNinject.UserControl
                {
                   if (this.lastDayClicked < day)
                   {
-                     if (!this.LastDayClickIsUp)
+                     if (!this.lastDayClickIsUp)
                      {
                         this.SelectedDates.Clear();
                      }
@@ -529,11 +529,11 @@ namespace TimePlannerNinject.UserControl
                         this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
                      }
 
-                     this.LastDayClickIsUp = true;
+                     this.lastDayClickIsUp = true;
                   }
                   else if (this.lastDayClicked > day)
                   {
-                     if (this.LastDayClickIsUp)
+                     if (this.lastDayClickIsUp)
                      {
                         this.SelectedDates.Clear();
                      }
@@ -543,7 +543,7 @@ namespace TimePlannerNinject.UserControl
                         this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
                      }
 
-                     this.LastDayClickIsUp = false;
+                     this.lastDayClickIsUp = false;
                   }
                   else
                   {
