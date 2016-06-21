@@ -113,6 +113,7 @@
     <Compile Include="Converters\IfNullConverter.cs" />
     <Compile Include="Converters\WorkplaceLookupConverter.cs" />
     <Compile Include="Extensions\DialogCloser.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Kernel\KernelTimePlanner.cs" />
     <Compile Include="Model\AppFile.cs" />
     <Compile Include="Extensions\AppointmentDblClickedEvenArgs.cs" />

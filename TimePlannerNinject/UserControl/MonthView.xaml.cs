@@ -363,7 +363,7 @@ namespace TimePlannerNinject.UserControl
          NameScope.SetNameScope(this, new NameScope());
 
          this.AddRowsToMonthGrid(daysInMonth, offsetDays);
-         this.MonthYearLabel.Content = this.DisplayStartDate.ToString("MMMM yyyy");
+         this.MonthYearLabel.Content = this.DisplayStartDate.ToString("MMMM yyyy").ToPascalCase();
 
          for (var i = 1; i <= daysInMonth; i++)
          {
