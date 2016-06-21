@@ -22,7 +22,23 @@ namespace TimePlannerNinject.UserControl
    {
       public DayBoxControl()
       {
-         InitializeComponent();
+         this.InitializeComponent();
+      }
+
+      /// <summary>
+      /// Lève l'évènement de click.
+      /// </summary>
+      public void RaiseEventClick()
+      {
+         this.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left) { RoutedEvent = Mouse.MouseUpEvent, Source = this });
+      }
+
+      /// <summary>
+      /// Lève l'évènement de double Click.
+      /// </summary>
+      public void RaiseDoubleClickEvent()
+      {
+         this.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left) { RoutedEvent = MouseDoubleClickEvent, Source = this });
       }
    }
 }

@@ -7,6 +7,7 @@
 namespace TimePlannerNinject.UserControl
 {
    using System;
+   using System.Collections.Generic;
    using System.Collections.ObjectModel;
    using System.Collections.Specialized;
    using System.Diagnostics;
@@ -116,6 +117,11 @@ namespace TimePlannerNinject.UserControl
       /// </summary>
       private int lastDayClicked;
 
+      /// <summary>
+      /// Définit le sens de la derniere sélection multiple par shift
+      /// </summary>
+      private bool LastDayClickIsUp;
+
       #endregion
 
       #region Constructors and Destructors
@@ -138,8 +144,6 @@ namespace TimePlannerNinject.UserControl
          this.DisplayStartDate = DateTime.Now.AddDays(-1 * (DateTime.Now.Day - 1));
 
          this.Loaded += this.OnMonthViewLoaded;
-         this.KeyDown += this.OnAppointmentKeyDown;
-         this.Focus();
 
          this.InitializeComponent();
       }
@@ -424,33 +428,6 @@ namespace TimePlannerNinject.UserControl
       }
 
       /// <summary>
-      ///    Levé lors de l'appui d'une touche du clavier.
-      /// </summary>
-      /// <param name="sender">
-      ///    Objet ayant levé l'évènement.
-      /// </param>
-      /// <param name="e">
-      ///    L'instance de <see cref="KeyEventArgs" /> contenant les données de l'évènement.
-      /// </param>
-      private void OnAppointmentKeyDown(object sender, KeyEventArgs e)
-      {
-         if (e.Key == Key.Enter)
-         {
-            if (this.DayBoxDoubleClicked != null)
-            {
-               var arg = new NewAppointmentEventArgs
-                            {
-                               StartDate =
-                                  this.SelectedDates.Any() ? this.SelectedDates.OrderBy(d => d).First() : (DateTime?)null,
-                               EndDate =
-                                  this.SelectedDates.Any() ? this.SelectedDates.OrderBy(d => d).Last() : (DateTime?)null
-                            };
-               this.DayBoxDoubleClicked(sender, arg);
-            }
-         }
-      }
-
-      /// <summary>
       ///    Levé lors du double click sur un évènement.
       /// </summary>
       /// <param name="sender">
@@ -538,22 +515,35 @@ namespace TimePlannerNinject.UserControl
             var day = (int)((DayBoxControl)e.Source).Tag;
             if (Keyboard.Modifiers == ModifierKeys.Shift)
             {
-               this.SelectedDates.Clear();
                if (this.lastDayClicked != 0)
                {
                   if (this.lastDayClicked < day)
                   {
+                     if (!this.LastDayClickIsUp)
+                     {
+                        this.SelectedDates.Clear();
+                     }
+
                      for (var i = this.lastDayClicked; i <= day; i++)
                      {
                         this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
                      }
+
+                     this.LastDayClickIsUp = true;
                   }
                   else if (this.lastDayClicked > day)
                   {
+                     if (this.LastDayClickIsUp)
+                     {
+                        this.SelectedDates.Clear();
+                     }
+
                      for (var i = day; i <= this.lastDayClicked; i++)
                      {
                         this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
                      }
+
+                     this.LastDayClickIsUp = false;
                   }
                   else
                   {
@@ -587,6 +577,7 @@ namespace TimePlannerNinject.UserControl
                this.lastDayClicked = day;
             }
 
+            
             e.Handled = true;
          }
       }
