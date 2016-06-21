@@ -521,37 +521,46 @@ namespace TimePlannerNinject.UserControl
          if (e.Source is DayBoxControl)
          {
             var day = (int)((DayBoxControl)e.Source).Tag;
-            if (Keyboard.Modifiers == ModifierKeys.Shift)
+            if (e.ChangedButton == MouseButton.Left)
             {
-               if (this.lastDayClicked != 0)
+
+               if (Keyboard.Modifiers == ModifierKeys.Shift)
                {
-                  if (this.lastDayClicked < day)
+                  if (this.lastDayClicked != 0)
                   {
-                     if (!this.lastDayClickIsUp)
+                     if (this.lastDayClicked < day)
+                     {
+                        if (!this.lastDayClickIsUp)
+                        {
+                           this.SelectedDates.Clear();
+                        }
+
+                        for (var i = this.lastDayClicked; i <= day; i++)
+                        {
+                           this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
+                        }
+
+                        this.lastDayClickIsUp = true;
+                     }
+                     else if (this.lastDayClicked > day)
+                     {
+                        if (this.lastDayClickIsUp)
+                        {
+                           this.SelectedDates.Clear();
+                        }
+
+                        for (var i = day; i <= this.lastDayClicked; i++)
+                        {
+                           this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
+                        }
+
+                        this.lastDayClickIsUp = false;
+                     }
+                     else
                      {
                         this.SelectedDates.Clear();
+                        this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
                      }
-
-                     for (var i = this.lastDayClicked; i <= day; i++)
-                     {
-                        this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
-                     }
-
-                     this.lastDayClickIsUp = true;
-                  }
-                  else if (this.lastDayClicked > day)
-                  {
-                     if (this.lastDayClickIsUp)
-                     {
-                        this.SelectedDates.Clear();
-                     }
-
-                     for (var i = day; i <= this.lastDayClicked; i++)
-                     {
-                        this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
-                     }
-
-                     this.lastDayClickIsUp = false;
                   }
                   else
                   {
@@ -559,32 +568,28 @@ namespace TimePlannerNinject.UserControl
                      this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
                   }
                }
+               else if (Keyboard.Modifiers == ModifierKeys.Control)
+               {
+                  if (!this.SelectedDates.Any(s => s.Date.Day == day && s.Date.Month == this.displayMonth && s.Date.Year == this.displayYear))
+                  {
+                     this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+                  }
+                  else
+                  {
+                     var dateTime = this.SelectedDates.First(d => d.Year == this.displayYear && d.Month == this.displayMonth && d.Day == day);
+                     this.SelectedDates.Remove(dateTime);
+                  }
+                  this.lastDayClicked = day;
+               }
                else
                {
                   this.SelectedDates.Clear();
                   this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+                  this.lastDayClicked = day;
                }
-            }
-            else if (Keyboard.Modifiers == ModifierKeys.Control)
-            {
-               if (!this.SelectedDates.Any(s => s.Date.Day == day && s.Date.Month == this.displayMonth && s.Date.Year == this.displayYear))
-               {
-                  this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
-               }
-               else
-               {
-                  var dateTime = this.SelectedDates.First(d => d.Year == this.displayYear && d.Month == this.displayMonth && d.Day == day);
-                  this.SelectedDates.Remove(dateTime);
-               }
-               this.lastDayClicked = day;
-            }
-            else
-            {
-               this.SelectedDates.Clear();
-               this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
-               this.lastDayClicked = day;
-            }
 
+
+            }
             // Si on est sur le clic droit ou sur le clic gauche mais sans correspondance de selection, on arrete l'execution des évènement de gestion des clic
             if (e.ChangedButton == MouseButton.Left
                 || (e.ChangedButton == MouseButton.Right

@@ -119,12 +119,30 @@ namespace TimePlannerNinject.ViewModel
                                   Id = id,
                                   DefaultStartTime = new DateTime(1, 1, 1, 8, 0, 0),
                                   DefaultEndTime = new DateTime(1, 1, 1, 17, 0, 0),
-                                  Color = Colors.White,
+                                  Color = this.GenerateRandomColor(),
                                   OneWayKilometers = 0,
                                   ReturnKilometers = 0,
                                   Name = id.ToString()
                                };
          this.AllPlaces.Add(newWorkPlace);
+      }
+
+      /// <summary>
+      /// Génère une coleur aléatoire.
+      /// </summary>
+      /// <returns>
+      ///   La couleur générée
+      /// </returns>
+      private Color GenerateRandomColor()
+      {
+         Random rnd = new Random();
+         return new Color
+                   {
+                      A = 50,
+                      B = Convert.ToByte(rnd.Next(1, 255)),
+                      G = Convert.ToByte(rnd.Next(1, 255)),
+                      R = Convert.ToByte(rnd.Next(1, 255)),
+                   };
       }
 
       /// <summary>
