@@ -7,7 +7,6 @@
 namespace TimePlannerNinject.UserControl
 {
    using System;
-   using System.Collections.Generic;
    using System.Collections.ObjectModel;
    using System.Collections.Specialized;
    using System.Diagnostics;
@@ -118,7 +117,7 @@ namespace TimePlannerNinject.UserControl
       private int lastDayClicked;
 
       /// <summary>
-      /// Définit le sens de la derniere sélection multiple par shift
+      ///    Définit le sens de la derniere sélection multiple par shift
       /// </summary>
       private bool lastDayClickIsUp;
 
@@ -234,15 +233,7 @@ namespace TimePlannerNinject.UserControl
       /// <param name="e">L'instance de <see cref="DependencyPropertyChangedEventArgs" /> contenant les données de l'évènement.</param>
       private static void OnAppointmentsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
       {
-         var action = new NotifyCollectionChangedEventHandler(
-            (o, args) =>
-               {
-                  var me = d as MonthView;
-                  if (me != null && me.IsLoaded)
-                  {
-                     me.BuildCalendarUI();
-                  }
-               });
+         var action = new NotifyCollectionChangedEventHandler((o, args) => { RebuildUI(d); });
 
          if (e.OldValue != null)
          {
@@ -256,11 +247,7 @@ namespace TimePlannerNinject.UserControl
             coll.CollectionChanged += action;
          }
 
-         var mv = d as MonthView;
-         if (mv != null && mv.IsLoaded)
-         {
-            mv.BuildCalendarUI();
-         }
+         RebuildUI(d);
       }
 
       /// <summary>
@@ -312,6 +299,19 @@ namespace TimePlannerNinject.UserControl
          {
             var coll = (INotifyCollectionChanged)e.NewValue;
             coll.CollectionChanged += action;
+         }
+      }
+
+      /// <summary>
+      ///    Lance une regénération de l'UI
+      /// </summary>
+      /// <param name="d">la propriété de dépandance contenant <see cref="MonthView" />.</param>
+      private static void RebuildUI(DependencyObject d)
+      {
+         var me = d as MonthView;
+         if (me != null && me.IsLoaded)
+         {
+            me.BuildCalendarUI();
          }
       }
 
@@ -467,12 +467,14 @@ namespace TimePlannerNinject.UserControl
       {
          if (e.Source is DayBoxControl && e.ChangedButton == MouseButton.Right)
          {
-            DayBoxControl dayBoxControl = (DayBoxControl)e.Source;
+            var dayBoxControl = (DayBoxControl)e.Source;
             var day = (int)((DayBoxControl)e.Source).Tag;
-            dayBoxControl.ContextMenu.Visibility = this.SelectedDates != null && this.SelectedDates.Any(d => d.Day == day) ? Visibility.Visible : Visibility.Hidden;
+            dayBoxControl.ContextMenu.Visibility = this.SelectedDates != null && this.SelectedDates.Any(d => d.Day == day)
+                                                      ? Visibility.Visible
+                                                      : Visibility.Hidden;
          }
          else if (e.Source is DayBoxControl && ((Visual)e.OriginalSource).FindVisualAncestor<DayBoxAppointmentControl>() == null
-             && e.LeftButton == MouseButtonState.Pressed)
+                  && e.LeftButton == MouseButtonState.Pressed)
          {
             var ev = new NewAppointmentEventArgs();
             if (((DayBoxControl)e.Source).Tag != null)
@@ -516,13 +518,7 @@ namespace TimePlannerNinject.UserControl
       /// </param>
       private void OnDayBoxMouseUp(object sender, MouseButtonEventArgs e)
       {
-         if (e.Source is DayBoxControl && e.ChangedButton == MouseButton.Right)
-         {
-            DayBoxControl dayBoxControl = (DayBoxControl)e.Source;
-            var day = (int)((DayBoxControl)e.Source).Tag;
-            dayBoxControl.ContextMenu.Visibility = this.SelectedDates != null && this.SelectedDates.Any(d => d.Day == day) ? Visibility.Visible: Visibility.Hidden;
-         }
-         else if (e.Source is DayBoxControl && e.ChangedButton == MouseButton.Left)
+         if (e.Source is DayBoxControl)
          {
             var day = (int)((DayBoxControl)e.Source).Tag;
             if (Keyboard.Modifiers == ModifierKeys.Shift)
@@ -589,8 +585,13 @@ namespace TimePlannerNinject.UserControl
                this.lastDayClicked = day;
             }
 
-            
-            e.Handled = true;
+            // Si on est sur le clic droit ou sur le clic gauche mais sans correspondance de selection, on arrete l'execution des évènement de gestion des clic
+            if (e.ChangedButton == MouseButton.Left
+                || (e.ChangedButton == MouseButton.Right
+                    && !this.SelectedDates.Any(d => d.Year == this.displayYear && d.Month == this.displayMonth && d.Day == day)))
+            {
+               e.Handled = true;
+            }
          }
       }
 
