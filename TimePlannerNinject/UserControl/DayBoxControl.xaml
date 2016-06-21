@@ -20,7 +20,7 @@
             </LinearGradientBrush>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border x:Name="MainBorder" BorderThickness="1" BorderBrush="Transparent">
+   <Border x:Name="MainBorder" BorderThickness="0" BorderBrush="{StaticResource SelectedDayBorderBrush}">
         <Grid>
          <Grid.RowDefinitions>
             <RowDefinition Height="21" />
