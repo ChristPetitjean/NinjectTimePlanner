@@ -36,11 +36,6 @@ namespace TimePlannerNinject.Model
       private int? idWorkPlace;
 
       /// <summary>
-      ///    Jour travaillé.
-      /// </summary>
-      private bool? isWorked;
-
-      /// <summary>
       ///    Heure de fin du travail quotidien.
       /// </summary>
       private DateTime? workEndTime;
@@ -73,7 +68,6 @@ namespace TimePlannerNinject.Model
       protected InputDay(SerializationInfo info, StreamingContext context)
       {
          this.ExtraHours = (int?)info.GetValue("ExtraHours", typeof(int?));
-         this.IsWorked = (bool?)info.GetValue("IsWorked", typeof(bool?));
          this.WorkEndTime = (DateTime?)info.GetValue("WorkEndTime", typeof(DateTime?));
          this.WorkStartTime = (DateTime?)info.GetValue("WorkStartTime", typeof(DateTime?));
          this.IdWorkPlace = (int?)info.GetValue("IdWorkPlace", typeof(int?));
@@ -129,29 +123,6 @@ namespace TimePlannerNinject.Model
          set
          {
             this.Set("IdWorkPlace", ref this.idWorkPlace, value);
-         }
-      }
-
-      /// <summary>
-      ///    Obtient ou définit une valeur indiquant si l'entrée concerne un jour travaillé ou non.
-      /// </summary>
-      public bool? IsWorked
-      {
-         get
-         {
-            return this.isWorked;
-         }
-
-         set
-         {
-            this.Set("IsWorked", ref this.isWorked, value);
-            if (this.isWorked.HasValue && !this.isWorked.Value)
-            {
-               this.WorkEndTime = null;
-               this.WorkStartTime = null;
-               this.ExtraHours = null;
-               this.IdWorkPlace = null;
-            }
          }
       }
 
@@ -217,7 +188,6 @@ namespace TimePlannerNinject.Model
       public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
       {
          info.AddValue("ExtraHours", this.ExtraHours);
-         info.AddValue("IsWorked", this.IsWorked);
          info.AddValue("WorkEndTime", this.WorkEndTime);
          info.AddValue("WorkStartTime", this.WorkStartTime);
          info.AddValue("IdWorkPlace", this.IdWorkPlace);
