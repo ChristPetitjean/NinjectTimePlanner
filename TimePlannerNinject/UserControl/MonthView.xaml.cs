@@ -379,13 +379,13 @@ namespace TimePlannerNinject.UserControl
             var contextextMenuItem = new MenuItem { Header = "Ajouter / Modifier la sélection" };
 
             var dayBox = new DayBoxControl { Name = "DayBox" + i, DayNumberLabel = { Content = i.ToString() }, Tag = i };
-            dayBox.MouseDoubleClick += this.OnDayBoxOnMouseDoubleClick;
-            dayBox.PreviewDragEnter += this.OnDayBoxOnPreviewDragEnter;
-            dayBox.PreviewDragLeave += this.OnDayBoxOnPreviewDragLeave;
-            dayBox.MouseUp += this.OnDayBoxOnMouseUp;
+            dayBox.MouseDoubleClick += this.OnDayBoxMouseDoubleClick;
+            dayBox.PreviewDragEnter += this.OnDayBoxPreviewDragEnter;
+            dayBox.PreviewDragLeave += this.OnDayBoxPreviewDragLeave;
+            dayBox.MouseUp += this.OnDayBoxMouseUp;
 
             contextextMenuItem.Click +=
-               (sender, e) => { this.OnDayBoxOnMouseDoubleClick(dayBox, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)); };
+               (sender, e) => { this.OnDayBoxMouseDoubleClick(dayBox, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)); };
 
             dayBox.ContextMenu = new ContextMenu { Items = { contextextMenuItem } };
 
@@ -463,9 +463,15 @@ namespace TimePlannerNinject.UserControl
       /// <param name="e">
       ///    L'instance de <see cref="MouseButtonEventArgs" /> contenant les données de l'évènement.
       /// </param>
-      private void OnDayBoxOnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+      private void OnDayBoxMouseDoubleClick(object sender, MouseButtonEventArgs e)
       {
-         if (e.Source is DayBoxControl && ((Visual)e.OriginalSource).FindVisualAncestor<DayBoxAppointmentControl>() == null
+         if (e.Source is DayBoxControl && e.ChangedButton == MouseButton.Right)
+         {
+            DayBoxControl dayBoxControl = (DayBoxControl)e.Source;
+            var day = (int)((DayBoxControl)e.Source).Tag;
+            dayBoxControl.ContextMenu.Visibility = this.SelectedDates != null && this.SelectedDates.Any(d => d.Day == day) ? Visibility.Visible : Visibility.Hidden;
+         }
+         else if (e.Source is DayBoxControl && ((Visual)e.OriginalSource).FindVisualAncestor<DayBoxAppointmentControl>() == null
              && e.LeftButton == MouseButtonState.Pressed)
          {
             var ev = new NewAppointmentEventArgs();
@@ -508,9 +514,15 @@ namespace TimePlannerNinject.UserControl
       /// <param name="e">
       ///    L'instance de <see cref="MouseButtonEventArgs" /> contenant les données de l'évènement.
       /// </param>
-      private void OnDayBoxOnMouseUp(object sender, MouseButtonEventArgs e)
+      private void OnDayBoxMouseUp(object sender, MouseButtonEventArgs e)
       {
-         if (e.Source is DayBoxControl && e.ChangedButton == MouseButton.Left)
+         if (e.Source is DayBoxControl && e.ChangedButton == MouseButton.Right)
+         {
+            DayBoxControl dayBoxControl = (DayBoxControl)e.Source;
+            var day = (int)((DayBoxControl)e.Source).Tag;
+            dayBoxControl.ContextMenu.Visibility = this.SelectedDates != null && this.SelectedDates.Any(d => d.Day == day) ? Visibility.Visible: Visibility.Hidden;
+         }
+         else if (e.Source is DayBoxControl && e.ChangedButton == MouseButton.Left)
          {
             var day = (int)((DayBoxControl)e.Source).Tag;
             if (Keyboard.Modifiers == ModifierKeys.Shift)
@@ -591,7 +603,7 @@ namespace TimePlannerNinject.UserControl
       /// <param name="e">
       ///    L'instance de <see cref="DragEventArgs" /> contenant les données de l'évènement.
       /// </param>
-      private void OnDayBoxOnPreviewDragEnter(object sender, DragEventArgs e)
+      private void OnDayBoxPreviewDragEnter(object sender, DragEventArgs e)
       {
          if (sender is DayBoxControl && e.Data.GetFormats().Contains(typeof(InputDay).FullName))
          {
@@ -609,7 +621,7 @@ namespace TimePlannerNinject.UserControl
       /// <param name="e">
       ///    L'instance de <see cref="DragEventArgs" /> contenant les données de l'évènement.
       /// </param>
-      private void OnDayBoxOnPreviewDragLeave(object sender, DragEventArgs e)
+      private void OnDayBoxPreviewDragLeave(object sender, DragEventArgs e)
       {
          if (sender is DayBoxControl)
          {
