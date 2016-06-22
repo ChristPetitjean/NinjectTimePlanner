@@ -25,7 +25,7 @@ namespace TimePlannerNinject.Modules
         public override void Load()
         {
             this.Bind<MainViewModel>().ToSelf().InSingletonScope();
-            this.Bind<CalendrierViewModel>().ToSelf().InTransientScope();
+            this.Bind<CalendrierViewModel>().ToSelf().InSingletonScope();
             this.Bind<MenuPrincipalViewModel>().ToSelf().InSingletonScope();
             this.Bind<StatusBarViewModel>().ToSelf().InSingletonScope();
             this.Bind<EditWorkPlacesViewModel>().ToSelf().InTransientScope();

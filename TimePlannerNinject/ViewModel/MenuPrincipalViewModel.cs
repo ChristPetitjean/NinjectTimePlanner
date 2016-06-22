@@ -12,6 +12,7 @@ namespace TimePlannerNinject.ViewModel
 
     using Microsoft.Win32;
 
+    using TimePlannerNinject.Kernel;
     using TimePlannerNinject.Model;
     using TimePlannerNinject.Services;
 
@@ -41,6 +42,16 @@ namespace TimePlannerNinject.ViewModel
         ///     Commande de sauvegarde
         /// </summary>
         private RelayCommand saveFileCommand;
+
+        /// <summary>
+        ///     Commande de sélection de tous les éléments
+        /// </summary>
+        private RelayCommand selectAllCommand;
+
+        /// <summary>
+        ///     Commande de dé-sélection de tous les éléments
+        /// </summary>
+        private RelayCommand unSelectAllCommand;
 
         #endregion
 
@@ -75,6 +86,19 @@ namespace TimePlannerNinject.ViewModel
         /// </summary>
         public RelayCommand SaveFileCommand => this.saveFileCommand ?? (this.saveFileCommand = new RelayCommand(this.ExecuteSaveFileCommand));
 
+        /// <summary>
+        ///     Obtient la commande de selection de toutes les inputations.
+        /// </summary>
+        public RelayCommand SelectAllCommand => this.selectAllCommand ?? (this.selectAllCommand = new RelayCommand(this.ExecuteSelectAllCommand, this.CanExecuteSelectAllCommand));
+
+
+        /// <summary>
+        ///     Obtient la commande de dé-selection de toutes les inputations.
+        /// </summary>
+        public RelayCommand UnSelectAllCommand => this.unSelectAllCommand ?? (this.unSelectAllCommand = new RelayCommand(this.ExecuteUnSelectAllCommand, this.CanExecuteUnSelectAllCommand));
+
+
+
         #endregion
 
         #region Methods
@@ -98,12 +122,12 @@ namespace TimePlannerNinject.ViewModel
             if (openFileDialog.ShowDialog(Application.Current.MainWindow) == true)
             {
                 this.service.ReadDataFromFile(openFileDialog.FileName);
-                StatutMessage.SendStatutMessage(string.Format("Fichier \"{0}\" ouvert", openFileDialog.FileName));
+                StatutMessage.SendStatutMessage($"Fichier \"{openFileDialog.FileName}\" ouvert");
             }
         }
 
         /// <summary>
-        ///     Executela commande de sauvegarde.
+        ///     Execute la commande de sauvegarde.
         /// </summary>
         private void ExecuteSaveFileCommand()
         {
@@ -112,10 +136,43 @@ namespace TimePlannerNinject.ViewModel
             if (saveFileDialog.ShowDialog(Application.Current.MainWindow) == true)
             {
                 this.service.SaveDataToFile(saveFileDialog.FileName);
-                StatutMessage.SendStatutMessage(string.Format("Fichier \"{0}\" sauvegardé", saveFileDialog.FileName));
+                StatutMessage.SendStatutMessage($"Fichier \"{saveFileDialog.FileName}\" sauvegardé");
             }
         }
 
+        /// <summary>
+        ///     Execute la commande de sélection de tous les Input.
+        /// </summary>
+        private void ExecuteSelectAllCommand()
+        {
+            KernelTimePlanner.Get<CalendrierViewModel>().IsAllInputSelected = true;
+        }
+
+        /// <summary>
+        ///     Execute la commande de dé-sélection de tous les Input.
+        /// </summary>
+        private void ExecuteUnSelectAllCommand()
+        {
+            KernelTimePlanner.Get<CalendrierViewModel>().IsAllInputSelected = false;
+        }
+
+        /// <summary>
+        /// Définit si la méthode de sélection de  tous les Input pêut s'executer
+        /// </summary>
+        /// <returns>True si oui, sinon false</returns>
+        private bool CanExecuteSelectAllCommand()
+        {
+            return !KernelTimePlanner.Get<CalendrierViewModel>().IsAllInputSelected;
+        }
+
+        /// <summary>
+        /// Définit si la méthode de dé-sélection de  tous les Input pêut s'executer
+        /// </summary>
+        /// <returns>True si oui, sinon false</returns>
+        private bool CanExecuteUnSelectAllCommand()
+        {
+            return KernelTimePlanner.Get<CalendrierViewModel>().IsAllInputSelected;
+        }
         #endregion
     }
 }

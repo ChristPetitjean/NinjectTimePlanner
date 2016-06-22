@@ -9,8 +9,10 @@
 namespace TimePlannerNinject.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Windows;
 
     using GalaSoft.MvvmLight;
 
@@ -27,27 +29,51 @@ namespace TimePlannerNinject.Services
         #region Public Methods and Operators
 
         /// <inheritdoc />
-        public void OpenDialog<T>(string viewName, object model = null) where T : ViewModelBase
+        public void OpenDialog<T>(string viewName, object model = null, Window owner = null) where T : ViewModelBase
         {
-            this.FindWindow<T>(viewName, model).ShowDialog();
+            WindowView windowView = this.FindWindow<T>(viewName, model);
+            if (windowView.GetType() != Application.Current.MainWindow.GetType())
+            {
+                windowView.Owner = owner ?? Application.Current.MainWindow;
+            }
+
+            windowView.ShowDialog();
         }
 
         /// <inheritdoc />
-        public void OpenDialog<T>(object model = null) where T : ViewModelBase
+        public void OpenDialog<T>(object model = null, Window owner = null) where T : ViewModelBase
         {
-            this.FindWindow<T>(null, model).ShowDialog();
+            WindowView windowView = this.FindWindow<T>(null, model);
+            if (windowView.GetType() != Application.Current.MainWindow.GetType())
+            {
+                windowView.Owner = owner ?? Application.Current.MainWindow;
+            }
+
+            windowView.ShowDialog();
         }
 
         /// <inheritdoc />
-        public void OpenWindow<T>(string viewName, object model = null) where T : ViewModelBase
+        public void OpenWindow<T>(string viewName, object model = null, Window owner = null) where T : ViewModelBase
         {
-            this.FindWindow<T>(viewName, model).Show();
+            WindowView windowView = this.FindWindow<T>(viewName, model);
+            if (windowView.GetType() != Application.Current.MainWindow.GetType())
+            {
+                windowView.Owner = owner ?? Application.Current.MainWindow;
+            }
+
+            windowView.Show();
         }
 
         /// <inheritdoc />
-        public void OpenWindow<T>(object model = null) where T : ViewModelBase
+        public void OpenWindow<T>(object model = null, Window owner = null) where T : ViewModelBase
         {
-            this.FindWindow<T>(null, model).Show();
+            WindowView windowView = this.FindWindow<T>(null, model);
+            if (windowView.GetType() != Application.Current.MainWindow.GetType())
+            {
+                windowView.Owner = owner ?? Application.Current.MainWindow;
+            }
+
+            windowView.Show();
         }
 
         #endregion
@@ -71,27 +97,66 @@ namespace TimePlannerNinject.Services
         /// </returns>
         private WindowView FindWindow<T>(string viewName, object model) where T : ViewModelBase
         {
-            var viewModelName = typeof(T).Name;
-            var windowName = !string.IsNullOrEmpty(viewName) ? viewName : $"{viewModelName.Substring(0, viewModelName.Length - 9)}Window";
-
-            var windowType =
-                Assembly.GetExecutingAssembly().GetTypes().FirstOrDefault(t => typeof(WindowView).IsAssignableFrom(t) && t.Name == windowName);
-            if (windowType == null)
-            {
-                throw new ArgumentOutOfRangeException($"Unable to find Window for view model {typeof(T)}");
-            }
-
             var modelArgument = new ConstructorArgument(nameof(model), model);
 
-            var window = (WindowView)Assembly.GetExecutingAssembly().CreateInstance(windowType.FullName);
-            if (window != null)
+            if (!string.IsNullOrEmpty(viewName))
             {
-                window.Initialize(KernelTimePlanner.Get<T>(modelArgument));
+                var windowType =
+                    Assembly.GetExecutingAssembly().GetTypes().FirstOrDefault(t => typeof(WindowView).IsAssignableFrom(t) && t.Name == viewName);
+                if (windowType == null)
+                {
+                    throw new ArgumentOutOfRangeException($"Unable to find Window for view model {typeof(T)}");
+                }
 
-                return window;
+                var window = (WindowView)Assembly.GetExecutingAssembly().CreateInstance(windowType.FullName);
+                if (window != null)
+                {
+                    window.Initialize(KernelTimePlanner.Get<T>(modelArgument));
+
+                    return window;
+                }
+            }
+            else
+            {
+                IEnumerable<Type> windowViewTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(WindowView).IsAssignableFrom(t));
+                foreach (Type windowViewType in windowViewTypes)
+                {
+                    var window = (WindowView)Assembly.GetExecutingAssembly().CreateInstance(windowViewType.FullName);
+                    if (window != null)
+                    {
+                        PropertyInfo propertyInfo = windowViewType.GetProperty("DataContext");
+
+                        var value = propertyInfo.GetValue(window);
+                        if (value.GetType() == typeof(T))
+                        {
+                            
+                            window.Initialize(KernelTimePlanner.Get<T>(modelArgument));
+
+                            return window;
+                        }
+                    }
+                }
             }
 
+            throw new ArgumentOutOfRangeException($"Unable to find Window for view model {typeof(T)}");
+        }
+
+        private string FindWindowName<T>() where T : ViewModelBase
+        {
+          
+
             return null;
+            //return
+            //    Assembly.GetExecutingAssembly()
+            //            .GetTypes()
+            //            .FirstOrDefault(
+            //                t =>
+            //                typeof(WindowView).IsAssignableFrom(t)
+            //                && t.FindMembers(
+            //                    MemberTypes.Property,
+            //                    BindingFlags.GetProperty,
+            //                    (info, criteria) => info.Name == "DataContext" && info.GetType() == typeof(T),
+            //                    null).Any())?.Name;
         }
 
         #endregion

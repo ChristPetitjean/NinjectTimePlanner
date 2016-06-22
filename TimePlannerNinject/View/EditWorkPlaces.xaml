@@ -79,7 +79,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate DataType="{x:Type model:WorkPlace}">
-                            <xctk:ColorPicker SelectedColor="{Binding Color, Mode=TwoWay}"></xctk:ColorPicker>
+                            <xctk:ColorPicker SelectedColor="{Binding Color, Mode=TwoWay}" UsingAlphaChannel="True"></xctk:ColorPicker>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>

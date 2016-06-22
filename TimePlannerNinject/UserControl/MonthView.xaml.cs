@@ -3,762 +3,884 @@
 //   Christophe PETITJEAN - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace TimePlannerNinject.UserControl
 {
-   using System;
-   using System.Collections.ObjectModel;
-   using System.Collections.Specialized;
-   using System.Diagnostics;
-   using System.Globalization;
-   using System.Linq;
-   using System.Windows;
-   using System.Windows.Controls;
-   using System.Windows.Input;
-   using System.Windows.Media;
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Input;
+    using System.Windows.Media;
 
-   using TimePlannerNinject.Extensions;
-   using TimePlannerNinject.Model;
+    using TimePlannerNinject.Extensions;
+    using TimePlannerNinject.Model;
 
-   using Xceed.Wpf.AvalonDock.Controls;
+    using Xceed.Wpf.AvalonDock.Controls;
 
-   using Calendar = System.Globalization.Calendar;
+    using Calendar = System.Globalization.Calendar;
 
-   /// <summary>
-   ///    Logique d'interaction pour MonthView.xaml
-   /// </summary>
-   public partial class MonthView
-   {
-      #region Constants
+    /// <summary>
+    ///     Logique d'interaction pour MonthView.xaml
+    /// </summary>
+    public partial class MonthView
+    {
+        #region Static Fields
 
-      /// <summary>
-      ///    Le nom de la propriété <see cref="Appointments" />.
-      /// </summary>
-      public const string AppointmentsPropertyName = "Appointments";
+        /// <summary>
+        ///     Identifies la propriété de dependance <see cref="Appointments" />.
+        /// </summary>
+        public static readonly DependencyProperty AppointmentsProperty = DependencyProperty.Register(
+            nameof(Appointments), 
+            typeof(ObservableCollection<InputDay>), 
+            typeof(MonthView), 
+            new PropertyMetadata(OnAppointmentsChanged));
 
-      /// <summary>
-      ///    Le nom de la propriété <see cref="DisplayStartDate" />.
-      /// </summary>
-      public const string DisplayStartDatePropertyName = "DisplayStartDate";
+        /// <summary>
+        ///     Identifies la propriété de dependance <see cref="DisplayStartDate" />.
+        /// </summary>
+        public static readonly DependencyProperty DisplayStartDateProperty = DependencyProperty.Register(
+            nameof(DisplayStartDate), 
+            typeof(DateTime), 
+            typeof(MonthView), 
+            new PropertyMetadata(OnDisplayStartDAteChanged));
 
-      #endregion
+        /// <summary>
+        ///     Propriété de dépendance des dates sélectionnées
+        /// </summary>
+        public static readonly DependencyProperty SelectedDatesProperty = DependencyProperty.Register(
+            "SelectedDates", 
+            typeof(ObservableCollection<DateTime>), 
+            typeof(MonthView), 
+            new PropertyMetadata(OnSelectedIdsChanged));
 
-      #region Static Fields
+        /// <summary>
+        ///     Identifies la propriété de dependance <see cref="IsAllEventsSelected" />.
+        /// </summary>
+        public static readonly DependencyProperty IsAllEventsSelectedProperty = DependencyProperty.Register(
+            nameof(IsAllEventsSelected), 
+            typeof(bool), 
+            typeof(MonthView), 
+            new PropertyMetadata(OnIsAllEventsSelectedChanged));
 
-      /// <summary>
-      ///    Identifies la propriété de dependance <see cref="Appointments" />.
-      /// </summary>
-      public static readonly DependencyProperty AppointmentsProperty = DependencyProperty.Register(
-         AppointmentsPropertyName,
-         typeof(ObservableCollection<InputDay>),
-         typeof(MonthView),
-         new PropertyMetadata(OnAppointmentsChanged));
+        #endregion
 
-      /// <summary>
-      ///    Identifies la propriété de dependance <see cref="DisplayStartDate" />.
-      /// </summary>
-      public static readonly DependencyProperty DisplayStartDateProperty = DependencyProperty.Register(
-         DisplayStartDatePropertyName,
-         typeof(DateTime),
-         typeof(MonthView),
-         new PropertyMetadata(OnDisplayStartDAteChanged));
+        #region Fields
 
-      /// <summary>
-      ///    Propriété de dépendance des dates sélectionnées
-      /// </summary>
-      public static readonly DependencyProperty SelectedDatesProperty = DependencyProperty.Register(
-         "SelectedDates",
-         typeof(ObservableCollection<DateTime>),
-         typeof(MonthView),
-         new PropertyMetadata(OnSelectedIdsChanged));
+        /// <summary>
+        ///     Pinceau du fond d'un emplacement de jour.
+        /// </summary>
+        private readonly Brush dayBackBrush;
 
-      #endregion
+        /// <summary>
+        ///     Calendrier system.
+        /// </summary>
+        private readonly Calendar sysCal;
 
-      #region Fields
+        /// <summary>
+        ///     Pinceau du fond de la cible.
+        /// </summary>
+        private readonly Brush targetBackBrush;
 
-      /// <summary>
-      ///    Pinceau du fond d'un emplacement de jour.
-      /// </summary>
-      private readonly Brush dayBackBrush;
+        /// <summary>
+        ///     Pinceau du fond du jour sélectionné.
+        /// </summary>
+        private readonly Brush todayBackBrush;
 
-      /// <summary>
-      ///    Calendrier system.
-      /// </summary>
-      private readonly Calendar sysCal;
+        /// <summary>
+        ///     Pinceau du fond du jour sélectionné.
+        /// </summary>
+        private readonly Brush todayStackBrush;
 
-      /// <summary>
-      ///    Pinceau du fond de la cible.
-      /// </summary>
-      private readonly Brush targetBackBrush;
+        /// <summary>
+        ///     Mois affiché.
+        /// </summary>
+        private int displayMonth;
 
-      /// <summary>
-      ///    Pinceau du fond du jour sélectionné.
-      /// </summary>
-      private readonly Brush todayBackBrush;
+        /// <summary>
+        ///     Année affichée.
+        /// </summary>
+        private int displayYear;
 
-      /// <summary>
-      ///    Pinceau du fond du jour sélectionné.
-      /// </summary>
-      private readonly Brush todayStackBrush;
+        /// <summary>
+        ///     Définit si l'initialisation de la sélection se fait depuis cette meme classe
+        /// </summary>
+        private bool isInitializedFromThis;
 
-      /// <summary>
-      ///    Mois affiché.
-      /// </summary>
-      private int displayMonth;
+        /// <summary>
+        ///     Le dernier jour sur lequel l'utilisateur à cliqué
+        /// </summary>
+        private int lastDayClicked;
 
-      /// <summary>
-      ///    Année affichée.
-      /// </summary>
-      private int displayYear;
+        /// <summary>
+        ///     Définit le sens de la derniere sélection multiple par shift
+        /// </summary>
+        private bool lastDayClickIsUp;
 
-      /// <summary>
-      ///    Le dernier jour sur lequel l'utilisateur à cliqué
-      /// </summary>
-      private int lastDayClicked;
+        #endregion
 
-      /// <summary>
-      ///    Définit le sens de la derniere sélection multiple par shift
-      /// </summary>
-      private bool lastDayClickIsUp;
+        #region Constructors and Destructors
 
-      #endregion
+        /// <summary>
+        ///     Initialise une nouvelle instance de la classe <see cref="MonthView" />.
+        /// </summary>
+        public MonthView()
+        {
+            this.todayBackBrush = (Brush)this.TryFindResource("TodayBackBrush");
+            this.dayBackBrush = (Brush)this.TryFindResource("DayBackBrush");
+            this.targetBackBrush = (Brush)this.TryFindResource("TargetBackBrush");
+            this.todayStackBrush = (Brush)this.TryFindResource("TodayStackBackBrush");
 
-      #region Constructors and Destructors
+            this.displayMonth = this.DisplayStartDate.Month;
+            this.displayYear = this.DisplayStartDate.Year;
+            var cultureInfo = new CultureInfo(CultureInfo.CurrentCulture.LCID);
+            this.sysCal = cultureInfo.Calendar;
+            this.Appointments = new ObservableCollection<InputDay>();
+            this.DisplayStartDate = DateTime.Now.AddDays(-1 * (DateTime.Now.Day - 1));
+            this.IsAllEventsSelected = false;
 
-      /// <summary>
-      ///    Initialise une nouvelle instance de la classe <see cref="MonthView" />.
-      /// </summary>
-      public MonthView()
-      {
-         this.todayBackBrush = (Brush)this.TryFindResource("TodayBackBrush");
-         this.dayBackBrush = (Brush)this.TryFindResource("DayBackBrush");
-         this.targetBackBrush = (Brush)this.TryFindResource("TargetBackBrush");
-         this.todayStackBrush = (Brush)this.TryFindResource("TodayStackBackBrush");
+            this.Loaded += this.OnMonthViewLoaded;
 
-         this.displayMonth = this.DisplayStartDate.Month;
-         this.displayYear = this.DisplayStartDate.Year;
-         var cultureInfo = new CultureInfo(CultureInfo.CurrentCulture.LCID);
-         this.sysCal = cultureInfo.Calendar;
-         this.Appointments = new ObservableCollection<InputDay>();
-         this.DisplayStartDate = DateTime.Now.AddDays(-1 * (DateTime.Now.Day - 1));
+            this.InitializeComponent();
 
-         this.Loaded += this.OnMonthViewLoaded;
+            FocusManager.SetFocusedElement(Application.Current.MainWindow, this);
+        }
 
-         this.InitializeComponent();
-      }
+        #endregion
 
-      #endregion
+        #region Public Events
 
-      #region Public Events
+        /// <summary>
+        ///     Levé lors du double click sur un évènement.
+        /// </summary>
+        public event EventHandler<AppointmentDblClickedEvenArgs> AppointmentDblClicked;
 
-      /// <summary>
-      ///    Levé lors du double click sur un évènement.
-      /// </summary>
-      public event EventHandler<AppointmentDblClickedEvenArgs> AppointmentDblClicked;
+        /// <summary>
+        ///     Levé lors du déplacement d'un évènement.
+        /// </summary>
+        public event EventHandler<AppointmentMovedEvenArgs> AppointmentMoved;
 
-      /// <summary>
-      ///    Levé lors du déplacement d'un évènement.
-      /// </summary>
-      public event EventHandler<AppointmentMovedEvenArgs> AppointmentMoved;
+        /// <summary>
+        ///     Levé lors du double click sur un emplacement vide.
+        /// </summary>
+        public event EventHandler<NewAppointmentEventArgs> DayBoxDoubleClicked;
 
-      /// <summary>
-      ///    Levé lors du double click sur un emplacement vide.
-      /// </summary>
-      public event EventHandler<NewAppointmentEventArgs> DayBoxDoubleClicked;
+        /// <summary>
+        ///     Levé lors du changement de mois affiché.
+        /// </summary>
+        public event EventHandler<MonthChangedEventArgs> DisplayMonthChanged;
 
-      /// <summary>
-      ///    Levé lors du changement de mois affiché.
-      /// </summary>
-      public event EventHandler<MonthChangedEventArgs> DisplayMonthChanged;
+        #endregion
 
-      #endregion
+        #region Public Properties
 
-      #region Public Properties
-
-      /// <summary>
-      ///    Obtient ou définit la liste des <see cref="Appointments" />
-      /// </summary>
-      public ObservableCollection<InputDay> Appointments
-      {
-         get
-         {
-            return (ObservableCollection<InputDay>)this.GetValue(AppointmentsProperty);
-         }
-
-         set
-         {
-            this.SetValue(AppointmentsProperty, value);
-         }
-      }
-
-      /// <summary>
-      ///    Obtient ou définit la date de début
-      /// </summary>
-      public DateTime DisplayStartDate
-      {
-         get
-         {
-            return (DateTime)this.GetValue(DisplayStartDateProperty);
-         }
-
-         set
-         {
-            this.SetValue(DisplayStartDateProperty, value);
-         }
-      }
-
-      /// <summary>
-      ///    Obtient ou définit les dates sélectionnées
-      /// </summary>
-      public ObservableCollection<DateTime> SelectedDates
-      {
-         get
-         {
-            return (ObservableCollection<DateTime>)this.GetValue(SelectedDatesProperty);
-         }
-         set
-         {
-            this.SetValue(SelectedDatesProperty, value);
-         }
-      }
-
-      #endregion
-
-      #region Methods
-
-      /// <summary>
-      ///    Levée lors d'une modification de <see cref="Appointments" />.
-      /// </summary>
-      /// <param name="d">La propriété de dépendance.</param>
-      /// <param name="e">L'instance de <see cref="DependencyPropertyChangedEventArgs" /> contenant les données de l'évènement.</param>
-      private static void OnAppointmentsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-      {
-         var action = new NotifyCollectionChangedEventHandler((o, args) => { RebuildUI(d); });
-
-         if (e.OldValue != null)
-         {
-            var coll = (INotifyCollectionChanged)e.OldValue;
-            coll.CollectionChanged -= action;
-         }
-
-         if (e.NewValue != null)
-         {
-            var coll = (INotifyCollectionChanged)e.NewValue;
-            coll.CollectionChanged += action;
-         }
-
-         RebuildUI(d);
-      }
-
-      /// <summary>
-      ///    Levée lors d'une modification de <see cref="DisplayStartDate" />.
-      /// </summary>
-      /// <param name="d">La propriété de dépendance.</param>
-      /// <param name="e">L'instance de <see cref="DependencyPropertyChangedEventArgs" /> contenant les données de l'évènement.</param>
-      private static void OnDisplayStartDAteChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-      {
-         var me = d as MonthView;
-         if (me != null)
-         {
-            me.displayMonth = ((DateTime)e.NewValue).Month;
-            me.displayYear = ((DateTime)e.NewValue).Year;
-         }
-      }
-
-      /// <summary>
-      ///    Levée lors d'un changement dans la propriété de dépendance <see cref="SelectedDates" />.
-      /// </summary>
-      /// <param name="d">La propriété de dépendance.</param>
-      /// <param name="e">L'instance de <see cref="DependencyPropertyChangedEventArgs" /> contenant les données de l'évènement.</param>
-      private static void OnSelectedIdsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-      {
-         var action = new NotifyCollectionChangedEventHandler(
-            (o, args) =>
-               {
-                  var me = d as MonthView;
-                  if (me != null && me.IsLoaded)
-                  {
-                     foreach (var dayBoxControl in me.FindVisualChildren<DayBoxControl>())
-                     {
-                        dayBoxControl.MainBorder.BorderThickness =
-                           me.SelectedDates.Any(
-                              s => s.Date.Day == (int)dayBoxControl.Tag && s.Date.Month == me.displayMonth && s.Date.Year == me.displayYear)
-                              ? new Thickness(2)
-                              : new Thickness(0);
-                     }
-                  }
-               });
-
-         if (e.OldValue != null)
-         {
-            var coll = (INotifyCollectionChanged)e.OldValue;
-            coll.CollectionChanged -= action;
-         }
-
-         if (e.NewValue != null)
-         {
-            var coll = (INotifyCollectionChanged)e.NewValue;
-            coll.CollectionChanged += action;
-         }
-      }
-
-      /// <summary>
-      ///    Lance une regénération de l'UI
-      /// </summary>
-      /// <param name="d">la propriété de dépandance contenant <see cref="MonthView" />.</param>
-      private static void RebuildUI(DependencyObject d)
-      {
-         var me = d as MonthView;
-         if (me != null && me.IsLoaded)
-         {
-            me.BuildCalendarUI();
-         }
-      }
-
-      /// <summary>
-      ///    Ajoute les lignes correspondants aux semaines dans la grille des mois.
-      /// </summary>
-      /// <param name="dayInMounth">
-      ///    Nombre de jours dans le mois.
-      /// </param>
-      /// <param name="offsetDays">
-      ///    Le décalage de jours par rapport a l'enumeration de jours.
-      /// </param>
-      private void AddRowsToMonthGrid(int dayInMounth, int offsetDays)
-      {
-         this.MonthViewGrid.RowDefinitions.Clear();
-
-         var rowHeigth = new GridLength(60, GridUnitType.Star);
-         var endOffsetDays = 7
-                             - (int)
-                               Enum.ToObject(
-                                  typeof(DayOfWeek),
-                                  new DateTime(this.displayYear, this.displayMonth, 1).AddDays(dayInMounth - 1).DayOfWeek) + 1;
-
-         for (var i = 0; i < (dayInMounth + offsetDays + endOffsetDays) / 7; i++)
-         {
-            var rowDef = new RowDefinition { Height = rowHeigth };
-            this.MonthViewGrid.RowDefinitions.Add(rowDef);
-         }
-      }
-
-      /// <summary>
-      ///    Construit l'UI.
-      /// </summary>
-      // ReSharper disable once InconsistentNaming
-      private void BuildCalendarUI()
-      {
-         var daysInMonth = this.sysCal.GetDaysInMonth(this.displayYear, this.displayMonth);
-         var offsetDays = (int)Enum.ToObject(typeof(DayOfWeek), new DateTime(this.displayYear, this.displayMonth, 1).DayOfWeek) - 1;
-         if (offsetDays == -1)
-         {
-            offsetDays = 6;
-         }
-
-         var weekCount = 0;
-         var weekRowCtrl = new WeekOfDaysControls();
-
-         // On efface tous les controles enfant et les enregistremetns
-         this.MonthViewGrid.Children.Clear();
-         NameScope.SetNameScope(this, new NameScope());
-
-         this.AddRowsToMonthGrid(daysInMonth, offsetDays);
-         this.MonthYearLabel.Content = this.DisplayStartDate.ToString("MMMM yyyy").ToPascalCase();
-
-         for (var i = 1; i <= daysInMonth; i++)
-         {
-            if (i != 1 && Math.Abs(Math.IEEERemainder(i + offsetDays - 1, 7)) < 0.001)
+        /// <summary>
+        ///     Obtient ou définit la liste des <see cref="Appointments" />
+        /// </summary>
+        public ObservableCollection<InputDay> Appointments
+        {
+            get
             {
-               Grid.SetRow(weekRowCtrl, weekCount);
-               this.MonthViewGrid.Children.Add(weekRowCtrl);
-
-               weekRowCtrl = new WeekOfDaysControls();
-               weekCount += 1;
+                return (ObservableCollection<InputDay>)this.GetValue(AppointmentsProperty);
             }
 
-            var contextextMenuItem = new MenuItem { Header = "Ajouter / Modifier la sélection" };
-
-            var dayBox = new DayBoxControl { Name = "DayBox" + i, DayNumberLabel = { Content = i.ToString() }, Tag = i };
-            dayBox.MouseDoubleClick += this.OnDayBoxMouseDoubleClick;
-            dayBox.PreviewDragEnter += this.OnDayBoxPreviewDragEnter;
-            dayBox.PreviewDragLeave += this.OnDayBoxPreviewDragLeave;
-            dayBox.MouseUp += this.OnDayBoxMouseUp;
-
-            contextextMenuItem.Click +=
-               (sender, e) => { this.OnDayBoxMouseDoubleClick(dayBox, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)); };
-
-            dayBox.ContextMenu = new ContextMenu { Items = { contextextMenuItem } };
-
-            NameScope.SetNameScope(dayBox, new NameScope());
-            this.RegisterName("DayBox" + i, dayBox);
-
-            NameScope.SetNameScope(dayBox, new NameScope());
-            this.RegisterName("DayBox" + i, dayBox);
-
-            if (new DateTime(this.displayYear, this.displayMonth, i) == DateTime.Today)
+            set
             {
-               dayBox.DayLabelRowBorder.Background = this.todayBackBrush;
-               dayBox.DayAppointmentsStack.Background = this.todayStackBrush;
+                this.SetValue(AppointmentsProperty, value);
+            }
+        }
+
+        /// <summary>
+        ///     Obtient ou définit la date de début
+        /// </summary>
+        public DateTime DisplayStartDate
+        {
+            get
+            {
+                return (DateTime)this.GetValue(DisplayStartDateProperty);
             }
 
-            if (this.Appointments != null)
+            set
             {
-               var day = i;
-               var aptDay = from d in this.Appointments
-                            where
-                               d.WorkStartTime.HasValue && d.WorkStartTime.Value.Day == day && d.WorkStartTime.Value.Month == this.displayMonth
-                               && d.WorkStartTime.Value.Year == this.displayYear
-                            select d;
+                this.SetValue(DisplayStartDateProperty, value);
+            }
+        }
 
-               foreach (var a in aptDay)
-               {
-                  var apt = new DayBoxAppointmentControl { Name = "Apt" + a.ID, DataContext = a };
-                  apt.MouseDoubleClick += this.OnAptMouseDoubleClick;
-                  dayBox.DayAppointmentsStack.Children.Add(apt);
-                  dayBox.RegisterName("Apt" + a.ID, apt);
-               }
+        /// <summary>
+        ///     Obtient ou modifie une valeur indiquant si tout les évènements sont sélectionnés ou non
+        /// </summary>
+        public bool IsAllEventsSelected
+        {
+            get
+            {
+                return (bool)this.GetValue(IsAllEventsSelectedProperty);
             }
 
-            Grid.SetColumn(dayBox, i - weekCount * 7 + offsetDays);
-            weekRowCtrl.WeekRowGrid.Children.Add(dayBox);
-         }
-
-         Grid.SetRow(weekRowCtrl, weekCount);
-         this.MonthViewGrid.Children.Add(weekRowCtrl);
-      }
-
-      /// <summary>
-      ///    Levé lors du double click sur un évènement.
-      /// </summary>
-      /// <param name="sender">
-      ///    Objet ayant levé l'évènement.
-      /// </param>
-      /// <param name="e">
-      ///    Arguments de l'évènement.
-      /// </param>
-      private void OnAptMouseDoubleClick(object sender, MouseButtonEventArgs e)
-      {
-         if (e.Source is DayBoxAppointmentControl)
-         {
-            if (((DayBoxAppointmentControl)e.Source).Tag != null)
+            set
             {
-               if (this.AppointmentDblClicked != null)
-               {
-                  var idApt = (int)((DayBoxAppointmentControl)e.Source).Tag;
-                  var arg = new AppointmentDblClickedEvenArgs { Id = idApt };
-                  this.AppointmentDblClicked(e.Source, arg);
-               }
+                this.SetValue(IsAllEventsSelectedProperty, value);
             }
-         }
+        }
 
-         e.Handled = true;
-      }
-
-      /// <summary>
-      ///    Levé lors du double click sur un emplacement d'évènement.
-      /// </summary>
-      /// <param name="sender">
-      ///    Objet ayant levé l'évènement.
-      /// </param>
-      /// <param name="e">
-      ///    L'instance de <see cref="MouseButtonEventArgs" /> contenant les données de l'évènement.
-      /// </param>
-      private void OnDayBoxMouseDoubleClick(object sender, MouseButtonEventArgs e)
-      {
-         if (e.Source is DayBoxControl && e.ChangedButton == MouseButton.Right)
-         {
-            var dayBoxControl = (DayBoxControl)e.Source;
-            var day = (int)((DayBoxControl)e.Source).Tag;
-            dayBoxControl.ContextMenu.Visibility = this.SelectedDates != null && this.SelectedDates.Any(d => d.Day == day)
-                                                      ? Visibility.Visible
-                                                      : Visibility.Hidden;
-         }
-         else if (e.Source is DayBoxControl && ((Visual)e.OriginalSource).FindVisualAncestor<DayBoxAppointmentControl>() == null
-                  && e.LeftButton == MouseButtonState.Pressed)
-         {
-            var ev = new NewAppointmentEventArgs();
-            if (((DayBoxControl)e.Source).Tag != null)
+        /// <summary>
+        ///     Obtient ou définit les dates sélectionnées
+        /// </summary>
+        public ObservableCollection<DateTime> SelectedDates
+        {
+            get
             {
-               ev.StartDate = new DateTime(this.displayYear, this.displayMonth, (int)((DayBoxControl)e.Source).Tag);
-               ev.EndDate = (DateTime)ev.StartDate;
+                return (ObservableCollection<DateTime>)this.GetValue(SelectedDatesProperty);
             }
 
-            if (this.DayBoxDoubleClicked != null)
+            set
             {
-               this.DayBoxDoubleClicked(sender, ev);
+                this.SetValue(SelectedDatesProperty, value);
+            }
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        ///     Levée lors d'une modification de <see cref="Appointments" />.
+        /// </summary>
+        /// <param name="d">La propriété de dépendance.</param>
+        /// <param name="e">L'instance de <see cref="DependencyPropertyChangedEventArgs" /> contenant les données de l'évènement.</param>
+        private static void OnAppointmentsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var action = new NotifyCollectionChangedEventHandler((o, args) => { RebuildUI(d); });
+
+            if (e.OldValue != null)
+            {
+                var coll = (INotifyCollectionChanged)e.OldValue;
+                coll.CollectionChanged -= action;
+            }
+
+            if (e.NewValue != null)
+            {
+                var coll = (INotifyCollectionChanged)e.NewValue;
+                coll.CollectionChanged += action;
+            }
+
+            RebuildUI(d);
+        }
+
+        /// <summary>
+        ///     Levée lors d'une modification de <see cref="DisplayStartDate" />.
+        /// </summary>
+        /// <param name="d">La propriété de dépendance.</param>
+        /// <param name="e">L'instance de <see cref="DependencyPropertyChangedEventArgs" /> contenant les données de l'évènement.</param>
+        private static void OnDisplayStartDAteChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var me = d as MonthView;
+            if (me != null)
+            {
+                me.displayMonth = ((DateTime)e.NewValue).Month;
+                me.displayYear = ((DateTime)e.NewValue).Year;
+            }
+        }
+
+        /// <summary>
+        ///     Levée lors d'une modification de <see cref="IsAllEventsSelected" />.
+        /// </summary>
+        /// <param name="d">La propriété de dépendance.</param>
+        /// <param name="e">L'instance de <see cref="DependencyPropertyChangedEventArgs" /> contenant les données de l'évènement.</param>
+        private static void OnIsAllEventsSelectedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var me = d as MonthView;
+            if (me?.SelectedDates != null)
+            {
+                if (!me.isInitializedFromThis)
+                {
+                    me.SelectedDates.Clear();
+                    if ((bool)e.NewValue)
+                    {
+                        for (var i = 1; i <= me.sysCal.GetDaysInMonth(me.displayYear, me.displayMonth); i++)
+                        {
+                            me.SelectedDates.Add(new DateTime(me.displayYear, me.displayMonth, i));
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Levée lors d'un changement dans la propriété de dépendance <see cref="SelectedDates" />.
+        /// </summary>
+        /// <param name="d">La propriété de dépendance.</param>
+        /// <param name="e">L'instance de <see cref="DependencyPropertyChangedEventArgs" /> contenant les données de l'évènement.</param>
+        private static void OnSelectedIdsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var action = new NotifyCollectionChangedEventHandler(
+                (o, args) =>
+                    {
+                        var me = d as MonthView;
+                        if (me != null && me.IsLoaded)
+                        {
+                            var isAllSelected = true;
+                            foreach (var dayBoxControl in me.FindVisualChildren<DayBoxControl>())
+                            {
+                                if (
+                                    me.SelectedDates.Any(
+                                        s => s.Date.Day == (int)dayBoxControl.Tag && s.Date.Month == me.displayMonth && s.Date.Year == me.displayYear))
+                                {
+                                    dayBoxControl.MainBorder.BorderThickness = new Thickness(2);
+                                }
+                                else
+                                {
+                                    dayBoxControl.MainBorder.BorderThickness = new Thickness(0);
+                                    isAllSelected = false;
+                                }
+                            }
+
+                            if (me.IsAllEventsSelected != isAllSelected)
+                            {
+                                me.isInitializedFromThis = true;
+                                me.IsAllEventsSelected = isAllSelected;
+                                me.isInitializedFromThis = false;
+                            }
+                        }
+                    });
+
+            if (e.OldValue != null)
+            {
+                var coll = (INotifyCollectionChanged)e.OldValue;
+                coll.CollectionChanged -= action;
+            }
+
+            if (e.NewValue != null)
+            {
+                var coll = (INotifyCollectionChanged)e.NewValue;
+                coll.CollectionChanged += action;
+            }
+        }
+
+        /// <summary>
+        ///     Lance une regénération de l'UI
+        /// </summary>
+        /// <param name="d">la propriété de dépandance contenant <see cref="MonthView" />.</param>
+        // ReSharper disable once InconsistentNaming
+        private static void RebuildUI(DependencyObject d)
+        {
+            var me = d as MonthView;
+            if (me != null && me.IsLoaded)
+            {
+                me.BuildCalendarUI();
+            }
+        }
+
+        /// <summary>
+        ///     Ajoute les lignes correspondants aux semaines dans la grille des mois.
+        /// </summary>
+        /// <param name="dayInMounth">
+        ///     Nombre de jours dans le mois.
+        /// </param>
+        /// <param name="offsetDays">
+        ///     Le décalage de jours par rapport a l'enumeration de jours.
+        /// </param>
+        private void AddRowsToMonthGrid(int dayInMounth, int offsetDays)
+        {
+            this.MonthViewGrid.RowDefinitions.Clear();
+
+            var rowHeigth = new GridLength(60, GridUnitType.Star);
+            var endOffsetDays = 7
+                                - (int)
+                                  Enum.ToObject(
+                                      typeof(DayOfWeek), 
+                                      new DateTime(this.displayYear, this.displayMonth, 1).AddDays(dayInMounth - 1).DayOfWeek) + 1;
+
+            for (var i = 0; i < (dayInMounth + offsetDays + endOffsetDays) / 7; i++)
+            {
+                var rowDef = new RowDefinition { Height = rowHeigth };
+                this.MonthViewGrid.RowDefinitions.Add(rowDef);
+            }
+        }
+
+        /// <summary>
+        ///     Construit l'UI.
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        private void BuildCalendarUI()
+        {
+            var daysInMonth = this.sysCal.GetDaysInMonth(this.displayYear, this.displayMonth);
+            var offsetDays = (int)Enum.ToObject(typeof(DayOfWeek), new DateTime(this.displayYear, this.displayMonth, 1).DayOfWeek) - 1;
+            if (offsetDays == -1)
+            {
+                offsetDays = 6;
+            }
+
+            var weekCount = 0;
+            var weekRowCtrl = new WeekOfDaysControls();
+
+            // On efface tous les controles enfant et les enregistremetns
+            this.MonthViewGrid.Children.Clear();
+            NameScope.SetNameScope(this, new NameScope());
+
+            this.AddRowsToMonthGrid(daysInMonth, offsetDays);
+            this.MonthYearLabel.Content = this.DisplayStartDate.ToString("MMMM yyyy").ToPascalCase();
+
+            for (var i = 1; i <= daysInMonth; i++)
+            {
+                if (i != 1 && Math.Abs(Math.IEEERemainder(i + offsetDays - 1, 7)) < 0.001)
+                {
+                    Grid.SetRow(weekRowCtrl, weekCount);
+                    this.MonthViewGrid.Children.Add(weekRowCtrl);
+
+                    weekRowCtrl = new WeekOfDaysControls();
+                    weekCount += 1;
+                }
+
+                var contextextMenuItem = new MenuItem { Header = "Ajouter / Modifier la sélection" };
+
+                var dayBox = new DayBoxControl { Name = "DayBox" + i, DayNumberLabel = { Content = i.ToString() }, Tag = i };
+                dayBox.MouseDoubleClick += this.OnDayBoxMouseDoubleClick;
+                dayBox.PreviewDragEnter += this.OnDayBoxPreviewDragEnter;
+                dayBox.PreviewDragLeave += this.OnDayBoxPreviewDragLeave;
+                dayBox.MouseUp += this.OnDayBoxMouseUp;
+
+                contextextMenuItem.Click +=
+                    (sender, e) => { this.OnDayBoxMouseDoubleClick(dayBox, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)); };
+
+                dayBox.ContextMenu = new ContextMenu { Items = { contextextMenuItem } };
+
+                NameScope.SetNameScope(dayBox, new NameScope());
+                this.RegisterName("DayBox" + i, dayBox);
+
+                NameScope.SetNameScope(dayBox, new NameScope());
+                this.RegisterName("DayBox" + i, dayBox);
+
+                if (new DateTime(this.displayYear, this.displayMonth, i) == DateTime.Today)
+                {
+                    dayBox.DayLabelRowBorder.Background = this.todayBackBrush;
+                    dayBox.DayAppointmentsStack.Background = this.todayStackBrush;
+                }
+
+                if (this.Appointments != null)
+                {
+                    var day = i;
+                    var aptDay = from d in this.Appointments
+                                 where
+                                     d.WorkStartTime.HasValue && d.WorkStartTime.Value.Day == day && d.WorkStartTime.Value.Month == this.displayMonth
+                                     && d.WorkStartTime.Value.Year == this.displayYear
+                                 select d;
+
+                    foreach (var a in aptDay)
+                    {
+                        var apt = new DayBoxAppointmentControl { Name = "Apt" + a.ID, DataContext = a };
+                        apt.MouseDoubleClick += this.OnAptMouseDoubleClick;
+                        dayBox.DayAppointmentsStack.Children.Add(apt);
+                        dayBox.RegisterName("Apt" + a.ID, apt);
+                    }
+                }
+
+                Grid.SetColumn(dayBox, i - weekCount * 7 + offsetDays);
+                weekRowCtrl.WeekRowGrid.Children.Add(dayBox);
+            }
+
+            Grid.SetRow(weekRowCtrl, weekCount);
+            this.MonthViewGrid.Children.Add(weekRowCtrl);
+        }
+
+        /// <summary>
+        ///     Levé lors du double click sur un évènement.
+        /// </summary>
+        /// <param name="sender">
+        ///     Objet ayant levé l'évènement.
+        /// </param>
+        /// <param name="e">
+        ///     Arguments de l'évènement.
+        /// </param>
+        private void OnAptMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if ((e.Source as DayBoxAppointmentControl)?.Tag != null)
+            {
+                if (this.AppointmentDblClicked != null)
+                {
+                    var idApt = (int)((DayBoxAppointmentControl)e.Source).Tag;
+                    var arg = new AppointmentDblClickedEvenArgs { Id = idApt };
+                    this.AppointmentDblClicked(e.Source, arg);
+                }
             }
 
             e.Handled = true;
-         }
-         else if (sender is DayBoxControl)
-         {
-            var dayBoxControl = (DayBoxControl)sender;
-            var ev = new NewAppointmentEventArgs();
-            if (dayBoxControl.Tag != null)
+        }
+
+        /// <summary>
+        ///     Levé lors du double click sur un emplacement d'évènement.
+        /// </summary>
+        /// <param name="sender">
+        ///     Objet ayant levé l'évènement.
+        /// </param>
+        /// <param name="e">
+        ///     L'instance de <see cref="MouseButtonEventArgs" /> contenant les données de l'évènement.
+        /// </param>
+        private void OnDayBoxMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.Source is DayBoxControl && e.ChangedButton == MouseButton.Right)
             {
-               ev.StartDate = new DateTime(this.displayYear, this.displayMonth, (int)dayBoxControl.Tag);
-               ev.EndDate = (DateTime)ev.StartDate;
+                var dayBoxControl = (DayBoxControl)e.Source;
+                var day = (int)((DayBoxControl)e.Source).Tag;
+                dayBoxControl.ContextMenu.Visibility = this.SelectedDates != null && this.SelectedDates.Any(d => d.Day == day)
+                                                           ? Visibility.Visible
+                                                           : Visibility.Hidden;
             }
-
-            if (this.DayBoxDoubleClicked != null)
+            else if (e.Source is DayBoxControl && ((Visual)e.OriginalSource).FindVisualAncestor<DayBoxAppointmentControl>() == null
+                     && e.LeftButton == MouseButtonState.Pressed)
             {
-               this.DayBoxDoubleClicked(sender, ev);
+                var ev = new NewAppointmentEventArgs();
+                if (((DayBoxControl)e.Source).Tag != null)
+                {
+                    ev.StartDate = new DateTime(this.displayYear, this.displayMonth, (int)((DayBoxControl)e.Source).Tag);
+                    ev.EndDate = (DateTime)ev.StartDate;
+                }
+
+                this.DayBoxDoubleClicked?.Invoke(sender, ev);
+
+                e.Handled = true;
             }
-         }
-      }
-
-      /// <summary>
-      ///    Levé lors du click sur un emplacement d'évènement
-      /// </summary>
-      /// <param name="sender">
-      ///    Objet ayant levé l'évènement.
-      /// </param>
-      /// <param name="e">
-      ///    L'instance de <see cref="MouseButtonEventArgs" /> contenant les données de l'évènement.
-      /// </param>
-      private void OnDayBoxMouseUp(object sender, MouseButtonEventArgs e)
-      {
-         if (e.Source is DayBoxControl)
-         {
-            var day = (int)((DayBoxControl)e.Source).Tag;
-            if (e.ChangedButton == MouseButton.Left)
+            else if (sender is DayBoxControl)
             {
+                var dayBoxControl = (DayBoxControl)sender;
+                var ev = new NewAppointmentEventArgs();
+                if (dayBoxControl.Tag != null)
+                {
+                    ev.StartDate = new DateTime(this.displayYear, this.displayMonth, (int)dayBoxControl.Tag);
+                    ev.EndDate = (DateTime)ev.StartDate;
+                }
 
-               if (Keyboard.Modifiers == ModifierKeys.Shift)
-               {
-                  if (this.lastDayClicked != 0)
-                  {
-                     if (this.lastDayClicked < day)
-                     {
-                        if (!this.lastDayClickIsUp)
+                this.DayBoxDoubleClicked?.Invoke(sender, ev);
+            }
+        }
+
+        /// <summary>
+        ///     Levé lors du click sur un emplacement d'évènement
+        /// </summary>
+        /// <param name="sender">
+        ///     Objet ayant levé l'évènement.
+        /// </param>
+        /// <param name="e">
+        ///     L'instance de <see cref="MouseButtonEventArgs" /> contenant les données de l'évènement.
+        /// </param>
+        private void OnDayBoxMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.Source is DayBoxControl)
+            {
+                var day = (int)((DayBoxControl)e.Source).Tag;
+                if (e.ChangedButton == MouseButton.Left)
+                {
+                    if (Keyboard.Modifiers == ModifierKeys.Shift)
+                    {
+                        if (this.lastDayClicked != 0)
                         {
-                           this.SelectedDates.Clear();
+                            if (this.lastDayClicked < day)
+                            {
+                                if (!this.lastDayClickIsUp)
+                                {
+                                    this.SelectedDates.Clear();
+                                }
+
+                                for (var i = this.lastDayClicked; i <= day; i++)
+                                {
+                                    this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
+                                }
+
+                                this.lastDayClickIsUp = true;
+                            }
+                            else if (this.lastDayClicked > day)
+                            {
+                                if (this.lastDayClickIsUp)
+                                {
+                                    this.SelectedDates.Clear();
+                                }
+
+                                for (var i = day; i <= this.lastDayClicked; i++)
+                                {
+                                    this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
+                                }
+
+                                this.lastDayClickIsUp = false;
+                            }
+                            else
+                            {
+                                this.SelectedDates.Clear();
+                                this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+                            }
+                        }
+                        else
+                        {
+                            this.SelectedDates.Clear();
+                            this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+                        }
+                    }
+                    else if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        if (!this.SelectedDates.Any(s => s.Date.Day == day && s.Date.Month == this.displayMonth && s.Date.Year == this.displayYear))
+                        {
+                            this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+                        }
+                        else
+                        {
+                            var dateTime = this.SelectedDates.First(d => d.Year == this.displayYear && d.Month == this.displayMonth && d.Day == day);
+                            this.SelectedDates.Remove(dateTime);
                         }
 
-                        for (var i = this.lastDayClicked; i <= day; i++)
-                        {
-                           this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
-                        }
-
-                        this.lastDayClickIsUp = true;
-                     }
-                     else if (this.lastDayClicked > day)
-                     {
-                        if (this.lastDayClickIsUp)
-                        {
-                           this.SelectedDates.Clear();
-                        }
-
-                        for (var i = day; i <= this.lastDayClicked; i++)
-                        {
-                           this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
-                        }
-
-                        this.lastDayClickIsUp = false;
-                     }
-                     else
-                     {
+                        this.lastDayClicked = day;
+                    }
+                    else
+                    {
                         this.SelectedDates.Clear();
                         this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
-                     }
-                  }
-                  else
-                  {
-                     this.SelectedDates.Clear();
-                     this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
-                  }
-               }
-               else if (Keyboard.Modifiers == ModifierKeys.Control)
-               {
-                  if (!this.SelectedDates.Any(s => s.Date.Day == day && s.Date.Month == this.displayMonth && s.Date.Year == this.displayYear))
-                  {
-                     this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
-                  }
-                  else
-                  {
-                     var dateTime = this.SelectedDates.First(d => d.Year == this.displayYear && d.Month == this.displayMonth && d.Day == day);
-                     this.SelectedDates.Remove(dateTime);
-                  }
-                  this.lastDayClicked = day;
-               }
-               else
-               {
-                  this.SelectedDates.Clear();
-                  this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
-                  this.lastDayClicked = day;
-               }
+                        this.lastDayClicked = day;
+                    }
+                }
 
-
+                // Si on est sur le clic droit ou sur le clic gauche mais sans correspondance de selection, on arrete l'execution des évènement de gestion des clic
+                if (e.ChangedButton == MouseButton.Left
+                    || (e.ChangedButton == MouseButton.Right
+                        && !this.SelectedDates.Any(d => d.Year == this.displayYear && d.Month == this.displayMonth && d.Day == day)))
+                {
+                    e.Handled = true;
+                }
             }
-            // Si on est sur le clic droit ou sur le clic gauche mais sans correspondance de selection, on arrete l'execution des évènement de gestion des clic
-            if (e.ChangedButton == MouseButton.Left
-                || (e.ChangedButton == MouseButton.Right
-                    && !this.SelectedDates.Any(d => d.Year == this.displayYear && d.Month == this.displayMonth && d.Day == day)))
+        }
+
+        /// <summary>
+        ///     Levé lors du DragEnter.
+        /// </summary>
+        /// <param name="sender">
+        ///     Objet ayant levé l'évènement.
+        /// </param>
+        /// <param name="e">
+        ///     L'instance de <see cref="System.Windows.DragEventArgs" /> contenant les données de l'évènement.
+        /// </param>
+        private void OnDayBoxPreviewDragEnter(object sender, DragEventArgs e)
+        {
+            if (sender is DayBoxControl && e.Data.GetFormats().Contains(typeof(InputDay).FullName))
             {
-               e.Handled = true;
+                ((DayBoxControl)sender).DayAppointmentsStack.Background = this.targetBackBrush;
+                e.Handled = true;
             }
-         }
-      }
+        }
 
-      /// <summary>
-      ///    Levé lors du DragEnter.
-      /// </summary>
-      /// <param name="sender">
-      ///    Objet ayant levé l'évènement.
-      /// </param>
-      /// <param name="e">
-      ///    L'instance de <see cref="DragEventArgs" /> contenant les données de l'évènement.
-      /// </param>
-      private void OnDayBoxPreviewDragEnter(object sender, DragEventArgs e)
-      {
-         if (sender is DayBoxControl && e.Data.GetFormats().Contains(typeof(InputDay).FullName))
-         {
-            ((DayBoxControl)sender).DayAppointmentsStack.Background = this.targetBackBrush;
-            e.Handled = true;
-         }
-      }
-
-      /// <summary>
-      ///    Levé lors du DragLeave de l'évènement.
-      /// </summary>
-      /// <param name="sender">
-      ///    Objet ayant levé l'évènement.
-      /// </param>
-      /// <param name="e">
-      ///    L'instance de <see cref="DragEventArgs" /> contenant les données de l'évènement.
-      /// </param>
-      private void OnDayBoxPreviewDragLeave(object sender, DragEventArgs e)
-      {
-         if (sender is DayBoxControl)
-         {
-            this.RestoreDayBoxBackground((DayBoxControl)sender);
-         }
-      }
-
-      /// <summary>
-      ///    Levé lors du click sur le bouton de passage au mois suivant.
-      /// </summary>
-      /// <param name="sender">
-      ///    Objet ayant levé l'évènement.
-      /// </param>
-      /// <param name="e">
-      ///    L'instance de <see cref="RoutedEventArgs" /> contenant les données de l'évènement.
-      /// </param>
-      private void OnMonthGoNextMouseLeftButtonUp(object sender, RoutedEventArgs e)
-      {
-         this.UpdateMonth(1);
-      }
-
-      /// <summary>
-      ///    Levé lors du click sur le bouton de passage au mois précédent.
-      /// </summary>
-      /// <param name="sender">
-      ///    Objet ayant levé l'évènement..
-      /// </param>
-      /// <param name="e">
-      ///    L'instance de <see cref="RoutedEventArgs" /> contenant les données de l'évènement.
-      /// </param>
-      private void OnMonthGoPrevMouseLeftButtonUp(object sender, RoutedEventArgs e)
-      {
-         this.UpdateMonth(-1);
-      }
-
-      /// <summary>
-      ///    Levé lors du DragDrop de l'évènement
-      /// </summary>
-      /// <param name="sender">
-      ///    Objet ayant levé l'évènement.
-      /// </param>
-      /// <param name="e">
-      ///    L'instance de <see cref="DragEventArgs" /> contenant les données de l'évènement.
-      /// </param>
-      private void OnMonthViewGridPreviewDrop(object sender, DragEventArgs e)
-      {
-         var apt = (InputDay)e.Data.GetData(typeof(InputDay).FullName, false);
-         if (apt != null)
-         {
-            Debug.Assert(apt.WorkStartTime != null, "apt.WorkStartTime != null");
-            var dayBoxOld = (DayBoxControl)this.MonthViewGrid.FindName("DayBox" + apt.WorkStartTime.Value.Day);
-            if (dayBoxOld != null)
+        /// <summary>
+        ///     Levé lors du DragLeave de l'évènement.
+        /// </summary>
+        /// <param name="sender">
+        ///     Objet ayant levé l'évènement.
+        /// </param>
+        /// <param name="e">
+        ///     L'instance de <see cref="DragEventArgs" /> contenant les données de l'évènement.
+        /// </param>
+        private void OnDayBoxPreviewDragLeave(object sender, DragEventArgs e)
+        {
+            if (sender is DayBoxControl)
             {
-               var dayBoxNew = ((Visual)e.OriginalSource).FindVisualAncestor<DayBoxControl>();
-               if (dayBoxNew != null)
-               {
-                  var aptBox = (DayBoxAppointmentControl)dayBoxOld.FindName("Apt" + apt.ID);
-                  if (aptBox != null)
-                  {
-                     dayBoxOld.DayAppointmentsStack.Children.Remove(aptBox);
-                     dayBoxOld.UnregisterName("Apt" + apt.ID);
-
-                     dayBoxNew.RegisterName("Apt" + apt.ID, aptBox);
-                     this.RestoreDayBoxBackground(dayBoxNew);
-
-                     var moveDays = (int)dayBoxNew.Tag - apt.WorkStartTime.Value.Day;
-                     apt.WorkStartTime = apt.WorkStartTime.Value.AddDays(moveDays);
-                     Debug.Assert(apt.WorkEndTime != null, "apt.WorkEndTime != null");
-                     apt.WorkEndTime = apt.WorkEndTime.Value.AddDays(moveDays);
-
-                     if (this.AppointmentMoved != null)
-                     {
-                        this.AppointmentMoved(
-                           sender,
-                           new AppointmentMovedEvenArgs { AppointmentId = apt.ID, NewDay = apt.WorkStartTime.Value.Day, OldDay = (int)dayBoxOld.Tag });
-                     }
-                  }
-
-                  e.Handled = true;
-               }
+                this.RestoreDayBoxBackground((DayBoxControl)sender);
             }
-         }
-      }
+        }
 
-      /// <summary>
-      ///    Levé lors de la fin du chargement de la grille des mois.
-      /// </summary>
-      /// <param name="sender">
-      ///    Objet ayant levé l'évènement..
-      /// </param>
-      /// <param name="e">
-      ///    L'instance de <see cref="RoutedEventArgs" /> contenant les données de l'évènement.
-      /// </param>
-      private void OnMonthViewLoaded(object sender, RoutedEventArgs e)
-      {
-         this.BuildCalendarUI();
-      }
+        /// <summary>
+        ///     Levé lors du click sur le bouton de passage au mois suivant.
+        /// </summary>
+        /// <param name="sender">
+        ///     Objet ayant levé l'évènement.
+        /// </param>
+        /// <param name="e">
+        ///     L'instance de <see cref="RoutedEventArgs" /> contenant les données de l'évènement.
+        /// </param>
+        private void OnMonthGoNextMouseLeftButtonUp(object sender, RoutedEventArgs e)
+        {
+            this.UpdateMonth(1);
+        }
 
-      /// <summary>
-      ///    Restaure le fond des emplacement d'évènement.
-      /// </summary>
-      /// <param name="dayBox">
-      ///    L'emplacement a restaurer.
-      /// </param>
-      private void RestoreDayBoxBackground(DayBoxControl dayBox)
-      {
-         dayBox.DayAppointmentsStack.Background = (int)dayBox.Tag == DateTime.Today.Day ? this.todayBackBrush : this.dayBackBrush;
-      }
+        /// <summary>
+        ///     Levé lors du click sur le bouton de passage au mois précédent.
+        /// </summary>
+        /// <param name="sender">
+        ///     Objet ayant levé l'évènement..
+        /// </param>
+        /// <param name="e">
+        ///     L'instance de <see cref="RoutedEventArgs" /> contenant les données de l'évènement.
+        /// </param>
+        private void OnMonthGoPrevMouseLeftButtonUp(object sender, RoutedEventArgs e)
+        {
+            this.UpdateMonth(-1);
+        }
 
-      /// <summary>
-      ///    Met à jours le mois.
-      /// </summary>
-      /// <param name="monthsToAdd">
-      ///    Les mois à ajouter.
-      /// </param>
-      private void UpdateMonth(int monthsToAdd)
-      {
-         this.lastDayClicked = 0;
-         this.SelectedDates.Clear();
+        /// <summary>
+        ///     Levé lors du DragDrop de l'évènement
+        /// </summary>
+        /// <param name="sender">
+        ///     Objet ayant levé l'évènement.
+        /// </param>
+        /// <param name="e">
+        ///     L'instance de <see cref="DragEventArgs" /> contenant les données de l'évènement.
+        /// </param>
+        private void OnMonthViewGridPreviewDrop(object sender, DragEventArgs e)
+        {
+            var apt = (InputDay)e.Data.GetData(typeof(InputDay).FullName, false);
+            if (apt != null)
+            {
+                Debug.Assert(apt.WorkStartTime != null, "apt.WorkStartTime != null");
+                var dayBoxOld = (DayBoxControl)this.MonthViewGrid.FindName("DayBox" + apt.WorkStartTime.Value.Day);
+                if (dayBoxOld != null)
+                {
+                    var dayBoxNew = ((Visual)e.OriginalSource).FindVisualAncestor<DayBoxControl>();
+                    if (dayBoxNew != null)
+                    {
+                        var aptBox = (DayBoxAppointmentControl)dayBoxOld.FindName("Apt" + apt.ID);
+                        if (aptBox != null)
+                        {
+                            dayBoxOld.DayAppointmentsStack.Children.Remove(aptBox);
+                            dayBoxOld.UnregisterName("Apt" + apt.ID);
 
-         var ev = new MonthChangedEventArgs { OldDisplayStartDate = this.DisplayStartDate };
-         this.DisplayStartDate = this.DisplayStartDate.AddMonths(monthsToAdd);
-         ev.NewDisplayStartDate = this.DisplayStartDate;
-         if (this.DisplayMonthChanged != null)
-         {
-            this.DisplayMonthChanged(this, ev);
-         }
+                            dayBoxNew.RegisterName("Apt" + apt.ID, aptBox);
+                            this.RestoreDayBoxBackground(dayBoxNew);
 
-         this.BuildCalendarUI();
-      }
+                            var moveDays = (int)dayBoxNew.Tag - apt.WorkStartTime.Value.Day;
+                            apt.WorkStartTime = apt.WorkStartTime.Value.AddDays(moveDays);
+                            Debug.Assert(apt.WorkEndTime != null, "apt.WorkEndTime != null");
+                            apt.WorkEndTime = apt.WorkEndTime.Value.AddDays(moveDays);
 
-      #endregion
-   }
+                            this.AppointmentMoved?.Invoke(
+                                sender, 
+                                new AppointmentMovedEvenArgs
+                                    {
+                                        AppointmentId = apt.ID, 
+                                        NewDay = apt.WorkStartTime.Value.Day, 
+                                        OldDay = (int)dayBoxOld.Tag
+                                    });
+                        }
+
+                        e.Handled = true;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Levé lors de la fin du chargement de la grille des mois.
+        /// </summary>
+        /// <param name="sender">
+        ///     Objet ayant levé l'évènement..
+        /// </param>
+        /// <param name="e">
+        ///     L'instance de <see cref="RoutedEventArgs" /> contenant les données de l'évènement.
+        /// </param>
+        private void OnMonthViewLoaded(object sender, RoutedEventArgs e)
+        {
+            this.BuildCalendarUI();
+        }
+
+        /// <summary>
+        ///     Levé lors de l'appui d'une touche de clavier.
+        /// </summary>
+        /// <param name="sender">
+        ///     Objet ayant levé l'évènement..
+        /// </param>
+        /// <param name="e">
+        ///     L'instance de <see cref="System.Windows.Input.KeyEventArgs" /> contenant les données de l'évènement.
+        /// </param>
+        private void OnMonthViewPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            int day;
+            IEnumerable<DayBoxControl> dayBoxControls = this.FindVisualChildren<DayBoxControl>().ToList();
+            var days = this.SelectedDates.Where(d => d.Month == this.displayMonth && d.Year == this.displayYear).Select(d => d.Day).ToList();
+            switch (e.Key)
+            {
+                case Key.Right:
+                    day = days.Any() ? days.Max() + 1 : 1;
+                    if (day <= dayBoxControls.Max(d => (int)d.Tag))
+                    {
+                        var boxControl = (from d in dayBoxControls
+                                          where (int)d.Tag == day
+                                          select d).First();
+                        boxControl.RaiseEventClick();
+                    }
+
+                    break;
+                case Key.Left:
+                    day = days.Any() ? days.Min() - 1 : dayBoxControls.Max(d => (int)d.Tag);
+                    if (day >= dayBoxControls.Min(d => (int)d.Tag))
+                    {
+                        var boxControl = (from d in dayBoxControls
+                                          where (int)d.Tag == day
+                                          select d).First();
+                        boxControl.RaiseEventClick();
+                    }
+
+                    break;
+                case Key.Up:
+                    day = days.Any() ? days.Min() - 7 : dayBoxControls.Max(d => (int)d.Tag);
+                    if (day >= dayBoxControls.Min(d => (int)d.Tag))
+                    {
+                        var boxControl = (from d in dayBoxControls
+                                          where (int)d.Tag == day
+                                          select d).First();
+                        boxControl.RaiseEventClick();
+                    }
+
+                    break;
+                case Key.Down:
+                    day = days.Any() ? days.Max() + 7 : 1;
+                    if (day <= dayBoxControls.Max(d => (int)d.Tag))
+                    {
+                        var boxControl = (from d in dayBoxControls
+                                          where (int)d.Tag == day
+                                          select d).First();
+                        boxControl.RaiseEventClick();
+                    }
+
+                    break;
+                case Key.A:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        this.IsAllEventsSelected = true;
+                    }
+                    else if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+                    {
+                        this.IsAllEventsSelected = false;
+                    }
+
+                    break;
+            }
+        }
+
+        /// <summary>
+        ///     Restaure le fond des emplacement d'évènement.
+        /// </summary>
+        /// <param name="dayBox">
+        ///     L'emplacement a restaurer.
+        /// </param>
+        private void RestoreDayBoxBackground(DayBoxControl dayBox)
+        {
+            dayBox.DayAppointmentsStack.Background = (int)dayBox.Tag == DateTime.Today.Day ? this.todayBackBrush : this.dayBackBrush;
+        }
+
+        /// <summary>
+        ///     Met à jours le mois.
+        /// </summary>
+        /// <param name="monthsToAdd">
+        ///     Les mois à ajouter.
+        /// </param>
+        private void UpdateMonth(int monthsToAdd)
+        {
+            this.lastDayClicked = 0;
+            this.SelectedDates.Clear();
+
+            var ev = new MonthChangedEventArgs { OldDisplayStartDate = this.DisplayStartDate };
+            this.DisplayStartDate = this.DisplayStartDate.AddMonths(monthsToAdd);
+            ev.NewDisplayStartDate = this.DisplayStartDate;
+            this.DisplayMonthChanged?.Invoke(this, ev);
+
+            this.BuildCalendarUI();
+        }
+
+        #endregion
+    }
 }

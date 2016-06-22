@@ -8,6 +8,7 @@ namespace TimePlannerNinject.ViewModel
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Windows.Media.Converters;
 
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
@@ -62,6 +63,11 @@ namespace TimePlannerNinject.ViewModel
         ///     Les dates selectionnées
         /// </summary>
         private ObservableCollection<DateTime> selectedInputs = new ObservableCollection<DateTime>();
+
+        /// <summary>
+        /// Le fait que toutes les dates soit sélectionnées ou non
+        /// </summary>
+        private bool isAllInputSelected;
 
         #endregion
 
@@ -156,6 +162,22 @@ namespace TimePlannerNinject.ViewModel
             set
             {
                 this.Set(nameof(this.SelectedInputsId), ref this.selectedInputs, value);
+            }
+        }
+
+        /// <summary>
+        ///     Obtient ou définit une valeur indiquant si toutes les dates sont selectionnées
+        /// </summary>
+        public bool IsAllInputSelected
+        {
+            get
+            {
+                return this.isAllInputSelected;
+            }
+
+            set
+            {
+                this.Set(nameof(this.IsAllInputSelected), ref this.isAllInputSelected, value);
             }
         }
 

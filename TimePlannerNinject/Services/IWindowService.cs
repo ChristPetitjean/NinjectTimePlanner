@@ -8,6 +8,8 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace TimePlannerNinject.Services
 {
+    using System.Windows;
+
     using GalaSoft.MvvmLight;
 
     /// <summary>
@@ -32,7 +34,10 @@ namespace TimePlannerNinject.Services
         ///         Le paramètre doit obligatoirement se nommer model pour correspondre
         ///     </remarks>
         /// </param>
-        void OpenDialog<T>(string viewName, object model = null) where T : ViewModelBase;
+        /// <param name="owner">
+        ///  Le propriétaire de la fenêtre.
+        /// </param>
+        void OpenDialog<T>(string viewName, object model = null, Window owner = null) where T : ViewModelBase;
 
         /// <summary>
         ///     Ouvre la fenêtre bloquante correspondant au ViewModel
@@ -46,7 +51,10 @@ namespace TimePlannerNinject.Services
         ///         Le paramètre doit obligatoirement se nommer model pour correspondre
         ///     </remarks>
         /// </param>
-        void OpenDialog<T>(object model = null) where T : ViewModelBase;
+        /// <param name="owner">
+        ///  Le propriétaire de la fenêtre.
+        /// </param>
+        void OpenDialog<T>(object model = null, Window owner = null) where T : ViewModelBase;
 
         /// <summary>
         ///     Ouvre la fenêtre correspondant au ViewModel
@@ -63,21 +71,27 @@ namespace TimePlannerNinject.Services
         ///         Le paramètre doit obligatoirement se nommer model pour correspondre
         ///     </remarks>
         /// </param>
-        void OpenWindow<T>(string viewName, object model = null) where T : ViewModelBase;
+        /// <param name="owner">
+        ///  Le propriétaire de la fenêtre.
+        /// </param>
+        void OpenWindow<T>(string viewName, object model = null, Window owner = null) where T : ViewModelBase;
 
         /// <summary>
-        ///     Ouvre la fenêtre correspondant au ViewModel
+        /// Ouvre la fenêtre correspondant au ViewModel
         /// </summary>
         /// <typeparam name="T">
-        ///     Type de ViewModel
+        /// Type de ViewModel
         /// </typeparam>
         /// <param name="model">
-        ///     Paramètre à passer au ViewModel
+        /// Paramètre à passer au ViewModel
         ///     <remarks>
-        ///         Le paramètre doit obligatoirement se nommer model pour correspondre
+        /// Le paramètre doit obligatoirement se nommer model pour correspondre
         ///     </remarks>
         /// </param>
-        void OpenWindow<T>(object model = null) where T : ViewModelBase;
+        /// <param name="owner">
+        ///  Le propriétaire de la fenêtre.
+        /// </param>
+        void OpenWindow<T>(object model = null, Window owner = null) where T : ViewModelBase;
 
         #endregion
     }

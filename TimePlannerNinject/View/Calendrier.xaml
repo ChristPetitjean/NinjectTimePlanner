@@ -12,7 +12,7 @@
         DataContext="{Binding Calendrier, Source={StaticResource Locator}}">
 
    <Grid x:Name="LayoutRoot">
-      <userControl:MonthView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DisplayStartDate="{Binding DateEnCours, Mode=TwoWay}" Appointments="{Binding Days, Mode=TwoWay}" SelectedDates="{Binding SelectedInputsId, Mode=TwoWay}" >
+      <userControl:MonthView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsAllEventsSelected="{Binding IsAllInputSelected, Mode=TwoWay}" DisplayStartDate="{Binding DateEnCours, Mode=TwoWay}" Appointments="{Binding Days, Mode=TwoWay}" SelectedDates="{Binding SelectedInputsId, Mode=TwoWay}" >
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="DayBoxDoubleClicked">
                     <command:EventToCommand Command="{Binding DayBoxDoubleClickedCommand}" PassEventArgsToCommand="True" />

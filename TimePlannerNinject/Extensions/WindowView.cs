@@ -10,6 +10,7 @@ namespace TimePlannerNinject.Extensions
 {
     using System;
     using System.Windows;
+    using System.Windows.Media;
 
     using GalaSoft.MvvmLight;
 
@@ -29,10 +30,6 @@ namespace TimePlannerNinject.Extensions
         public void Initialize(ViewModelBase viewModel)
         {
             this.DataContext = viewModel;
-            if (this != Application.Current.MainWindow)
-            {
-                this.Owner = Application.Current.MainWindow;
-            }
         }
 
         #endregion
@@ -48,10 +45,7 @@ namespace TimePlannerNinject.Extensions
         protected override void OnClosed(EventArgs e)
         {
             var viewModel = this.DataContext as ViewModelBase;
-            if (viewModel != null)
-            {
-                viewModel.Cleanup();
-            }
+            viewModel?.Cleanup();
 
             base.OnClosed(e);
         }
