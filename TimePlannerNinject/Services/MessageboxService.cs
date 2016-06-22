@@ -67,7 +67,7 @@ namespace TimePlannerNinject.Services
                return MessageBoxButton.YesNoCancel;
 
             default:
-               throw new ArgumentException(string.Format("Unsupported message box kind '{0}'", messageboxKind), messageboxKind.ToString());
+               throw new ArgumentException($"Unsupported message box kind '{messageboxKind}'", messageboxKind.ToString());
          }
       }
 

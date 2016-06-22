@@ -45,17 +45,9 @@ namespace TimePlannerNinject.Converters
                           where p.Id.Equals(value)
                           select p).FirstOrDefault();
 
-         if (workPlace != null)
-         {
-            PropertyInfo property = workPlace.GetType().GetProperty(parameter.ToString());
-            if (property != null)
-            {
-               var val = property.GetValue(workPlace);
-               return val;
-            }
-         }
-
-         return null;
+          PropertyInfo property = workPlace?.GetType().GetProperty(parameter.ToString());
+          var val = property?.GetValue(workPlace);
+          return val;
       }
 
       /// <summary>

@@ -37,12 +37,7 @@ namespace TimePlannerNinject.Converters
       public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
       {
          var val = value as DateTime?;
-         if (val != null)
-         {
-            return val.Value.ToString("t");
-         }
-
-         return string.Empty;
+         return val?.ToString("t");
       }
 
       /// <summary>

@@ -79,17 +79,17 @@ namespace TimePlannerNinject.Services
          }
          else
          {
-            windowName = viewModelName.Substring(0, viewModelName.Length - 9) + "Window";
+            windowName = $"{viewModelName.Substring(0, viewModelName.Length - 9)}Window";
          }
 
          var windowType =
             Assembly.GetExecutingAssembly().GetTypes().FirstOrDefault(t => typeof(WindowView).IsAssignableFrom(t) && t.Name == windowName);
          if (windowType == null)
          {
-            throw new ArgumentOutOfRangeException(string.Format("Unable to find Window for view model {0}", typeof(T)));
+            throw new ArgumentOutOfRangeException($"Unable to find Window for view model {typeof(T)}");
          }
 
-         var modelArgument = new ConstructorArgument("model", model);
+         var modelArgument = new ConstructorArgument(nameof(model), model);
 
          var window = (WindowView)Assembly.GetExecutingAssembly().CreateInstance(windowType.FullName);
          if (window != null)

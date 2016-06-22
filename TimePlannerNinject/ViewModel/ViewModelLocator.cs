@@ -18,70 +18,34 @@ namespace TimePlannerNinject.ViewModel
       /// <summary>
       ///    Obtient Le ViewModel de contenu des jour au format datagrid.
       /// </summary>
-      public CalendrierViewModel Calendrier
-      {
-         get
-         {
-            return KernelTimePlanner.Get<CalendrierViewModel>();
-         }
-      }
+      public CalendrierViewModel Calendrier => KernelTimePlanner.Get<CalendrierViewModel>();
 
-      /// <summary>
+       /// <summary>
       ///    Obtient Le ViewModel de modification des lieux de travail.
       /// </summary>
-      public EditWorkPlacesViewModel EditWorkPlaces
-      {
-         get
-         {
-            return KernelTimePlanner.Get<EditWorkPlacesViewModel>();
-         }
-      }
+      public EditWorkPlacesViewModel EditWorkPlaces => KernelTimePlanner.Get<EditWorkPlacesViewModel>();
 
-      /// <summary>
+       /// <summary>
       ///    Obtient Le ViewModel de modification des lieux de travail.
       /// </summary>
-      public InputDayViewModel InputDay
-      {
-         get
-         {
-            return KernelTimePlanner.Get<InputDayViewModel>();
-         }
-      }
+      public InputDayViewModel InputDay => KernelTimePlanner.Get<InputDayViewModel>();
 
-      /// <summary>
+       /// <summary>
       ///    Obtient Le ViewModel Principal.
       /// </summary>
-      public MainViewModel Main
-      {
-         get
-         {
-            return KernelTimePlanner.Get<MainViewModel>();
-         }
-      }
+      public MainViewModel Main => KernelTimePlanner.Get<MainViewModel>();
 
-      /// <summary>
+       /// <summary>
       ///    Obtient Le ViewModel de menu pricipal.
       /// </summary>
-      public MenuPrincipalViewModel MenuPrincipal
-      {
-         get
-         {
-            return KernelTimePlanner.Get<MenuPrincipalViewModel>();
-         }
-      }
+      public MenuPrincipalViewModel MenuPrincipal => KernelTimePlanner.Get<MenuPrincipalViewModel>();
 
-      /// <summary>
+       /// <summary>
       ///    Obtient Le ViewModel de la barre de status.
       /// </summary>
-      public StatusBarViewModel StatusBar
-      {
-         get
-         {
-            return KernelTimePlanner.Get<StatusBarViewModel>();
-         }
-      }
+      public StatusBarViewModel StatusBar => KernelTimePlanner.Get<StatusBarViewModel>();
 
-      #endregion
+       #endregion
 
       #region Public Methods and Operators
 

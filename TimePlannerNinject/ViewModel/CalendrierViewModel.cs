@@ -21,6 +21,8 @@ namespace TimePlannerNinject.ViewModel
     /// </summary>
     public class CalendrierViewModel : ViewModelBase
     {
+        #region Constants
+
         /// <summary>
         ///     Le nom de la propriété <see cref="DateEnCours" />.
         /// </summary>
@@ -30,6 +32,15 @@ namespace TimePlannerNinject.ViewModel
         ///     Le nom de la propriété <see cref="Days" />.
         /// </summary>
         public const string DaysPropertyName = "Days";
+
+        /// <summary>
+        ///     Le nom de la propriété <see cref="SelectedInputsId" />.
+        /// </summary>
+        public const string SelectedInputsIdPropertyName = "SelectedInputsId";
+
+        #endregion
+
+        #region Fields
 
         /// <summary>
         ///     Service d'affichage des messagesbox.
@@ -67,15 +78,21 @@ namespace TimePlannerNinject.ViewModel
         private RelayCommand<AppointmentDblClickedEvenArgs> inputDayDoubleClickedCommand;
 
         /// <summary>
-        /// Initialise une nouvelle instance de la classe <see cref="CalendrierViewModel"/>.
+        ///     Les dates selectionnées
+        /// </summary>
+        private ObservableCollection<DateTime> selectedInputs = new ObservableCollection<DateTime>();
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        ///     Initialise une nouvelle instance de la classe <see cref="CalendrierViewModel" />.
         /// </summary>
         /// <param name="service">Le service de données.</param>
         /// <param name="windowService">Le service d'affichage de fenêtre personnalisée.</param>
         /// <param name="messageboxService">Le service d'affichage de messagebox.</param>
-        public CalendrierViewModel(
-            ATimePlannerDataService service, 
-            IWindowService windowService, 
-            IMessageboxService messageboxService)
+        public CalendrierViewModel(ATimePlannerDataService service, IWindowService windowService, IMessageboxService messageboxService)
         {
             this.service = service;
             this.service.DataReadEnd += this.ServiceDataReadEnd;
@@ -84,8 +101,12 @@ namespace TimePlannerNinject.ViewModel
             this.dateEnCours = DateTime.Today;
         }
 
+        #endregion
+
+        #region Public Properties
+
         /// <summary>
-        /// Obtient ou définit la date en cours.
+        ///     Obtient ou définit la date en cours.
         /// </summary>
         public DateTime DateEnCours
         {
@@ -104,17 +125,12 @@ namespace TimePlannerNinject.ViewModel
         ///     Obtient la commande de double clcik sur un emplacement vide du calendrier.
         /// </summary>
         public RelayCommand<NewAppointmentEventArgs> DayBoxDoubleClickedCommand
-        {
-            get
-            {
-                return this.dayBoxDoubleClickedCommand
-                       ?? (this.dayBoxDoubleClickedCommand =
-                           new RelayCommand<NewAppointmentEventArgs>(this.ExecuteDayBoxDoubleClickedCommand));
-            }
-        }
+            =>
+                this.dayBoxDoubleClickedCommand
+                ?? (this.dayBoxDoubleClickedCommand = new RelayCommand<NewAppointmentEventArgs>(this.ExecuteDayBoxDoubleClickedCommand));
 
         /// <summary>
-        /// Obtient ou définit la collection de tous les évènements.
+        ///     Obtient ou définit la collection de tous les évènements.
         /// </summary>
         public ObservableCollection<InputDay> Days
         {
@@ -134,27 +150,37 @@ namespace TimePlannerNinject.ViewModel
         ///     Obtient la commande de mofification d'un évènement.
         /// </summary>
         public RelayCommand<AppointmentMovedEvenArgs> InputDayChangedCommand
-        {
-            get
-            {
-                return this.inputDayChangedCommand
-                       ?? (this.inputDayChangedCommand =
-                           new RelayCommand<AppointmentMovedEvenArgs>(this.ExecuteInputDayChangedCommand));
-            }
-        }
+            =>
+                this.inputDayChangedCommand
+                ?? (this.inputDayChangedCommand = new RelayCommand<AppointmentMovedEvenArgs>(this.ExecuteInputDayChangedCommand));
 
         /// <summary>
         ///     Gets the InputDayDoubleClickedCommand.
         /// </summary>
         public RelayCommand<AppointmentDblClickedEvenArgs> InputDayDoubleClickedCommand
+            =>
+                this.inputDayDoubleClickedCommand
+                ?? (this.inputDayDoubleClickedCommand = new RelayCommand<AppointmentDblClickedEvenArgs>(this.ExecuteInputDayDoubleClickedCommand));
+
+        /// <summary>
+        ///     Obtient ou définit les dates selectionnées
+        /// </summary>
+        public ObservableCollection<DateTime> SelectedInputsId
         {
             get
             {
-                return this.inputDayDoubleClickedCommand
-                       ?? (this.inputDayDoubleClickedCommand =
-                           new RelayCommand<AppointmentDblClickedEvenArgs>(this.ExecuteInputDayDoubleClickedCommand));
+                return this.selectedInputs;
+            }
+
+            set
+            {
+                this.Set(SelectedInputsIdPropertyName, ref this.selectedInputs, value);
             }
         }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         ///     Execute de la commande de double click sur un évènement.
@@ -175,7 +201,7 @@ namespace TimePlannerNinject.ViewModel
 
             if (e != null)
             {
-               this.windowService.OpenDialog<InputDayViewModel>(this.SelectedInputsId.ToArray());
+                this.windowService.OpenDialog<InputDayViewModel>(this.SelectedInputsId.ToArray());
             }
             else
             {
@@ -193,12 +219,7 @@ namespace TimePlannerNinject.ViewModel
         {
             if (e != null)
             {
-                StatutMessage.SendStatutMessage(
-                    string.Format(
-                        "deplacement d'événement:{0}, depuis {1} vers {2}", 
-                        e.AppointmentId, 
-                        e.OldDay, 
-                        e.NewDay));
+                StatutMessage.SendStatutMessage($"deplacement d'événement:{e.AppointmentId}, depuis {e.OldDay} vers {e.NewDay}");
             }
         }
 
@@ -212,7 +233,7 @@ namespace TimePlannerNinject.ViewModel
         {
             if (e != null)
             {
-               this.windowService.OpenDialog<InputDayViewModel>(this.SelectedInputsId.ToArray());
+                this.windowService.OpenDialog<InputDayViewModel>(this.SelectedInputsId.ToArray());
             }
             else
             {
@@ -221,13 +242,13 @@ namespace TimePlannerNinject.ViewModel
         }
 
         /// <summary>
-        /// Evènement de fin de lecture des données.
+        ///     Evènement de fin de lecture des données.
         /// </summary>
         /// <param name="sender">
-        /// The sender.
+        ///     The sender.
         /// </param>
         /// <param name="e">
-        /// The e.
+        ///     The e.
         /// </param>
         private void ServiceDataReadEnd(object sender, EventArgs e)
         {
@@ -235,29 +256,6 @@ namespace TimePlannerNinject.ViewModel
             this.Days = this.service.AllDays;
         }
 
-        /// <summary>
-        /// Le nom de la propriété <see cref="SelectedInputsId" />.
-        /// </summary>
-        public const string SelectedInputsIdPropertyName = "SelectedInputsId";
-
-        /// <summary>
-        /// Les dates selectionnées 
-        /// </summary>
-        private ObservableCollection<DateTime> selectedInputs = new ObservableCollection<DateTime>();
-
-        /// <summary>
-        /// Obtient ou définit les dates selectionnées 
-        /// </summary>
-        public ObservableCollection<DateTime> SelectedInputsId
-        {
-           get
-           {
-              return selectedInputs;
-           }
-           set
-           {
-              Set(SelectedInputsIdPropertyName, ref selectedInputs, value);
-           }
-        }
+        #endregion
     }
 }

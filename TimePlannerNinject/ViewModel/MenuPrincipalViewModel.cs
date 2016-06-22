@@ -63,37 +63,19 @@ namespace TimePlannerNinject.ViewModel
       /// <summary>
       ///    Obtient la commande de sortie de l'application.
       /// </summary>
-      public RelayCommand ExitCommand
-      {
-         get
-         {
-            return this.exitCommand ?? (this.exitCommand = new RelayCommand(this.ExecuteExitCommand));
-         }
-      }
+      public RelayCommand ExitCommand => this.exitCommand ?? (this.exitCommand = new RelayCommand(this.ExecuteExitCommand));
 
-      /// <summary>
+       /// <summary>
       ///    Obtient la commande d'ouverture de fichier.
       /// </summary>
-      public RelayCommand OpenNewFileCommand
-      {
-         get
-         {
-            return this.openNewFileCommand ?? (this.openNewFileCommand = new RelayCommand(this.ExecuteOpenNewFileCommand));
-         }
-      }
+      public RelayCommand OpenNewFileCommand => this.openNewFileCommand ?? (this.openNewFileCommand = new RelayCommand(this.ExecuteOpenNewFileCommand));
 
-      /// <summary>
+       /// <summary>
       ///    Obtient la commande de sauvegarde.
       /// </summary>
-      public RelayCommand SaveFileCommand
-      {
-         get
-         {
-            return this.saveFileCommand ?? (this.saveFileCommand = new RelayCommand(this.ExecuteSaveFileCommand));
-         }
-      }
+      public RelayCommand SaveFileCommand => this.saveFileCommand ?? (this.saveFileCommand = new RelayCommand(this.ExecuteSaveFileCommand));
 
-      #endregion
+       #endregion
 
       #region Methods
 
