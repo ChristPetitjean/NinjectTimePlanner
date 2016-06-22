@@ -28,7 +28,7 @@ namespace TimePlannerNinject.Modules
             this.Bind<CalendrierViewModel>().ToSelf().InSingletonScope();
             this.Bind<MenuPrincipalViewModel>().ToSelf().InSingletonScope();
             this.Bind<StatusBarViewModel>().ToSelf().InSingletonScope();
-            this.Bind<EditWorkPlacesViewModel>().ToSelf().InTransientScope();
+            this.Bind<EditWorkPlacesViewModel>().ToSelf().InSingletonScope();
             this.Bind<InputDayViewModel>().ToSelf().InTransientScope();
         }
 
