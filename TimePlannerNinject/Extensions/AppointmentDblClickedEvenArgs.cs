@@ -8,20 +8,20 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace TimePlannerNinject.Extensions
 {
-   using System;
+    using System;
 
-   /// <summary>
-   ///    Argument de click sur un évènement.
-   /// </summary>
-   public class AppointmentDblClickedEvenArgs : EventArgs
-   {
-      #region Public Properties
+    /// <summary>
+    ///     Argument de click sur un évènement.
+    /// </summary>
+    public class AppointmentDblClickedEvenArgs : EventArgs
+    {
+        #region Public Properties
 
-      /// <summary>
-      ///    Obtient ou définit l'identifiant de l'événement.
-      /// </summary>
-      public int? Id { get; set; }
+        /// <summary>
+        ///     Obtient ou définit l'identifiant de l'événement.
+        /// </summary>
+        public int? Id { get; set; }
 
-      #endregion
-   }
+        #endregion
+    }
 }

@@ -5,39 +5,39 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace TimePlannerNinject.Model
 {
-   using System;
+    using System;
 
-   /// <summary>
-   ///    Décrit un fichier de sauvegarde.
-   /// </summary>
-   [Serializable]
-   public class AppFile
-   {
-      #region Constructors and Destructors
+    /// <summary>
+    ///     Décrit un fichier de sauvegarde.
+    /// </summary>
+    [Serializable]
+    public class AppFile
+    {
+        #region Constructors and Destructors
 
-      /// <summary>
-      ///    Initialise une nouvelle instance de la classe <see cref="AppFile" />.
-      /// </summary>
-      public AppFile()
-      {
-         this.Inputdays = new InputDay[0];
-         this.Worplaces = new WorkPlace[0];
-      }
+        /// <summary>
+        ///     Initialise une nouvelle instance de la classe <see cref="AppFile" />.
+        /// </summary>
+        public AppFile()
+        {
+            this.Inputdays = new InputDay[0];
+            this.Worplaces = new WorkPlace[0];
+        }
 
-      #endregion
+        #endregion
 
-      #region Public Properties
+        #region Public Properties
 
-      /// <summary>
-      ///    Obtient ou définit les inputations.
-      /// </summary>
-      public InputDay[] Inputdays { get; set; }
+        /// <summary>
+        ///     Obtient ou définit les inputations.
+        /// </summary>
+        public InputDay[] Inputdays { get; set; }
 
-      /// <summary>
-      ///    Obtient ou définit les lieux de travails.
-      /// </summary>
-      public WorkPlace[] Worplaces { get; set; }
+        /// <summary>
+        ///     Obtient ou définit les lieux de travails.
+        /// </summary>
+        public WorkPlace[] Worplaces { get; set; }
 
-      #endregion
-   }
+        #endregion
+    }
 }

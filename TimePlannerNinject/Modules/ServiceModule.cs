@@ -6,34 +6,29 @@
 //   Module utiliser au Runtime.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace TimePlannerNinject.Modules
 {
-    using System.Windows;
-
     using Ninject.Modules;
 
-    using TimePlannerNinject.Model;
     using TimePlannerNinject.Services;
-    using TimePlannerNinject.View;
 
     /// <summary>
-   /// Module utiliser pour l'enregistrement des services ninject.
-   /// </summary>
-   public class ServiceModule : NinjectModule
-   {
-      #region Public Methods and Operators
+    ///     Module utiliser pour l'enregistrement des services ninject.
+    /// </summary>
+    public class ServiceModule : NinjectModule
+    {
+        #region Public Methods and Operators
 
-       /// <summary>
-       /// Chargement du module.
-       /// </summary>
-       public override void Load()
-       {
-           this.Bind<ATimePlannerDataService>().To<TimePlannerDataService>().InSingletonScope();
-           this.Bind<IWindowService>().To<WindowService>();
-           this.Bind<IMessageboxService>().To<MessageboxService>();
-       }
+        /// <summary>
+        ///     Chargement du module.
+        /// </summary>
+        public override void Load()
+        {
+            this.Bind<ATimePlannerDataService>().To<TimePlannerDataService>().InSingletonScope();
+            this.Bind<IWindowService>().To<WindowService>();
+            this.Bind<IMessageboxService>().To<MessageboxService>();
+        }
 
-       #endregion
-   }
+        #endregion
+    }
 }

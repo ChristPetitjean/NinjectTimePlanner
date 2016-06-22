@@ -21,25 +21,6 @@ namespace TimePlannerNinject.ViewModel
     /// </summary>
     public class CalendrierViewModel : ViewModelBase
     {
-        #region Constants
-
-        /// <summary>
-        ///     Le nom de la propriété <see cref="DateEnCours" />.
-        /// </summary>
-        public const string DateEnCoursPropertyName = "DateEnCours";
-
-        /// <summary>
-        ///     Le nom de la propriété <see cref="Days" />.
-        /// </summary>
-        public const string DaysPropertyName = "Days";
-
-        /// <summary>
-        ///     Le nom de la propriété <see cref="SelectedInputsId" />.
-        /// </summary>
-        public const string SelectedInputsIdPropertyName = "SelectedInputsId";
-
-        #endregion
-
         #region Fields
 
         /// <summary>
@@ -117,7 +98,7 @@ namespace TimePlannerNinject.ViewModel
 
             set
             {
-                this.Set(DateEnCoursPropertyName, ref this.dateEnCours, value);
+                this.Set(nameof(this.DateEnCours), ref this.dateEnCours, value);
             }
         }
 
@@ -174,7 +155,7 @@ namespace TimePlannerNinject.ViewModel
 
             set
             {
-                this.Set(SelectedInputsIdPropertyName, ref this.selectedInputs, value);
+                this.Set(nameof(this.SelectedInputsId), ref this.selectedInputs, value);
             }
         }
 

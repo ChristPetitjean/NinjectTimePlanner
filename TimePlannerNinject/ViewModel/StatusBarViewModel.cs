@@ -3,79 +3,69 @@
 //   Christophe PETITJEAN - 2016
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace TimePlannerNinject.ViewModel
 {
-   using GalaSoft.MvvmLight;
-   using GalaSoft.MvvmLight.Messaging;
+    using GalaSoft.MvvmLight;
+    using GalaSoft.MvvmLight.Messaging;
 
-   using TimePlannerNinject.Model;
-   using TimePlannerNinject.Services;
+    using TimePlannerNinject.Model;
+    using TimePlannerNinject.Services;
 
     /// <summary>
-    /// The status bar view model.
+    ///     The status bar view model.
     /// </summary>
     public class StatusBarViewModel : ViewModelBase
-   {
-      #region Constants
+    {
+        #region Fields
 
-      /// <summary>
-      ///    Nom de la propriété <see cref="MessageToDisplay" />.
-      /// </summary>
-      public const string MessageToDisplayPropertyName = "MessageToDisplay";
+        /// <summary>
+        ///     Service de données
+        /// </summary>
+        private readonly ATimePlannerDataService service;
 
-      #endregion
+        /// <summary>
+        ///     Message à afficher
+        /// </summary>
+        private string messageToDisplay = string.Empty;
 
-      #region Fields
+        #endregion
 
-      /// <summary>
-      ///    Message à afficher
-      /// </summary>
-      private string messageToDisplay = string.Empty;
+        #region Constructors and Destructors
 
-      /// <summary>
-      ///    Service de données
-      /// </summary>
-      private readonly ATimePlannerDataService service;
+        /// <summary>
+        ///     Initialise une nouvelle instance de la classe <see cref="StatusBarViewModel" />.
+        ///     Initializes a new instance of the StatusBarViewModel class.
+        /// </summary>
+        /// <param name="service">
+        ///     The service.
+        /// </param>
+        public StatusBarViewModel(ATimePlannerDataService service)
+        {
+            this.service = service;
 
-      #endregion
+            Messenger.Default.Register<string>(this, StatutMessage.Token, message => this.MessageToDisplay = message);
+        }
 
-      #region Constructors and Destructors
+        #endregion
 
-      /// <summary>
-      /// Initialise une nouvelle instance de la classe <see cref="StatusBarViewModel"/>. 
-      /// Initializes a new instance of the StatusBarViewModel class.
-      /// </summary>
-      /// <param name="service">
-      /// The service.
-      /// </param>
-      public StatusBarViewModel(ATimePlannerDataService service)
-      {
-         this.service = service;
+        #region Public Properties
 
-         Messenger.Default.Register<string>(this, StatutMessage.Token, message => this.MessageToDisplay = message);
-      }
+        /// <summary>
+        ///     Obtient ou définit le message à afficher
+        /// </summary>
+        public string MessageToDisplay
+        {
+            get
+            {
+                return this.messageToDisplay;
+            }
 
-      #endregion
+            set
+            {
+                this.Set(nameof(this.MessageToDisplay), ref this.messageToDisplay, value);
+            }
+        }
 
-      #region Public Properties
-
-      /// <summary>
-      ///    Obtient ou définit le message à afficher
-      /// </summary>
-      public string MessageToDisplay
-      {
-         get
-         {
-            return this.messageToDisplay;
-         }
-
-         set
-         {
-            this.Set(MessageToDisplayPropertyName, ref this.messageToDisplay, value);
-         }
-      }
-
-      #endregion
-   }
+        #endregion
+    }
 }

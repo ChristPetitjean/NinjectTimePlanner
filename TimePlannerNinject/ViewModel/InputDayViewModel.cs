@@ -23,40 +23,6 @@ namespace TimePlannerNinject.ViewModel
     /// </summary>
     public class InputDayViewModel : ViewModelBase
     {
-        #region Constants
-
-        /// <summary>
-        ///     Le nom de la propriété <see cref="DialogResult" />.
-        /// </summary>
-        public const string DialogResultPropertyName = "DialogResult";
-
-        /// <summary>
-        ///     Le nom de la propriété <see cref="ExtraHours" />.
-        /// </summary>
-        public const string ExtraHoursPropertyName = "ExtraHours";
-
-        /// <summary>
-        ///     Le nom de la propriété <see cref="DatesToEdit" />.
-        /// </summary>
-        public const string IdsToEditPropertyName = "DatesToEdit";
-
-        /// <summary>
-        ///     Le nom de la propriété <see cref="IdWorkPlace" />.
-        /// </summary>
-        public const string IdWorkPlacePropertyName = "IdWorkPlace";
-
-        /// <summary>
-        ///     Le nom de la propriété <see cref="WorkEndTime" />.
-        /// </summary>
-        public const string WorkEndTimePropertyName = "WorkEndTime";
-
-        /// <summary>
-        ///     Le nom de la propriété <see cref="WorkStartTime" />.
-        /// </summary>
-        public const string WorkStartTimePropertyName = "WorkStartTime";
-
-        #endregion
-
         #region Fields
 
         /// <summary>
@@ -234,7 +200,7 @@ namespace TimePlannerNinject.ViewModel
 
             set
             {
-                this.Set(IdsToEditPropertyName, ref this.datesToEdit, value);
+                this.Set(nameof(this.DatesToEdit), ref this.datesToEdit, value);
             }
         }
 
@@ -258,7 +224,7 @@ namespace TimePlannerNinject.ViewModel
 
             set
             {
-                this.Set(DialogResultPropertyName, ref this.dialogResult, value);
+                this.Set(nameof(this.DialogResult), ref this.dialogResult, value);
             }
         }
 
@@ -274,7 +240,7 @@ namespace TimePlannerNinject.ViewModel
 
             set
             {
-                this.Set(ExtraHoursPropertyName, ref this.extraHours, value);
+                this.Set(nameof(this.ExtraHours), ref this.extraHours, value);
             }
         }
 
@@ -290,7 +256,7 @@ namespace TimePlannerNinject.ViewModel
 
             set
             {
-                this.Set(IdWorkPlacePropertyName, ref this.idWorkPlace, value);
+                this.Set(nameof(this.IdWorkPlace), ref this.idWorkPlace, value);
             }
         }
 
@@ -311,7 +277,7 @@ namespace TimePlannerNinject.ViewModel
 
             set
             {
-                this.Set(WorkEndTimePropertyName, ref this.workEndTime, value);
+                this.Set(nameof(this.WorkEndTime), ref this.workEndTime, value);
             }
         }
 
@@ -327,7 +293,7 @@ namespace TimePlannerNinject.ViewModel
 
             set
             {
-                this.Set(WorkStartTimePropertyName, ref this.workStartTime, value);
+                this.Set(nameof(this.WorkStartTime), ref this.workStartTime, value);
             }
         }
 
