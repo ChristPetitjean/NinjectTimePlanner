@@ -29,6 +29,11 @@ namespace TimePlannerNinject.ViewModel
         private readonly ATimePlannerDataService service;
 
         /// <summary>
+        ///     Le service d'affichage de popup.
+        /// </summary>
+        private readonly IWindowService windowService;
+
+        /// <summary>
         ///     Commande de sortie de l'application
         /// </summary>
         private RelayCommand exitCommand;
@@ -53,6 +58,11 @@ namespace TimePlannerNinject.ViewModel
         /// </summary>
         private RelayCommand unSelectAllCommand;
 
+        /// <summary>
+        ///     Commande de lancement de l'aperçu avant impression
+        /// </summary>
+        private RelayCommand previewPrintCommand;
+
         #endregion
 
         #region Constructors and Destructors
@@ -61,9 +71,10 @@ namespace TimePlannerNinject.ViewModel
         ///     Initialise une nouvelle instance de la classe <see cref="MenuPrincipalViewModel" />.
         /// </summary>
         /// <param name="service">Le service de données.</param>
-        public MenuPrincipalViewModel(ATimePlannerDataService service)
+        public MenuPrincipalViewModel(ATimePlannerDataService service, IWindowService windowService)
         {
             this.service = service;
+            this.windowService = windowService;
         }
 
         #endregion
@@ -97,7 +108,10 @@ namespace TimePlannerNinject.ViewModel
         /// </summary>
         public RelayCommand UnSelectAllCommand => this.unSelectAllCommand ?? (this.unSelectAllCommand = new RelayCommand(this.ExecuteUnSelectAllCommand, this.CanExecuteUnSelectAllCommand));
 
-
+        /// <summary>
+        ///     Obtient la commande d'aperçu avant impression.
+        /// </summary>
+        public RelayCommand PreviewPrintCommand => this.previewPrintCommand ?? (this.previewPrintCommand = new RelayCommand(this.ExecutePreviewPrintCommand));
 
         #endregion
 
@@ -124,6 +138,14 @@ namespace TimePlannerNinject.ViewModel
                 this.service.ReadDataFromFile(openFileDialog.FileName);
                 StatutMessage.SendStatutMessage($"Fichier \"{openFileDialog.FileName}\" ouvert");
             }
+        }
+
+        /// <summary>
+        ///     Execute la commande d'aperçu avant impression.
+        /// </summary>
+        private void ExecutePreviewPrintCommand()
+        {
+            this.windowService.OpenDialog<PreviewPrintViewModel>();
         }
 
         /// <summary>

@@ -30,6 +30,7 @@ namespace TimePlannerNinject.Modules
             this.Bind<StatusBarViewModel>().ToSelf().InSingletonScope();
             this.Bind<EditWorkPlacesViewModel>().ToSelf().InSingletonScope();
             this.Bind<InputDayViewModel>().ToSelf().InTransientScope();
+            this.Bind<PreviewPrintViewModel>().ToSelf().InTransientScope();
         }
 
         #endregion

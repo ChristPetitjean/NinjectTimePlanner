@@ -44,6 +44,11 @@ namespace TimePlannerNinject.ViewModel
         /// </summary>
         public StatusBarViewModel StatusBar => KernelTimePlanner.Get<StatusBarViewModel>();
 
+        /// <summary>
+        ///     Obtient Le ViewModel d'aperçu avant impression.
+        /// </summary>
+        public PreviewPrintViewModel PreviewPrint => KernelTimePlanner.Get<PreviewPrintViewModel>();
+
         #endregion
 
         #region Public Methods and Operators
