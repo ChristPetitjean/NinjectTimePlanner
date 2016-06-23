@@ -14,6 +14,7 @@ namespace TimePlannerNinject.UserControl
     using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Documents;
     using System.Windows.Input;
     using System.Windows.Media;
 
@@ -47,7 +48,7 @@ namespace TimePlannerNinject.UserControl
             nameof(DisplayStartDate), 
             typeof(DateTime), 
             typeof(MonthView), 
-            new PropertyMetadata(OnDisplayStartDAteChanged));
+            new PropertyMetadata(OnDisplayStartDateChanged));
 
         /// <summary>
         ///     Propriété de dépendance des dates sélectionnées
@@ -120,6 +121,10 @@ namespace TimePlannerNinject.UserControl
         ///     Définit le sens de la derniere sélection multiple par shift
         /// </summary>
         private bool lastDayClickIsUp;
+        /// <summary>
+        ///     Définit le dernier jour selectionner par appui clavier
+        /// </summary>
+        private int lastDayKeyPressed;
 
         #endregion
 
@@ -275,7 +280,7 @@ namespace TimePlannerNinject.UserControl
         /// </summary>
         /// <param name="d">La propriété de dépendance.</param>
         /// <param name="e">L'instance de <see cref="DependencyPropertyChangedEventArgs" /> contenant les données de l'évènement.</param>
-        private static void OnDisplayStartDAteChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnDisplayStartDateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var me = d as MonthView;
             if (me != null)
@@ -487,6 +492,303 @@ namespace TimePlannerNinject.UserControl
         }
 
         /// <summary>
+        ///     Gère la multisélection à l'appui d'une touche lorsque qu'aucune touche n'est maintenue
+        /// </summary>
+        /// <param name="key">
+        ///     Touche appuyée
+        /// </param>
+        private void MultiSelectOnArrowKeyDownNormal(Key key)
+        {
+            int nbDays = this.sysCal.GetDaysInMonth(this.displayYear, this.displayMonth);
+            int day;
+            if (key == Key.Right)
+            {
+                day = this.lastDayClicked != 0 ? this.lastDayClicked + 1 : 1;
+                if (day > nbDays)
+                {
+                    return;
+                }
+            }
+            else if (key == Key.Left)
+            {
+                day = this.lastDayClicked != 0 ? this.lastDayClicked - 1 : 1;
+                if (day < 1)
+                {
+                    return;
+                }
+            }
+            else if (key == Key.Up)
+            {
+                day = this.lastDayClicked != 0 ? this.lastDayClicked - 7 : 1;
+                if (day < 1)
+                {
+                    return;
+                }
+            }
+            else if (key == Key.Down)
+            {
+                day = this.lastDayClicked != 0 ? this.lastDayClicked + 7 : 1;
+                if (day > nbDays)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(key));
+            }
+
+            this.SelectedDates.Clear();
+            this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+            this.lastDayClicked = day;
+            this.lastDayKeyPressed = day;
+        }
+
+        /// <summary>
+        ///     Gère la multisélection à l'appui d'une touche lorsque que la touche Ctrl est maintenue
+        /// </summary>
+        /// <param name="key">
+        ///     Touche appuyée
+        /// </param>
+        private void MultiSelectOnArrowKeyDownUsingCtrl(Key key)
+        {
+            int nbDays = this.sysCal.GetDaysInMonth(this.displayYear, this.displayMonth);
+            int day;
+            if (key == Key.Right)
+            {
+                day = this.lastDayClicked != 0 ? this.lastDayClicked + 1 : 1;
+                if (day > nbDays)
+                {
+                    return;
+                }
+            }
+            else if (key == Key.Left)
+            {
+                day = this.lastDayClicked != 0 ? this.lastDayClicked - 1 : 1;
+                if (day < 1)
+                {
+                    return;
+                }
+            }
+            else if (key == Key.Up)
+            {
+                day = this.lastDayClicked != 0 ? this.lastDayClicked - 7 : 1;
+                if (day < 1)
+                {
+                    return;
+                }
+            }
+            else if (key == Key.Down)
+            {
+                day = this.lastDayClicked != 0 ? this.lastDayClicked + 7 : 1;
+                if (day > nbDays)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(key));
+            }
+
+            var dateToSelect = new DateTime(this.displayYear, this.displayMonth, day);
+
+            var firstOrDefault = this.SelectedDates.FirstOrDefault(d => d.Date == dateToSelect.Date);
+            if (firstOrDefault != default(DateTime))
+            {
+                this.SelectedDates.Remove(firstOrDefault);
+            }
+            else
+            {
+                this.SelectedDates.Add(dateToSelect);
+            }
+
+            this.lastDayClicked = day;
+            this.lastDayKeyPressed = day;
+        }
+
+        /// <summary>
+        ///     Gère la multisélection à l'appui d'une touche lorsque que la touche Shift est maintenue
+        /// </summary>
+        /// <param name="key">
+        ///     Touche appuyée
+        /// </param>
+        private void MultiSelectOnArrowKeyDownUsingShift(Key key)
+        {
+            int nbDays = this.sysCal.GetDaysInMonth(this.displayYear, this.displayMonth);
+            int day;
+            if (key == Key.Right)
+            {
+                day = this.lastDayKeyPressed != 0 ? this.lastDayKeyPressed + 1 : this.lastDayClicked != 0 ? this.lastDayClicked : nbDays;
+                if (day > nbDays)
+                {
+                    return;
+                }
+            }
+            else if (key == Key.Left)
+            {
+                day = this.lastDayKeyPressed != 0 ? this.lastDayKeyPressed - 1 : this.lastDayClicked != 0 ? this.lastDayClicked : 1;
+                if (day < 1)
+                {
+                    return;
+                }
+            }
+            else if (key == Key.Up)
+            {
+                day = this.lastDayKeyPressed != 0 ? this.lastDayKeyPressed - 7 : this.lastDayClicked != 0 ? this.lastDayClicked : 1;
+                if (day < 1)
+                {
+                    return;
+                }
+            }
+            else if (key == Key.Down)
+            {
+                day = this.lastDayKeyPressed != 0 ? this.lastDayKeyPressed + 7 : this.lastDayClicked != 0 ? this.lastDayClicked : nbDays;
+                if (day > nbDays)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(key));
+            }
+
+            if (this.lastDayClicked != 0)
+            {
+                if (this.lastDayClicked < day)
+                {
+                    if (!this.lastDayClickIsUp)
+                    {
+                        this.SelectedDates.Clear();
+                    }
+
+                    for (var i = this.lastDayClicked; i <= day; i++)
+                    {
+                        this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
+                    }
+
+                    this.lastDayClickIsUp = true;
+                }
+                else if (this.lastDayClicked > day)
+                {
+                    if (this.lastDayClickIsUp)
+                    {
+                        this.SelectedDates.Clear();
+                    }
+
+                    for (var i = day; i <= this.lastDayClicked; i++)
+                    {
+                        this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
+                    }
+
+                    this.lastDayClickIsUp = false;
+                }
+                else
+                {
+                    this.SelectedDates.Clear();
+                    this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+                }
+            }
+            else
+            {
+                this.SelectedDates.Clear();
+                this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+            }
+            this.lastDayClickIsUp = key == Key.Up || key == Key.Right;
+            this.lastDayKeyPressed = day;
+        }
+
+        /// <summary>
+        ///     Gère la multisélection au click lorsque qu'aucune touche n'est maintenue
+        /// </summary>
+        /// <param name="day">
+        ///     Le jour cliqué
+        /// </param>
+        private void MultiSelectOnClickNormal(int day)
+        {
+            this.SelectedDates.Clear();
+            this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+            this.lastDayClicked = day;
+            this.lastDayKeyPressed = day;
+        }
+
+        /// <summary>
+        ///     Gère la multisélection au click lorsque que la touche Ctrl est maintenue
+        /// </summary>
+        /// <param name="day">
+        ///     Le jour cliqué
+        /// </param>
+        private void MultiSelectOnClickUsingCtrl(int day)
+        {
+            if (!this.SelectedDates.Any(s => s.Date.Day == day && s.Date.Month == this.displayMonth && s.Date.Year == this.displayYear))
+            {
+                this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+            }
+            else
+            {
+                var dateTime = this.SelectedDates.First(d => d.Year == this.displayYear && d.Month == this.displayMonth && d.Day == day);
+                this.SelectedDates.Remove(dateTime);
+            }
+
+            this.lastDayClicked = day;
+            this.lastDayKeyPressed = day;
+        }
+
+        /// <summary>
+        ///     Gère la multisélection au click lorsque que la touche Shift est maintenue
+        /// </summary>
+        /// <param name="day">
+        ///     Le jour cliqué
+        /// </param>
+        private void MultiSelectOnClickUsingShift(int day)
+        {
+            if (this.lastDayClicked != 0)
+            {
+                if (this.lastDayClicked < day)
+                {
+                    if (!this.lastDayClickIsUp)
+                    {
+                        this.SelectedDates.Clear();
+                    }
+
+                    for (var i = this.lastDayClicked; i <= day; i++)
+                    {
+                        this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
+                    }
+
+                    this.lastDayClickIsUp = true;
+                }
+                else if (this.lastDayClicked > day)
+                {
+                    if (this.lastDayClickIsUp)
+                    {
+                        this.SelectedDates.Clear();
+                    }
+
+                    for (var i = day; i <= this.lastDayClicked; i++)
+                    {
+                        this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
+                    }
+
+                    this.lastDayClickIsUp = false;
+                }
+                else
+                {
+                    this.SelectedDates.Clear();
+                    this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+                }
+            }
+            else
+            {
+                this.SelectedDates.Clear();
+                this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
+            }
+
+            this.lastDayKeyPressed = day;
+        }
+
+        /// <summary>
         ///     Levé lors du double click sur un évènement.
         /// </summary>
         /// <param name="sender">
@@ -575,67 +877,15 @@ namespace TimePlannerNinject.UserControl
                 {
                     if (Keyboard.Modifiers == ModifierKeys.Shift)
                     {
-                        if (this.lastDayClicked != 0)
-                        {
-                            if (this.lastDayClicked < day)
-                            {
-                                if (!this.lastDayClickIsUp)
-                                {
-                                    this.SelectedDates.Clear();
-                                }
-
-                                for (var i = this.lastDayClicked; i <= day; i++)
-                                {
-                                    this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
-                                }
-
-                                this.lastDayClickIsUp = true;
-                            }
-                            else if (this.lastDayClicked > day)
-                            {
-                                if (this.lastDayClickIsUp)
-                                {
-                                    this.SelectedDates.Clear();
-                                }
-
-                                for (var i = day; i <= this.lastDayClicked; i++)
-                                {
-                                    this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, i));
-                                }
-
-                                this.lastDayClickIsUp = false;
-                            }
-                            else
-                            {
-                                this.SelectedDates.Clear();
-                                this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
-                            }
-                        }
-                        else
-                        {
-                            this.SelectedDates.Clear();
-                            this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
-                        }
+                        this.MultiSelectOnClickUsingShift(day);
                     }
                     else if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        if (!this.SelectedDates.Any(s => s.Date.Day == day && s.Date.Month == this.displayMonth && s.Date.Year == this.displayYear))
-                        {
-                            this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
-                        }
-                        else
-                        {
-                            var dateTime = this.SelectedDates.First(d => d.Year == this.displayYear && d.Month == this.displayMonth && d.Day == day);
-                            this.SelectedDates.Remove(dateTime);
-                        }
-
-                        this.lastDayClicked = day;
+                        this.MultiSelectOnClickUsingCtrl(day);
                     }
                     else
                     {
-                        this.SelectedDates.Clear();
-                        this.SelectedDates.Add(new DateTime(this.displayYear, this.displayMonth, day));
-                        this.lastDayClicked = day;
+                        this.MultiSelectOnClickNormal(day);
                     }
                 }
 
@@ -788,52 +1038,23 @@ namespace TimePlannerNinject.UserControl
         /// </param>
         private void OnMonthViewPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            int day;
-            IEnumerable<DayBoxControl> dayBoxControls = this.FindVisualChildren<DayBoxControl>().ToList();
-            var days = this.SelectedDates.Where(d => d.Month == this.displayMonth && d.Year == this.displayYear).Select(d => d.Day).ToList();
             switch (e.Key)
             {
                 case Key.Right:
-                    day = days.Any() ? days.Max() + 1 : 1;
-                    if (day <= dayBoxControls.Max(d => (int)d.Tag))
-                    {
-                        var boxControl = (from d in dayBoxControls
-                                          where (int)d.Tag == day
-                                          select d).First();
-                        boxControl.RaiseEventClick();
-                    }
-
-                    break;
                 case Key.Left:
-                    day = days.Any() ? days.Min() - 1 : dayBoxControls.Max(d => (int)d.Tag);
-                    if (day >= dayBoxControls.Min(d => (int)d.Tag))
-                    {
-                        var boxControl = (from d in dayBoxControls
-                                          where (int)d.Tag == day
-                                          select d).First();
-                        boxControl.RaiseEventClick();
-                    }
-
-                    break;
                 case Key.Up:
-                    day = days.Any() ? days.Min() - 7 : dayBoxControls.Max(d => (int)d.Tag);
-                    if (day >= dayBoxControls.Min(d => (int)d.Tag))
-                    {
-                        var boxControl = (from d in dayBoxControls
-                                          where (int)d.Tag == day
-                                          select d).First();
-                        boxControl.RaiseEventClick();
-                    }
-
-                    break;
                 case Key.Down:
-                    day = days.Any() ? days.Max() + 7 : 1;
-                    if (day <= dayBoxControls.Max(d => (int)d.Tag))
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        var boxControl = (from d in dayBoxControls
-                                          where (int)d.Tag == day
-                                          select d).First();
-                        boxControl.RaiseEventClick();
+                        this.MultiSelectOnArrowKeyDownUsingCtrl(e.Key);
+                    }
+                    else if (Keyboard.Modifiers == ModifierKeys.Shift)
+                    {
+                        this.MultiSelectOnArrowKeyDownUsingShift(e.Key);
+                    }
+                    else
+                    {
+                        this.MultiSelectOnArrowKeyDownNormal(e.Key);
                     }
 
                     break;
