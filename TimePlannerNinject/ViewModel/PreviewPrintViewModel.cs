@@ -172,12 +172,24 @@
         /// </summary>
         public void Dispose()
         {
+            this.Dispose(true);
+        }
+
+        /// <summary>
+        ///     Libère les resources associées à ce composant
+        /// </summary>
+        protected virtual void Dispose(bool forceSuppress)
+        {
             this.report.Dispose();
             this.Viewer.Dispose();
             this.report = null;
             this.viewer = null;
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            if (forceSuppress)
+            {
+                GC.SuppressFinalize(this);
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+            }
         }
 
         #endregion
