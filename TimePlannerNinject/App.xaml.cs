@@ -5,6 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace TimePlannerNinject
 {
+    using System;
     using System.Windows;
 
     using GalaSoft.MvvmLight.Threading;

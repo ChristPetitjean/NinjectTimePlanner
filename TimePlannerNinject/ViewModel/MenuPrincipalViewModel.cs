@@ -71,6 +71,7 @@ namespace TimePlannerNinject.ViewModel
         ///     Initialise une nouvelle instance de la classe <see cref="MenuPrincipalViewModel" />.
         /// </summary>
         /// <param name="service">Le service de données.</param>
+        /// <param name="windowService">Service de gestion des fenêtres</param>
         public MenuPrincipalViewModel(ATimePlannerDataService service, IWindowService windowService)
         {
             this.service = service;
@@ -101,7 +102,6 @@ namespace TimePlannerNinject.ViewModel
         ///     Obtient la commande de selection de toutes les inputations.
         /// </summary>
         public RelayCommand SelectAllCommand => this.selectAllCommand ?? (this.selectAllCommand = new RelayCommand(this.ExecuteSelectAllCommand, this.CanExecuteSelectAllCommand));
-
 
         /// <summary>
         ///     Obtient la commande de dé-selection de toutes les inputations.

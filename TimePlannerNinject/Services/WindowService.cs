@@ -141,24 +141,6 @@ namespace TimePlannerNinject.Services
             throw new ArgumentOutOfRangeException($"Unable to find Window for view model {typeof(T)}");
         }
 
-        private string FindWindowName<T>() where T : ViewModelBase
-        {
-          
-
-            return null;
-            //return
-            //    Assembly.GetExecutingAssembly()
-            //            .GetTypes()
-            //            .FirstOrDefault(
-            //                t =>
-            //                typeof(WindowView).IsAssignableFrom(t)
-            //                && t.FindMembers(
-            //                    MemberTypes.Property,
-            //                    BindingFlags.GetProperty,
-            //                    (info, criteria) => info.Name == "DataContext" && info.GetType() == typeof(T),
-            //                    null).Any())?.Name;
-        }
-
         #endregion
     }
 }

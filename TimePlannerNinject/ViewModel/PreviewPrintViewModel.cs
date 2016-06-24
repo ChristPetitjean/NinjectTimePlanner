@@ -16,7 +16,7 @@
     /// <summary>
     ///     View model de l'aperçu avant impression.
     /// </summary>
-    public class PreviewPrintViewModel : ViewModelBase
+    public class PreviewPrintViewModel : ViewModelBase, IDisposable
     {
         #region Fields
 
@@ -34,6 +34,11 @@
         ///     Commande permettant la génération d'un rapport
         /// </summary>
         private RelayCommand generatePrintReportCommand;
+
+        /// <summary>
+        ///     Le rapport a charger
+        /// </summary>
+        private ReportViewer report;
 
         /// <summary>
         ///     Type de rapport à générer
@@ -154,12 +159,24 @@
         #region Public Methods and Operators
 
         /// <summary>
-        ///     Netoie le reportViewer
+        ///     Nettoie le reportViewer
         /// </summary>
         public override void Cleanup()
         {
-            this.Viewer = null;
             base.Cleanup();
+            this.Dispose();
+        }
+
+        /// <summary>
+        ///     Libère les resources associées à ce composant
+        /// </summary>
+        public void Dispose()
+        {
+            this.report.Dispose();
+            this.Viewer.Dispose();
+            this.report = null;
+            this.viewer = null;
+            GC.WaitForPendingFinalizers();
             GC.Collect();
         }
 
@@ -172,51 +189,59 @@
         /// </summary>
         private void ExecuteGeneratePrintReportCommand()
         {
-            WindowsFormsHost windowsFormsHost;
             switch (this.ReportTypeGeneration)
             {
                 case ReportType.AllGroupByWorkplace:
-                    windowsFormsHost = new WindowsFormsHost { Child = this.GetReportByWorkplaces() };
+                    this.InitializeReportByWorkplaces();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(this.ReportTypeGeneration), this.ReportTypeGeneration, null);
             }
 
-            this.Viewer = windowsFormsHost;
+            this.Viewer = new WindowsFormsHost { Child = this.report };
         }
 
         /// <summary>
-        ///     Obtient le rapport grouper par lieu de travail
+        ///     Initialise le rapport grouper par lieu de travail
         /// </summary>
         /// <returns>
-        ///     Le rapport généré
+        ///     True en cas de succès
         /// </returns>
-        private ReportViewer GetReportByWorkplaces()
+        private bool InitializeReportByWorkplaces()
         {
-            var reportViewer = new ReportViewer();
-            var reportDataSource = new ReportDataSource();
-            reportViewer.LocalReport.ReportEmbeddedResource = "TimePlannerNinject.Reports.PrintByWorkPlaces.rdlc";
+            try
+            {
+                this.report?.Dispose();
+                this.report = new ReportViewer();
+                var reportDataSource = new ReportDataSource();
+                this.report.LocalReport.ReportEmbeddedResource = "TimePlannerNinject.Reports.PrintByWorkPlaces.rdlc";
 
-            reportDataSource.Name = "DataSetReport";
-            reportDataSource.Value = (from i in this.service.AllDays
-                                      join w in this.service.AllPlaces on i.IdWorkPlace equals w.Id
-                                      where
-                                          i.WorkStartTime.HasValue && i.WorkStartTime.Value.Date >= this.StartGenerationDate.Date
-                                          && i.WorkStartTime.Value.Date <= this.EndGenerationDate.Date
-                                      orderby i.WorkStartTime
-                                      select new ReportingData(i, w)).ToList();
-            ReportParameter[] parameters =
-                {
-                    new ReportParameter(
-                        "Title", 
-                        $"Période du {this.StartGenerationDate.Date} au {this.EndGenerationDate.Date}")
-                };
-            reportViewer.LocalReport.SetParameters(parameters);
-            reportViewer.LocalReport.DataSources.Add(reportDataSource);
+                reportDataSource.Name = "DataSetReport";
+                reportDataSource.Value = (from i in this.service.AllDays
+                                          join w in this.service.AllPlaces on i.IdWorkPlace equals w.Id
+                                          where
+                                              i.WorkStartTime.HasValue && i.WorkStartTime.Value.Date >= this.StartGenerationDate.Date
+                                              && i.WorkStartTime.Value.Date <= this.EndGenerationDate.Date
+                                          orderby i.WorkStartTime
+                                          select new ReportingData(i, w)).ToList();
+                ReportParameter[] parameters =
+                    {
+                        new ReportParameter(
+                            "Title", 
+                            $"Période du {this.StartGenerationDate.Date} au {this.EndGenerationDate.Date}")
+                    };
+                this.report.LocalReport.SetParameters(parameters);
+                this.report.LocalReport.DataSources.Add(reportDataSource);
 
-            reportViewer.RefreshReport();
+                this.report.RefreshReport();
 
-            return reportViewer;
+                return true;
+            }
+            catch
+            {
+                this.report?.Dispose();
+                return false;
+            }
         }
 
         #endregion

@@ -6,33 +6,33 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>1.90326cm</Width>
+              <Width>3.35847cm</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>2.5cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.74451cm</Width>
+              <Width>2.5cm</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>2.5cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.69701cm</Width>
+              <Width>1.53284cm</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>2.4864cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.11599cm</Width>
+              <Width>2.4864cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.3012cm</Width>
+              <Width>2.4864cm</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
             <TablixRow>
-              <Height>1.66687cm</Height>
+              <Height>2.26687cm</Height>
               <TablixCells>
                 <TablixCell>
                   <CellContents>
@@ -80,6 +80,7 @@
                           <Width>1pt</Width>
                         </RightBorder>
                         <BackgroundColor>Gold</BackgroundColor>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -134,6 +135,7 @@
                           <Width>1pt</Width>
                         </RightBorder>
                         <BackgroundColor>Gold</BackgroundColor>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -188,6 +190,7 @@
                           <Width>1pt</Width>
                         </RightBorder>
                         <BackgroundColor>Gold</BackgroundColor>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -206,6 +209,19 @@
                           <TextRuns>
                             <TextRun>
                               <Value>Nombre d'heure totales</Value>
+                              <Style>
+                                <FontWeight>Bold</FontWeight>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style>
+                            <TextAlign>Center</TextAlign>
+                          </Style>
+                        </Paragraph>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>(Hors heures supp.)</Value>
                               <Style>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
@@ -242,6 +258,7 @@
                           <Width>1pt</Width>
                         </RightBorder>
                         <BackgroundColor>Gold</BackgroundColor>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -259,7 +276,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>Heures supplémentaires</Value>
+                              <Value>Heures  supp.</Value>
                               <Style>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
@@ -296,6 +313,7 @@
                           <Width>1pt</Width>
                         </RightBorder>
                         <BackgroundColor>Gold</BackgroundColor>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -350,6 +368,7 @@
                           <Width>1pt</Width>
                         </RightBorder>
                         <BackgroundColor>Gold</BackgroundColor>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -404,6 +423,7 @@
                           <Width>1pt</Width>
                         </RightBorder>
                         <BackgroundColor>Gold</BackgroundColor>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -458,6 +478,7 @@
                           <Width>1pt</Width>
                         </RightBorder>
                         <BackgroundColor>Gold</BackgroundColor>
+                        <VerticalAlign>Middle</VerticalAlign>
                         <PaddingLeft>2pt</PaddingLeft>
                         <PaddingRight>2pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
@@ -633,7 +654,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=(TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Days * 24 + TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Hours).ToString +":" + TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Minutes.ToString("d2")</Value>
+                              <Value>=(TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Days * 24 + TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Hours).ToString +"h et " + TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Minutes.ToString("d2") + "m"</Value>
                               <Style />
                             </TextRun>
                           </TextRuns>
@@ -893,13 +914,15 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value />
+                              <Value>=CountRows() &amp; " jours travaillés"</Value>
                               <Style>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
                             </TextRun>
                           </TextRuns>
-                          <Style />
+                          <Style>
+                            <TextAlign>Right</TextAlign>
+                          </Style>
                         </Paragraph>
                       </Paragraphs>
                       <rd:DefaultName>Textbox86</rd:DefaultName>
@@ -919,82 +942,11 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
+                    <ColSpan>3</ColSpan>
                   </CellContents>
                 </TablixCell>
-                <TablixCell>
-                  <CellContents>
-                    <Textbox Name="Textbox3">
-                      <CanGrow>true</CanGrow>
-                      <KeepTogether>true</KeepTogether>
-                      <Paragraphs>
-                        <Paragraph>
-                          <TextRuns>
-                            <TextRun>
-                              <Value />
-                              <Style>
-                                <FontWeight>Bold</FontWeight>
-                              </Style>
-                            </TextRun>
-                          </TextRuns>
-                          <Style />
-                        </Paragraph>
-                      </Paragraphs>
-                      <rd:DefaultName>Textbox3</rd:DefaultName>
-                      <Style>
-                        <Border>
-                          <Style>None</Style>
-                        </Border>
-                        <TopBorder>
-                          <Color>Black</Color>
-                          <Style>Solid</Style>
-                          <Width>1pt</Width>
-                        </TopBorder>
-                        <BackgroundColor>Aqua</BackgroundColor>
-                        <PaddingLeft>2pt</PaddingLeft>
-                        <PaddingRight>2pt</PaddingRight>
-                        <PaddingTop>2pt</PaddingTop>
-                        <PaddingBottom>2pt</PaddingBottom>
-                      </Style>
-                    </Textbox>
-                  </CellContents>
-                </TablixCell>
-                <TablixCell>
-                  <CellContents>
-                    <Textbox Name="Textbox87">
-                      <CanGrow>true</CanGrow>
-                      <KeepTogether>true</KeepTogether>
-                      <Paragraphs>
-                        <Paragraph>
-                          <TextRuns>
-                            <TextRun>
-                              <Value />
-                              <Style>
-                                <FontWeight>Bold</FontWeight>
-                              </Style>
-                            </TextRun>
-                          </TextRuns>
-                          <Style />
-                        </Paragraph>
-                      </Paragraphs>
-                      <rd:DefaultName>Textbox87</rd:DefaultName>
-                      <Style>
-                        <Border>
-                          <Style>None</Style>
-                        </Border>
-                        <TopBorder>
-                          <Color>Black</Color>
-                          <Style>Solid</Style>
-                          <Width>1pt</Width>
-                        </TopBorder>
-                        <BackgroundColor>Aqua</BackgroundColor>
-                        <PaddingLeft>2pt</PaddingLeft>
-                        <PaddingRight>2pt</PaddingRight>
-                        <PaddingTop>2pt</PaddingTop>
-                        <PaddingBottom>2pt</PaddingBottom>
-                      </Style>
-                    </Textbox>
-                  </CellContents>
-                </TablixCell>
+                <TablixCell />
+                <TablixCell />
                 <TablixCell>
                   <CellContents>
                     <Textbox Name="WorkTime1">
@@ -1004,7 +956,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=(TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Days * 24 + TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Hours).ToString +":" + TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Minutes.ToString("d2")</Value>
+                              <Value>=(TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Days * 24 + TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Hours).ToString +"h et " + TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Minutes.ToString("d2") + "m"</Value>
                               <Style>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
@@ -1338,7 +1290,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=(TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Days * 24 + TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Hours).ToString +":" + TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Minutes.ToString("d2")</Value>
+                              <Value>=(TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Days * 24 + TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Hours).ToString +"h et " + TimeSpan.FromTicks(Sum(Fields!WorkTime.Value)).Minutes.ToString("d2") + "m"</Value>
                               <Style>
                                 <FontStyle>Italic</FontStyle>
                                 <FontWeight>Bold</FontWeight>
@@ -1675,13 +1627,13 @@
                         <Width>1pt</Width>
                       </RightBorder>
                       <BackgroundColor>Gold</BackgroundColor>
+                      <VerticalAlign>Middle</VerticalAlign>
                       <PaddingLeft>2pt</PaddingLeft>
                       <PaddingRight>2pt</PaddingRight>
                       <PaddingTop>2pt</PaddingTop>
                       <PaddingBottom>2pt</PaddingBottom>
                     </Style>
                   </Textbox>
-                  <rd:Selected>true</rd:Selected>
                 </CellContents>
               </TablixHeader>
               <TablixMembers>
@@ -1832,8 +1784,8 @@
         <FixedRowHeaders>true</FixedRowHeaders>
         <DataSetName>DataSetReport</DataSetName>
         <Top>0.17639cm</Top>
-        <Height>3.63416cm</Height>
-        <Width>21.50432cm</Width>
+        <Height>4.23416cm</Height>
+        <Width>23.10646cm</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -1841,13 +1793,13 @@
         </Style>
       </Tablix>
     </ReportItems>
-    <Height>1.50022in</Height>
+    <Height>1.73644in</Height>
     <Style />
   </Body>
-  <Width>8.46627in</Width>
+  <Width>9.09703in</Width>
   <Page>
     <PageHeader>
-      <Height>0.75557cm</Height>
+      <Height>2.95161cm</Height>
       <PrintOnFirstPage>true</PrintOnFirstPage>
       <PrintOnLastPage>true</PrintOnLastPage>
       <ReportItems>
@@ -1860,6 +1812,7 @@
                 <TextRun>
                   <Value>=Parameters!Title.Value</Value>
                   <Style>
+                    <FontSize>16pt</FontSize>
                     <FontWeight>Bold</FontWeight>
                     <TextDecoration>Underline</TextDecoration>
                   </Style>
@@ -1871,9 +1824,43 @@
             </Paragraph>
           </Paragraphs>
           <rd:DefaultName>StartPeriod</rd:DefaultName>
-          <Top>0.15557cm</Top>
-          <Height>0.6cm</Height>
-          <Width>21.50432cm</Width>
+          <Top>1.74307cm</Top>
+          <Height>0.83813cm</Height>
+          <Width>23.10646cm</Width>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+            <PaddingLeft>2pt</PaddingLeft>
+            <PaddingRight>2pt</PaddingRight>
+            <PaddingTop>2pt</PaddingTop>
+            <PaddingBottom>2pt</PaddingBottom>
+          </Style>
+        </Textbox>
+        <Textbox Name="Textbox18">
+          <CanGrow>true</CanGrow>
+          <KeepTogether>true</KeepTogether>
+          <Paragraphs>
+            <Paragraph>
+              <TextRuns>
+                <TextRun>
+                  <Value>Rapport du nombre d'heures effectuées (par lieux de travail)</Value>
+                  <Style>
+                    <FontSize>18pt</FontSize>
+                    <FontWeight>Bold</FontWeight>
+                    <TextDecoration>None</TextDecoration>
+                  </Style>
+                </TextRun>
+              </TextRuns>
+              <Style>
+                <TextAlign>Center</TextAlign>
+              </Style>
+            </Paragraph>
+          </Paragraphs>
+          <rd:DefaultName>Textbox18</rd:DefaultName>
+          <Height>1.28792cm</Height>
+          <Width>23.10646cm</Width>
+          <ZIndex>1</ZIndex>
           <Style>
             <Border>
               <Style>None</Style>
@@ -1892,7 +1879,7 @@
       </Style>
     </PageHeader>
     <PageFooter>
-      <Height>1.20537cm</Height>
+      <Height>1.04662cm</Height>
       <PrintOnFirstPage>true</PrintOnFirstPage>
       <PrintOnLastPage>true</PrintOnLastPage>
       <ReportItems>
@@ -1912,7 +1899,7 @@
           </Paragraphs>
           <rd:DefaultName>PageNumber</rd:DefaultName>
           <Top>0.17639cm</Top>
-          <Left>19.00432cm</Left>
+          <Left>20.27432cm</Left>
           <Height>0.6cm</Height>
           <Width>2.5cm</Width>
           <Style>
