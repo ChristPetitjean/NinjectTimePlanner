@@ -4,4 +4,5 @@
    <converters:DateTimeToTimeConverter x:Key="DateTimeToTimeConverter" />
    <converters:WorkplaceLookupConverter x:Key="WorkplaceLookupConverter" />
    <converters:IfNullConverter x:Key="IfNullConverter"></converters:IfNullConverter>
+   <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter"></converters:EnumToBooleanConverter>
 </ResourceDictionary>

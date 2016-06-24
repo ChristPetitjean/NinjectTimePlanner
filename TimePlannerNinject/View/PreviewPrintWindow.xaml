@@ -5,6 +5,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:TimePlannerNinject.View"
       xmlns:extensions="clr-namespace:TimePlannerNinject.Extensions"
+      xmlns:vm="clr-namespace:TimePlannerNinject.ViewModel"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
       Title="Aperçu avant impression"
@@ -12,7 +14,38 @@
       ShowInTaskbar="False">
 
     <Grid>
-        <ContentPresenter Content="{Binding Viewer}" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <ContentPresenter Grid.Column="1" Content="{Binding Viewer}" />
+        <GroupBox Grid.Column="0" Header="Paramétrage impression">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <GroupBox Grid.Row="0"  Margin="0,10,0,0" Header="Borne inférieur">
+                    <xctk:DateTimePicker x:Name="MinDate" Value="{Binding StartGenerationDate, Mode=TwoWay}" Maximum="{Binding Value, ElementName=MaxDate}" CalendarDisplayMode="Month" TimePickerVisibility="Hidden" Format="ShortDate" />
+                </GroupBox>
+                <GroupBox Grid.Row="1"  Margin="0,10,0,0" Header="Borne suppérieure">
+                    <xctk:DateTimePicker x:Name="MaxDate" Value="{Binding EndGenerationDate, Mode=TwoWay}" Minimum="{Binding Value, ElementName=MinDate}" CalendarDisplayMode="Month" TimePickerVisibility="Hidden" Format="ShortDate" />
+                </GroupBox>
+                <GroupBox Grid.Row="2"  Margin="0,10,0,0" Header="Type de rapport">
+                    <StackPanel>
+                        <RadioButton Content="Rapport grouper par lieux de travail" IsChecked="{Binding ReportTypeGeneration, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static vm:PreviewPrintViewModel+ReportType.AllGroupByWorkplace}}" />
+                    </StackPanel>
+                </GroupBox>
+                <Button Grid.Row="3" Margin="0,10,0,0" Command="{Binding GeneratePrintReportCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Width="20" Height="20" Stretch="Uniform" UseLayoutRounding="False" Fill="Black" Data="F1 M 90,24L 6,24L 6,6L 90,6M 90,60L 54,60L 54,30L 90,30M 90,72L 54,72L 54,66L 90,66M 48,36L 6,36L 6,30L 48,30M 48,48L 6,48L 6,42L 48,42M 48,72L 6,72L 6,66L 48,66M 6,54L 36,54L 36,60L 6,60M 0,0L 0,78L 6,84L 90,84L 96,78L 96,0L 0,0 Z "/>
+                        <TextBlock Margin="5" Text="Générer le rapport" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </GroupBox>
     </Grid>
 </extensions:WindowView>
 
