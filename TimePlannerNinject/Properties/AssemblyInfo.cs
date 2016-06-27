@@ -1,16 +1,17 @@
-﻿using System.Reflection;
+﻿using System.Resources;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Les informations générales relatives à un assembly dépendent de 
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
-[assembly: AssemblyTitle("TimePlannerNinject.Properties")]
+[assembly: AssemblyTitle("Gestion du temps des Intérimères")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Sully Group")]
-[assembly: AssemblyProduct("TimePlannerNinject.Properties")]
-[assembly: AssemblyCopyright("Copyright © Sully Group 2016")]
+[assembly: AssemblyCompany("Christophe PETITJEAN")]
+[assembly: AssemblyProduct("Gestion du temps des Intérimères")]
+[assembly: AssemblyCopyright("Copyright © Christophe PETITJEAN 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,3 +32,5 @@ using System.Runtime.InteropServices;
 //
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: NeutralResourcesLanguage("fr")]
+
