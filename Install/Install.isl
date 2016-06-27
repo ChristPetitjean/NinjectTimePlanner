@@ -341,6 +341,7 @@
 		<col def="S0">ISDotNetInstallerArgsCommit</col>
 		<col def="S0">ISDotNetInstallerArgsUninstall</col>
 		<col def="S0">ISDotNetInstallerArgsRollback</col>
+		<row><td>Microsoft.ReportViewer.WinForms.dll</td><td>{234958DB-18D8-4FE2-A37E-87748DCD8452}</td><td>INSTALLDIR</td><td>2</td><td/><td>microsoft.reportviewer.winfo</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>TimePlannerNinject.Sortie_principale</td><td>{5478802B-1384-46D6-8009-738287B03D87}</td><td>INSTALLDIR</td><td>2</td><td/><td>timeplannerninject.sortie_pr</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 	</table>
 
@@ -1051,6 +1052,7 @@
 	<table name="CreateFolder">
 		<col key="yes" def="s72">Directory_</col>
 		<col key="yes" def="s72">Component_</col>
+		<row><td>INSTALLDIR</td><td>Microsoft.ReportViewer.WinForms.dll</td></row>
 		<row><td>INSTALLDIR</td><td>TimePlannerNinject.Sortie_principale</td></row>
 	</table>
 
@@ -1868,6 +1870,7 @@
 	<table name="FeatureComponents">
 		<col key="yes" def="s38">Feature_</col>
 		<col key="yes" def="s72">Component_</col>
+		<row><td>AlwaysInstall</td><td>Microsoft.ReportViewer.WinForms.dll</td></row>
 		<row><td>AlwaysInstall</td><td>TimePlannerNinject.Sortie_principale</td></row>
 	</table>
 
@@ -1883,6 +1886,7 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
+		<row><td>microsoft.reportviewer.winfo</td><td>Microsoft.ReportViewer.WinForms.dll</td><td>MICROS~1.DLL|Microsoft.ReportViewer.WinForms.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\christophe.petitjean\Source\Repos\NinjectTimePlanner\TimePlannerNinject\DLL\Microsoft.ReportViewer.WinForms.dll</td><td>1</td><td/></row>
 		<row><td>timeplannerninject.sortie_pr</td><td>TimePlannerNinject.Sortie_principale</td><td>TimePlannerNinject.Sortie principale</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;TimePlannerNinject&gt;|Built</td><td>3</td><td/></row>
 	</table>
 
@@ -2026,6 +2030,7 @@
 		<col def="S0">FTPLocation</col>
 		<col def="S0">HTTPLocation</col>
 		<col def="S0">Miscellaneous</col>
+		<row><td>Microsoft.ReportViewer.WinForms.dll</td><td/><td/><td>_EB17B2B8_0CFD_4F58_965D_4EEA09F270F4_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>TimePlannerNinject.Sortie_principale</td><td/><td/><td>_5E361508_DBEB_4A58_9D36_DC77D924648B_FILTER</td><td/><td/><td/><td/></row>
 	</table>
 
@@ -3971,7 +3976,7 @@ RABWAEQALQA1AAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISTheme</td><td>InstallShield Blue.theme</td></row>
 		<row><td>ISUSLock</td><td>{A17A632B-FEC6-4F42-9BCD-FB3DBF2F39B5}</td></row>
 		<row><td>ISUSSignature</td><td>{9979BE9D-36E6-447C-B8B9-6D2C4A9BACCB}</td></row>
-		<row><td>ISVisitedViews</td><td>viewAssistant,viewISToday,viewProject,viewUpgradePaths,viewObjects,viewAppFiles,viewUI,viewTextMessages,viewUpdateService,viewRelease,viewLearnMore,viewEnvironmentVariables,viewVRoots</td></row>
+		<row><td>ISVisitedViews</td><td>viewAssistant,viewISToday,viewProject,viewUpgradePaths,viewObjects,viewAppFiles,viewUI,viewTextMessages,viewUpdateService,viewRelease,viewLearnMore,viewEnvironmentVariables,viewVRoots,viewShortcuts,viewCustomActions</td></row>
 		<row><td>Limited</td><td>1</td></row>
 		<row><td>LockPermissionMode</td><td>1</td></row>
 		<row><td>MsiExecCmdLineOptions</td><td/></row>
