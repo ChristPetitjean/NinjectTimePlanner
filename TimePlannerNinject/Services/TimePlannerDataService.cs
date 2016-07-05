@@ -11,6 +11,7 @@ namespace TimePlannerNinject.Services
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
+    using System.Runtime.Serialization.Json;
     using System.Xml.Serialization;
 
     using TimePlannerNinject.Model;
@@ -34,8 +35,8 @@ namespace TimePlannerNinject.Services
             {
                 using (var fileStream = new StreamReader(filename))
                 {
-                    var serializer = new XmlSerializer(typeof(AppFile));
-                    var appFile = (AppFile)serializer.Deserialize(fileStream);
+                    var serializer = new DataContractJsonSerializer(typeof(AppFile));
+                    var appFile = (AppFile)serializer.ReadObject(fileStream.BaseStream);
 
                     this.AllDays = new ObservableCollection<InputDay>(appFile.Inputdays ?? new InputDay[0]);
                     this.AllPlaces = new ObservableCollection<WorkPlace>(appFile.Worplaces ?? new WorkPlace[0]);
@@ -66,8 +67,8 @@ namespace TimePlannerNinject.Services
                 using (var fileStream = new StreamWriter(filename))
                 {
                     var appFile = new AppFile { Inputdays = this.AllDays.ToArray(), Worplaces = this.AllPlaces.ToArray() };
-                    var serializer = new XmlSerializer(typeof(AppFile));
-                    serializer.Serialize(fileStream, appFile);
+                    var serializer = new DataContractJsonSerializer(typeof(AppFile));
+                    serializer.WriteObject(fileStream.BaseStream, appFile);
                 }
 
                 return true;

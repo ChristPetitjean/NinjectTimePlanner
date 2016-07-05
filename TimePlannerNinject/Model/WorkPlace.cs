@@ -7,6 +7,7 @@ namespace TimePlannerNinject.Model
 {
     using System;
     using System.Drawing;
+    using System.Globalization;
     using System.Runtime.Serialization;
     using System.Security.Permissions;
     using System.Windows.Media;
@@ -22,6 +23,11 @@ namespace TimePlannerNinject.Model
     public class WorkPlace : ObservableObject, ISerializable
     {
         #region Fields
+
+        /// <summary>
+        /// Formattage des dates pour la sauvegarde
+        /// </summary>
+        private static string DateFormatter = "dd/MM/yyyy - hh:mm:s";
 
         /// <summary>
         ///     Couleur du lieu.
@@ -89,8 +95,8 @@ namespace TimePlannerNinject.Model
             var colorString = info.GetString("Color");
             var fromHtml = ColorTranslator.FromHtml(colorString);
             this.Color = Color.FromArgb(fromHtml.A, fromHtml.R, fromHtml.G, fromHtml.B);
-            this.DefaultEndTime = info.GetDateTime("DefaultEndTime");
-            this.DefaultStartTime = info.GetDateTime("DefaultStartTime");
+            this.DefaultEndTime = DateTime.ParseExact(info.GetString("DefaultEndTime"), DateFormatter, CultureInfo.InvariantCulture); 
+            this.DefaultStartTime = DateTime.ParseExact(info.GetString("DefaultStartTime"), DateFormatter, CultureInfo.InvariantCulture);
             this.Name = info.GetString("Name");
             this.OneWayKilometers = info.GetDecimal("Km1");
             this.ReturnKilometers = info.GetDecimal("Km2");
@@ -233,8 +239,8 @@ namespace TimePlannerNinject.Model
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Color", ColorTranslator.ToHtml(System.Drawing.Color.FromArgb(this.Color.A, this.Color.R, this.Color.G, this.Color.B)));
-            info.AddValue("DefaultEndTime", this.DefaultEndTime);
-            info.AddValue("DefaultStartTime", this.DefaultStartTime);
+            info.AddValue("DefaultEndTime", this.DefaultEndTime.ToString(DateFormatter));
+            info.AddValue("DefaultStartTime", this.DefaultStartTime.ToString(DateFormatter));
             info.AddValue("Name", this.Name);
             info.AddValue("Km1", this.OneWayKilometers);
             info.AddValue("Km2", this.ReturnKilometers);

@@ -6,6 +6,7 @@
 namespace TimePlannerNinject.Model
 {
     using System;
+    using System.Globalization;
     using System.Runtime.Serialization;
     using System.Security.Permissions;
 
@@ -18,6 +19,11 @@ namespace TimePlannerNinject.Model
     public class InputDay : ObservableObject, ISerializable, ICloneable
     {
         #region Fields
+
+        /// <summary>
+        /// Formattage des dates pour la sauvegarde
+        /// </summary>
+        private static string DateFormatter = "dd/MM/yyyy - hh:mm:s";
 
         /// <summary>
         ///     Heures supplémentaires.
@@ -67,8 +73,8 @@ namespace TimePlannerNinject.Model
         protected InputDay(SerializationInfo info, StreamingContext context)
         {
             this.ExtraHours = (int?)info.GetValue("ExtraHours", typeof(int?));
-            this.WorkEndTime = (DateTime?)info.GetValue("WorkEndTime", typeof(DateTime?));
-            this.WorkStartTime = (DateTime?)info.GetValue("WorkStartTime", typeof(DateTime?));
+            this.WorkEndTime = DateTime.ParseExact(info.GetString("WorkEndTime"), DateFormatter, CultureInfo.InvariantCulture);
+            this.WorkStartTime = DateTime.ParseExact(info.GetString("WorkStartTime"), DateFormatter, CultureInfo.InvariantCulture);
             this.IdWorkPlace = (int?)info.GetValue("IdWorkPlace", typeof(int?));
         }
 
@@ -188,8 +194,8 @@ namespace TimePlannerNinject.Model
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("ExtraHours", this.ExtraHours);
-            info.AddValue("WorkEndTime", this.WorkEndTime);
-            info.AddValue("WorkStartTime", this.WorkStartTime);
+            info.AddValue("WorkEndTime", this.WorkEndTime?.ToString(DateFormatter));
+            info.AddValue("WorkStartTime", this.WorkStartTime?.ToString(DateFormatter));
             info.AddValue("IdWorkPlace", this.IdWorkPlace);
         }
 

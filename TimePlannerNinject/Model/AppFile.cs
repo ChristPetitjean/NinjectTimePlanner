@@ -6,11 +6,12 @@
 namespace TimePlannerNinject.Model
 {
     using System;
+    using System.Runtime.Serialization;
 
     /// <summary>
     ///     Décrit un fichier de sauvegarde.
     /// </summary>
-    [Serializable]
+    [DataContract]
     public class AppFile
     {
         #region Constructors and Destructors
@@ -31,11 +32,13 @@ namespace TimePlannerNinject.Model
         /// <summary>
         ///     Obtient ou définit les inputations.
         /// </summary>
+        [DataMember(Name = "Dates")]
         public InputDay[] Inputdays { get; set; }
 
         /// <summary>
         ///     Obtient ou définit les lieux de travails.
         /// </summary>
+        [DataMember(Name = "Lieux")]
         public WorkPlace[] Worplaces { get; set; }
 
         #endregion

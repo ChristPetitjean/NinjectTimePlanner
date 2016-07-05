@@ -1,0 +1,9 @@
+Binding for:
+com.roomorama:caldroid:3.0.1
+
+Dependencies:
+
+caldroid-3.0.1.aar,    Path=C:\Users\christophe.petitjean\.gradle\caches\modules-2\files-2.1\com.roomorama\caldroid\3.0.1\e0f2aa108bf1da13ab74ec99a70b479e0ef49b59\caldroid-3.0.1.aar
+	hirondelle-date4j-1.5.1.jar,    Path=C:\Users\christophe.petitjean\.gradle\caches\modules-2\files-2.1\com.darwinsys\hirondelle-date4j\1.5.1\7b52de513f87ae4d9ff5d17518def0a1e9bc3df0\hirondelle-date4j-1.5.1.jar
+	support-annotations-22.2.0.jar,    Path=C:\Users\christophe.petitjean\AppData\Local\Android\android-sdk\extras\android\m2repository\com\android\support\support-annotations\22.2.0\support-annotations-22.2.0.jar
+	support-v4-22.2.0.aar,    Path=C:\Users\christophe.petitjean\AppData\Local\Android\android-sdk\extras\android\m2repository\com\android\support\support-v4\22.2.0\support-v4-22.2.0.aar
