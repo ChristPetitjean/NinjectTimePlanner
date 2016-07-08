@@ -27,7 +27,7 @@ namespace TimePlannerNinject.Model
         /// <summary>
         /// Formattage des dates pour la sauvegarde
         /// </summary>
-        private static string DateFormatter = "dd/MM/yyyy - hh:mm:ss";
+        private static string DateFormatter = "dd/MM/y - hh:mm:ss";
 
         /// <summary>
         ///     Couleur du lieu.
